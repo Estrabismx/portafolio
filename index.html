@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wii Portfolio - Menú de Diseño</title>
+  <title>Portfolio - Camila Ramírez "Estrabismx"</title>
   <!-- Tailwind CSS para el diseño responsive y moderno -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons para soportar algunos gráficos limpios -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Cargamos la librería oficial de p5.js para renderizar tu cursor -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+  <!-- CDN de p5.js para renderizar tu cursor píxel a píxel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
   
   <style>
+    /* Estilos personalizados del Tema Wii */
     body {
       background-color: #f2f2f2;
       background-image: radial-gradient(#ffffff 20%, transparent 20%), radial-gradient(#ffffff 20%, transparent 20%);
@@ -19,30 +20,7 @@
       background-position: 0 0, 12px 12px;
       font-family: 'Helvetica Neue', Arial, sans-serif;
       overflow-x: hidden;
-      cursor: none; /* Ocultamos el cursor original */
-    }
-
-    /* Puntero de Respaldo SVG (Inspirado en la imagen image_635ffc.png) */
-    #wii-pointer {
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      width: 52px;
-      height: 52px;
-      transform: translate(-18px, -4px);
-      transition: transform 0.04s cubic-bezier(0.1, 0.8, 0.3, 1);
-      filter: drop-shadow(3px 4px 4px rgba(0,0,0,0.35));
-    }
-
-    /* Estilo del lienzo p5.js para que actúe de cursor flotante sobre el portafolio */
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none; /* Permite cliquear los botones debajo del lienzo de p5 */
-      z-index: 9998;
+      cursor: none; /* Ocultamos el cursor por defecto del sistema */
     }
 
     /* Estilo premium del canal de Wii */
@@ -60,7 +38,7 @@
     }
 
     .wii-channel:hover {
-      border-color: #3b82f6;
+      border-color: #3b82f6; /* Azul Wii */
       transform: scale(1.06);
       box-shadow: 0 12px 24px rgba(59, 130, 246, 0.3), 
                   0 8px 10px rgba(59, 130, 246, 0.15);
@@ -98,56 +76,13 @@
       box-shadow: 0 25px 60px rgba(0,0,0,0.3);
     }
 
-    /* Desactivar cursores en pantallas táctiles */
+    /* Reactivar cursor del sistema en pantallas táctiles para que no haya problemas */
     @media (pointer: coarse) {
       body { cursor: auto; }
-      #wii-pointer { display: none !important; }
-      canvas { display: none !important; }
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between p-4 md:p-6 select-none">
-
-  <!-- PUNTERO DE RESPALDO SVG (Estilizado como la imagen image_635ffc.png) -->
-  <div id="wii-pointer">
-    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-      <defs>
-        <linearGradient id="pointerGloveGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#ffffff"/>
-          <stop offset="100%" stop-color="#cccccc"/>
-        </linearGradient>
-        <filter id="pointerNeonGlow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="0" stdDeviation="2.5" flood-color="#00a3ff" flood-opacity="0.95"/>
-          <feDropShadow dx="0" dy="1.5" stdDeviation="1" flood-color="#0055ff" flood-opacity="0.6"/>
-        </filter>
-      </defs>
-      <path d="M 28 4 
-               C 25 4, 24 6, 24 9 
-               L 24 28 
-               C 20 28, 18 30, 18 34 
-               C 18 37, 20 39, 22 39 
-               L 22 46 
-               C 22 52, 28 56, 36 56 
-               C 44 56, 50 51, 50 45 
-               L 50 34 
-               C 50 30, 47 28, 44 28 
-               L 44 27 
-               C 44 24, 41 22, 38 22 
-               C 37 22, 36 22, 35 23
-               C 34 20, 31 18, 28 18 Z" 
-            fill="url(#pointerGloveGrad)" 
-            stroke="#0088ff" 
-            stroke-width="4.5" 
-            stroke-linejoin="round" 
-            filter="url(#pointerNeonGlow)" />
-      
-      <path d="M 23.5 28 C 23.5 32, 20.5 33.5, 20.5 33.5" stroke="#0077ee" stroke-width="2.5" stroke-linecap="round" />
-      <path d="M 35 28.5 L 35 37.5" stroke="#0077ee" stroke-width="2.5" stroke-linecap="round" />
-      <path d="M 40 28.5 L 40 37.5" stroke="#0077ee" stroke-width="2.5" stroke-linecap="round" />
-      <path d="M 45 29.5 L 45 36.5" stroke="#0077ee" stroke-width="2.5" stroke-linecap="round" />
-      <text x="32.5" y="45.5" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-weight="900" font-size="14" fill="#0066ee" text-anchor="middle">1</text>
-    </svg>
-  </div>
 
   <!-- HEADER PRINCIPAL -->
   <header class="w-full max-w-7xl mx-auto flex justify-between items-center mb-4 z-10">
@@ -156,11 +91,13 @@
         W
       </div>
       <div>
-        <h1 class="text-sm font-semibold text-gray-500 tracking-wider">MI PORTAFOLIO CREATIVO</h1>
-        <p class="text-xs text-gray-400">Canales de Trabajo</p>
+        <h1 class="text-sm font-semibold text-gray-500 tracking-wider">Estrabismx</h1>
+        <p class="text-xs text-gray-400">Camila Ramírez
+        </p>
       </div>
     </div>
 
+    <!-- Botón de Silenciado -->
     <button id="sound-toggle" class="wii-btn px-4 py-2 text-xs font-bold text-gray-600 flex items-center gap-2">
       <i data-lucide="volume-2" class="w-4 h-4"></i>
       <span>SONIDO ACTIVADO</span>
@@ -179,9 +116,9 @@
               <div class="w-6 h-6 rounded-full bg-white border-2 border-gray-300"></div>
             </div>
           </div>
-          <span class="absolute text-[10px] font-bold text-blue-500 tracking-widest bottom-2">SOBRE MÍ</span>
+          <span class="absolute text-[10px] font-bold text-blue-500 tracking-widest bottom-2">Sobre mí</span>
         </div>
-        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Sobre Mí</span>
+        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Sobre mí</span>
       </button>
 
       <!-- CANAL 2: PROYECTOS (CANAL FOTOS) -->
@@ -220,7 +157,7 @@
             <path d="M28 28 Q32 31 36 28" stroke="#000" stroke-width="2" fill="none" />
           </svg>
         </div>
-        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Canal Mii</span>
+        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Random</span>
       </button>
 
       <!-- CANAL 5: HABILIDADES (CANAL TIEMPO) -->
@@ -258,6 +195,7 @@
 
   <!-- BARRA DE MENÚ INFERIOR ESTILO WII -->
   <footer class="w-full max-w-7xl mx-auto flex items-center justify-between mt-4 border-t-2 border-gray-200 pt-4 z-10">
+    <!-- Opciones de Wii (CV) -->
     <button class="wii-btn w-20 h-12 md:w-24 md:h-14 flex items-center justify-center text-gray-500 hover:text-blue-500" onclick="openChannel('options')">
       <div class="text-center">
         <span class="block text-[10px] font-bold tracking-widest leading-none">Descargar</span>
@@ -265,11 +203,13 @@
       </div>
     </button>
 
+    <!-- Reloj Digital -->
     <div class="bg-white border-2 border-gray-200 rounded-2xl px-6 py-2 shadow-inner text-center min-w-[150px]">
       <span id="wii-time" class="text-xl md:text-2xl font-semibold text-gray-600 tracking-wider">00:00</span>
       <span id="wii-date" class="block text-[10px] text-gray-400 uppercase tracking-widest mt-0.5">00 / 00</span>
     </div>
 
+    <!-- Tablón de Mensajes (Contacto) -->
     <button class="wii-btn w-20 h-12 md:w-24 md:h-14 flex items-center justify-center text-gray-500 hover:text-blue-500 relative" onclick="openChannel('messages')">
       <i data-lucide="mail" class="w-6 h-6"></i>
       <div class="absolute top-1 right-2 w-3 h-3 bg-blue-400 rounded-full animate-ping"></div>
@@ -280,10 +220,12 @@
   <!-- MODAL DE CANAL DETALLADO (ZOOM DE CANAL) -->
   <div id="channel-overlay" class="fixed inset-0 bg-black/40 z-40 hidden flex items-center justify-center p-4 backdrop-blur-sm">
     <div class="wii-modal w-full max-w-2xl p-6 md:p-8 flex flex-col justify-between items-center text-center relative">
+      <!-- Contenido dinámico del Modal -->
       <div id="modal-content" class="w-full flex-grow flex flex-col items-center justify-center mb-8">
-        <!-- Contenido dinámico del Modal -->
+        <!-- Render dinámico -->
       </div>
 
+      <!-- Acciones Clásicas de la Wii -->
       <div class="flex gap-6 w-full justify-center">
         <button onclick="closeChannel()" class="wii-btn px-8 py-3 text-xs md:text-sm font-bold text-gray-500 min-w-[120px]">
           Volver
@@ -310,13 +252,16 @@
   </div>
 
   <script>
+    // Inicializar Iconos
     lucide.createIcons();
 
+    // Variables de Estado de Audio
     let audioCtx = null;
     let bgmInterval = null;
     let isMuted = false;
     let currentOpenChannel = null;
 
+    // Inicializar Audio Context de forma segura tras una interacción del usuario
     function initAudio() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -324,6 +269,7 @@
       }
     }
 
+    // SINTETIZADOR Retro de efectos de Wii
     function playSound(type) {
       if (!audioCtx || isMuted) return;
       if (audioCtx.state === 'suspended') {
@@ -375,6 +321,7 @@
       }
     }
 
+    // Música de fondo generativa retro-ambient de Wii
     function playAmbientLoop() {
       if (!audioCtx || isMuted) return;
 
@@ -414,6 +361,7 @@
       bgmInterval = setInterval(playChord, 4000);
     }
 
+    // Control del sonido global
     const soundToggleBtn = document.getElementById('sound-toggle');
     soundToggleBtn.addEventListener('click', (e) => {
       isMuted = !isMuted;
@@ -428,13 +376,7 @@
       e.stopPropagation();
     });
 
-    // Sincronización básica para el cursor de respaldo SVG
-    const pointer = document.getElementById('wii-pointer');
-    document.addEventListener('mousemove', (e) => {
-      pointer.style.left = `${e.clientX}px`;
-      pointer.style.top = `${e.clientY}px`;
-    });
-
+    // Agregar sonidos Hover de forma global
     function assignSoundEvents() {
       const interactiveElements = document.querySelectorAll('button, .wii-channel, .wii-btn, input, textarea');
       interactiveElements.forEach(el => {
@@ -447,15 +389,17 @@
       playSound('hover');
     }
 
+    // Escuchar el primer clic en la pantalla para inicializar sonidos y el audio de fondo
     window.addEventListener('click', () => {
       initAudio();
     }, { once: true });
 
+    // Inicializar eventos de mouse al cargar la página
     window.addEventListener('DOMContentLoaded', () => {
       assignSoundEvents();
-      loadP5Cursor(); // Disparamos la carga dinámica del cursor de p5.js con la lógica multipuerto resiliente
     });
 
+    // Reloj de la barra inferior
     function updateWiiClock() {
       const now = new Date();
       let hours = now.getHours();
@@ -476,6 +420,7 @@
     setInterval(updateWiiClock, 1000);
     updateWiiClock();
 
+    // --- Sistema de Mensajería Wii (Reemplazo para alerts nativos) ---
     function showSystemAlert(title, message) {
       document.getElementById('alert-title').textContent = title;
       document.getElementById('alert-message').textContent = message;
@@ -488,100 +433,23 @@
       document.getElementById('system-alert-overlay').classList.add('hidden');
     }
 
-    // Función encargada de descargar e inyectar tu sketch.js de p5js con estrategia de múltiples servidores
-    async function loadP5Cursor() {
-      const projectID = '6wqEdAFh_';
-      
-      // Lista de servidores de la API oficial de p5.js para evitar bloqueos de CORS
-      const endpoints = [
-        `https://api.editor.p5js.org/projects/${projectID}`,
-        `https://fork-editor-service.p5js.org/projects/${projectID}`,
-        `https://editor-service.p5js.org/projects/${projectID}`
-      ];
-
-      let rawData = null;
-      let connectedUrl = null;
-
-      // Iteración de servidores para encontrar un puerto disponible libre de CORS
-      for (const url of endpoints) {
-        try {
-          console.log(`Intentando conectar con p5.js API en: ${url}`);
-          const response = await fetch(url);
-          if (response.ok) {
-            rawData = await response.json();
-            connectedUrl = url;
-            break;
-          }
-        } catch (err) {
-          console.warn(`Servidor p5.js no disponible (${url}):`, err.message);
-        }
-      }
-
-      // Si ningún servidor respondió, activamos el cursor SVG clásico de respaldo
-      if (!rawData) {
-        console.warn("No se pudo establecer conexión con ninguna API de p5.js. Utilizando cursor SVG de respaldo.");
-        pointer.style.display = 'block';
-        return;
-      }
-
-      try {
-        // Encontramos la lista de archivos soportando varios formatos de API (plano o anidado)
-        const files = rawData.files || (rawData.project && rawData.project.files);
-        if (!files) throw new Error('Estructura de respuesta inválida.');
-
-        // Busqueda insensible a mayúsculas/minúsculas del script
-        const sketchFile = files.find(f => f.name.toLowerCase() === 'sketch.js');
-        if (!sketchFile || !sketchFile.content) throw new Error('No se encontró sketch.js en la respuesta.');
-
-        let processedCode = sketchFile.content;
-
-        // Reemplazos de Seguridad Estética:
-        // 1. Forzamos que createCanvas se adapte a toda la ventana del portafolio de forma responsiva
-        processedCode = processedCode.replace(/createCanvas\s*\([^)]*\)/g, 'createCanvas(windowWidth, windowHeight)');
-        // 2. Modificamos background(...) por clear() para que el lienzo de p5.js sea transparente y podamos ver los canales
-        processedCode = processedCode.replace(/background\s*\([^)]*\)/g, 'clear()');
-        // 3. Agregamos noCursor() en setup() para apagar el puntero por defecto de Windows
-        if (processedCode.includes('setup()')) {
-          processedCode = processedCode.replace('setup() {', 'setup() {\n  noCursor();');
-        } else if (processedCode.includes('setup = function')) {
-          processedCode = processedCode.replace(/setup\s*=\s*function\s*\(\s*\)\s*{/, 'setup = function() {\n  noCursor();');
-        }
-
-        // Evaluamos e inyectamos el script dinámicamente en el documento global
-        const scriptElement = document.createElement('script');
-        scriptElement.textContent = processedCode;
-        document.body.appendChild(scriptElement);
-
-        // Inicializamos p5.js globalmente para que empiece a rastrear el mouse y pintar tu cursor
-        new p5();
-
-        // Si se cargó correctamente, ocultamos nuestro cursor SVG de respaldo
-        pointer.style.display = 'none';
-        console.log(`¡Cursor de p5.js de ${connectedUrl} cargado exitosamente!`);
-
-      } catch (error) {
-        console.warn("Fallo durante el parseo de p5.js. Usando fallback SVG de Wii:", error);
-        pointer.style.display = 'block';
-      }
-    }
-
     // BASE DE DATOS DE CONTENIDOS (Canales de Portafolio)
     const channelsData = {
       about: {
-        title: "Sobre Mí - Canal Biografía",
+        title: "Sobre Mí - Estrabismx",
         description: "Una pequeña descripción sobre mi personalidad, enfoque creativo y filosofía de trabajo.",
         html: `
           <div class="flex flex-col items-center">
             <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4 border-2 border-blue-200">
               <i data-lucide="user" class="w-10 h-10 text-blue-500"></i>
             </div>
-            <h2 class="text-xl font-black text-gray-700 mb-2">¡Hola, soy Diseñador & Frontend!</h2>
+            <h2 class="text-xl font-black text-gray-700 mb-2">¡Hola, soy Estrabismx!</h2>
             <p class="text-sm text-gray-600 max-w-md leading-relaxed text-center">
-              Me encanta tender puentes entre la estética visual y la tecnología interactiva. Combino la rigurosidad técnica de la programación moderna con la nostalgia y la diversión de interfaces del pasado.
+              Soy estudiante de Diseño, no me encasillo en en una sola área, me gusta la experimentación en diversos ambitos, ya sea la fabricación digital, la electrónica, el desarrollo más artesanal 
             </p>
           </div>
         `,
-        action: () => showSystemAlert("Sobre Mí", "¡Acción ejecutada! Aquí puedes redireccionar a tu hoja de vida completa o biografía detallada.")
+        action: () => showSystemAlert("Sobre Mí", "¡Perfecto! Aquí puedes agregar más detalles tuyos en un futuro.")
       },
       projects: {
         title: "Proyectos - Colección de Trabajos",
@@ -590,21 +458,21 @@
           <div class="w-full max-h-64 overflow-y-auto pr-2">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div class="bg-white p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 transition-colors text-left">
-                <span class="text-[9px] font-bold text-blue-500 uppercase tracking-widest">UI/UX & Frontend</span>
-                <h4 class="text-xs font-black text-gray-700 mb-1">E-Commerce Gaming</h4>
-                <p class="text-[10px] text-gray-500 mb-2">Diseño y desarrollo completo de una plataforma de videojuegos con pasarela de pago.</p>
+                <span class="text-[9px] font-bold text-blue-500 uppercase tracking-widest">DISEÑO INDUSTRIAL & 3D</span>
+                <h4 class="text-xs font-black text-gray-700 mb-1">Cajas Modulares</h4>
+                <p class="text-[10px] text-gray-500 mb-2">Diseño y optimización de piezas para prototipado electrónico y ensamble modular en impresión 3D.</p>
                 <div class="flex gap-1">
-                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">Tailwind</span>
-                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">React</span>
+                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">Ender 3</span>
+                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">PLA</span>
                 </div>
               </div>
               <div class="bg-white p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 transition-colors text-left">
-                <span class="text-[9px] font-bold text-green-500 uppercase tracking-widest">Identidad Visual</span>
-                <h4 class="text-xs font-black text-gray-700 mb-1">Branding Studio</h4>
-                <p class="text-[10px] text-gray-500 mb-2">Creación de logotipo, tipografía, paleta de colores y sitio web para agencia creativa.</p>
+                <span class="text-[9px] font-bold text-green-500 uppercase tracking-widest">ELECTRÓNICA ANALÓGICA</span>
+                <h4 class="text-xs font-black text-gray-700 mb-1">Sintetizador CMOS</h4>
+                <p class="text-[10px] text-gray-500 mb-2">Circuitos de oscilación de audio desarrollados con chips de lógica CMOS 4017 y 4093.</p>
                 <div class="flex gap-1">
-                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">Figma</span>
-                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">Illustrator</span>
+                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">ICs CMOS</span>
+                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">Hardware</span>
                 </div>
               </div>
             </div>
@@ -614,23 +482,23 @@
       },
       experience: {
         title: "Experiencia - Historial Profesional",
-        description: "Lugares y empresas donde he tenido el placer de aportar mi creatividad y desarrollo.",
+        description: "Lugares y proyectos académicos donde he tenido el placer de aportar mi creatividad.",
         html: `
           <div class="w-full max-h-64 overflow-y-auto text-left pl-2">
             <div class="border-l-2 border-blue-300 pl-4 space-y-4">
               <div class="relative">
                 <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white"></div>
-                <span class="text-[9px] font-bold text-gray-400">2024 - Presente</span>
-                <h4 class="text-xs font-black text-gray-700">Diseñador UI Senior</h4>
-                <p class="text-[10px] text-blue-500 font-semibold mb-1">Estudio Creativo Alpha</p>
-                <p class="text-[10px] text-gray-500">Diseño de sistemas de diseño scalables y creación de aplicaciones Web interactivas.</p>
+                <span class="text-[9px] font-bold text-gray-400">2026 - Presente</span>
+                <h4 class="text-xs font-black text-gray-700">Diseño y Prototipado Técnico</h4>
+                <p class="text-[10px] text-blue-500 font-semibold mb-1">Proyectos Académicos Colaborativos</p>
+                <p class="text-[10px] text-gray-500">Documentación de repositorios de hardware de código abierto y diseño estratégico corporativo.</p>
               </div>
               <div class="relative">
                 <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white"></div>
-                <span class="text-[9px] font-bold text-gray-400">2022 - 2024</span>
-                <h4 class="text-xs font-black text-gray-700">Desarrollador Frontend Jr.</h4>
-                <p class="text-[10px] text-blue-500 font-semibold mb-1">Agencia Digital Pixel</p>
-                <p class="text-[10px] text-gray-500">Maquetación de landing pages responsivas, optimización de velocidad de carga y SEO.</p>
+                <span class="text-[9px] font-bold text-gray-400">2025</span>
+                <h4 class="text-xs font-black text-gray-700">Exploraciones en Generative Art</h4>
+                <p class="text-[10px] text-blue-500 font-semibold mb-1">Desarrollo con p5.js</p>
+                <p class="text-[10px] text-gray-500">Creación de algoritmos matemáticos aplicados a la cerámica decorativa y patrones visuales.</p>
               </div>
             </div>
           </div>
@@ -638,7 +506,7 @@
         action: () => showSystemAlert("Canal Experiencia", "¡Has seleccionado ver más de mi experiencia! Podrías enlazar esto a tu LinkedIn.")
       },
       mii: {
-        title: "Canal Mii - Avatar & Personalidad",
+        title: "Canal Mii - Mi Avatar",
         description: "Detalles curiosos sobre mí representados en un formato divertido estilo consola de videojuegos.",
         html: `
           <div class="flex flex-col items-center">
@@ -653,18 +521,18 @@
                 </svg>
               </div>
               <div class="text-left">
-                <h4 class="text-sm font-black text-gray-700">Jugador Creativo 1</h4>
+                <h4 class="text-sm font-black text-gray-700">Mii de Estrabismx</h4>
                 <p class="text-xs text-gray-400">Atributos del Mii:</p>
                 <div class="flex flex-wrap gap-1 mt-1">
-                  <span class="bg-orange-100 text-orange-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">Proactivo</span>
-                  <span class="bg-blue-100 text-blue-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">Innovador</span>
-                  <span class="bg-green-100 text-green-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">Detallista</span>
+                  <span class="bg-orange-100 text-orange-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">Maker</span>
+                  <span class="bg-blue-100 text-blue-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">Open-Source</span>
+                  <span class="bg-green-100 text-green-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">Creativo</span>
                 </div>
               </div>
             </div>
           </div>
         `,
-        action: () => showSystemAlert("Canal Mii", "¡Creación de Mii completada! Tu perfil creativo está listo.")
+        action: () => showSystemAlert("Canal Mii", "¡Tu perfil creativo de Mii está cargado con éxito!")
       },
       tech: {
         title: "Canal de Habilidades - Nivel de Stats",
@@ -674,16 +542,7 @@
             <div class="space-y-3">
               <div>
                 <div class="flex justify-between text-xs font-bold text-gray-500 mb-1">
-                  <span>DISEÑO DE INTERFACES (Figma/UI)</span>
-                  <span class="text-blue-500">95%</span>
-                </div>
-                <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
-                  <div class="bg-blue-500 h-full rounded-full" style="width: 95%;"></div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between text-xs font-bold text-gray-500 mb-1">
-                  <span>DESARROLLO FRONTEND (HTML/CSS/Tailwind)</span>
+                  <span>DISEÑO INDUSTRIAL & PROTOTIPADO 3D</span>
                   <span class="text-blue-500">90%</span>
                 </div>
                 <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
@@ -692,17 +551,26 @@
               </div>
               <div>
                 <div class="flex justify-between text-xs font-bold text-gray-500 mb-1">
-                  <span>PROGRAMACIÓN (JavaScript/React)</span>
+                  <span>ELECTRÓNICA ANALÓGICA & AUDIO</span>
                   <span class="text-blue-500">85%</span>
                 </div>
                 <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
                   <div class="bg-blue-500 h-full rounded-full" style="width: 85%;"></div>
                 </div>
               </div>
+              <div>
+                <div class="flex justify-between text-xs font-bold text-gray-500 mb-1">
+                  <span>PROGRAMACIÓN CREATIVA (p5.js / Processing)</span>
+                  <span class="text-blue-500">80%</span>
+                </div>
+                <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                  <div class="bg-blue-500 h-full rounded-full" style="width: 80%;"></div>
+                </div>
+              </div>
             </div>
           </div>
         `,
-        action: () => showSystemAlert("Canal Habilidades", "Estadísticas completas actualizadas en tiempo real.")
+        action: () => showSystemAlert("Canal Habilidades", "Estadísticas de habilidades actualizadas en tiempo real.")
       },
       shop: {
         title: "Tienda de Servicios - Contrataciones",
@@ -712,14 +580,14 @@
             <h2 class="text-xl font-black text-gray-700 mb-2">Servicios Disponibles</h2>
             <div class="grid grid-cols-2 gap-3 max-w-sm">
               <div class="bg-white p-2 rounded-xl border border-gray-200 text-center">
-                <i data-lucide="monitor" class="w-6 h-6 text-cyan-500 mx-auto mb-1"></i>
-                <h4 class="text-[10px] font-bold text-gray-700">Desarrollo Web</h4>
-                <p class="text-[8px] text-gray-400">Portafolios, Landings, Sitios Corporativos.</p>
+                <i data-lucide="layers" class="w-6 h-6 text-cyan-500 mx-auto mb-1"></i>
+                <h4 class="text-[10px] font-bold text-gray-700">Modelado 3D</h4>
+                <p class="text-[8px] text-gray-400">Modelado y optimización CAD listo para imprimir.</p>
               </div>
               <div class="bg-white p-2 rounded-xl border border-gray-200 text-center">
-                <i data-lucide="layers" class="w-6 h-6 text-cyan-500 mx-auto mb-1"></i>
-                <h4 class="text-[10px] font-bold text-gray-700">Diseño UI/UX</h4>
-                <p class="text-[8px] text-gray-400">Estructura interactiva, wireframes, Figma.</p>
+                <i data-lucide="cpu" class="w-6 h-6 text-cyan-500 mx-auto mb-1"></i>
+                <h4 class="text-[10px] font-bold text-gray-700">Prototipado</h4>
+                <p class="text-[8px] text-gray-400">Hardware analógico y electrónica para ensamble.</p>
               </div>
             </div>
           </div>
@@ -762,6 +630,7 @@
       }
     };
 
+    // --- ACCIONES DE LOS POPUPS (CANAL ZOOM) ---
     function openChannel(channelKey) {
       currentOpenChannel = channelKey;
       const channel = channelsData[channelKey];
@@ -804,6 +673,100 @@
       if (currentOpenChannel && channelsData[currentOpenChannel]) {
         playSound('click');
         channelsData[currentOpenChannel].action();
+      }
+    }
+
+    // ==========================================
+    // CÓDIGO DE INTEGRACIÓN DEL CURSOR p5.JS
+    // ==========================================
+    const COLS = 32;
+    const ROWS = 32;
+    let pixelSize;
+
+    // Tu mapa de píxeles Wii original
+    const pixelMap = [
+      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,2,2,2,1,1,1,1,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,2,2,2,1,2,2,2,1,1,1,0,0,0,0,0,0],
+      [0,0,0,0,1,1,1,1,0,0,1,2,2,2,2,1,2,2,2,1,2,2,2,1,2,2,1,0,0,0,0,0],
+      [0,0,0,1,2,2,2,2,1,1,1,2,2,2,2,2,2,2,2,1,2,2,2,1,2,2,1,0,0,0,0,0],
+      [0,0,1,2,2,2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,2,1,2,2,1,0,0,0,0,0],
+      [0,0,1,2,2,2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0],
+      [0,0,0,1,1,2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0],
+      [0,0,0,0,0,1,1,2,2,2,1,2,2,2,2,2,3,3,2,2,2,2,2,2,2,2,1,0,0,0,0,0],
+      [0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,3,3,3,2,2,2,2,2,2,2,2,1,0,0,0,0,0],
+      [0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,2,2,2,1,0,0,0,0,0],
+      [0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,2,2,2,1,0,0,0,0,0],
+      [0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,2,2,1,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,3,3,2,2,2,2,2,2,2,1,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,3,3,3,3,2,2,2,2,2,2,1,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    ];
+
+    function setup() {
+      // El canvas de p5 cubrirá exactamente la pantalla
+      let canvas = createCanvas(windowWidth, windowHeight);
+      canvas.position(0, 0);
+      // 'pointer-events: none' permite hacer clic e interactuar con los botones que queden "detrás" del canvas
+      canvas.style('pointer-events', 'none');
+      canvas.style('z-index', '9999');
+      noStroke();
+      
+      // Calibramos el tamaño de los píxeles (1.5 hace que el cursor mida unos 48px, perfecto para un puntero)
+      pixelSize = 1.5;
+      noCursor(); // Ocultamos el puntero por defecto del sistema
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+
+    function draw() {
+      clear(); // Reemplaza background para que el canvas sea completamente transparente y deje ver la Wii
+
+      // Si es un dispositivo móvil (pantalla táctil), apagamos el dibujo para no estorbar
+      if (matchMedia('(pointer: coarse)').matches) {
+        return;
+      }
+
+      // Hotspot de contacto calibrado en la punta del dedo índice (Fila 1, Columna 12 en la matriz)
+      let startX = mouseX - (12.5 * pixelSize);
+      let startY = mouseY - (1 * pixelSize);
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          let pixelType = pixelMap[r][c];
+
+          if (pixelType === 1) {
+            fill('#007BFF'); // Azul brillante principal
+          } else if (pixelType === 2) {
+            fill('#E2E8F0'); // Gris claro (relleno)
+          } else if (pixelType === 3) {
+            fill('#0056B3'); // Azul oscuro (número 1 central)
+          } else if (pixelType === 4) {
+            fill('#002B5C'); // Azul marino muy oscuro (sombra 3D)
+          } else {
+            continue; // Saltar píxeles vacíos (0)
+          }
+
+          rect(startX + (c * pixelSize), startY + (r * pixelSize), pixelSize, pixelSize);
+        }
       }
     }
   </script>
