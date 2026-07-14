@@ -3,771 +3,702 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio - Camila Ramírez "Estrabismx"</title>
-  <!-- Tailwind CSS para el diseño responsive y moderno -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons para soportar algunos gráficos limpios -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- CDN de p5.js para renderizar tu cursor píxel a píxel -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <title>Portafolio Diseño - Camila Ramírez "Estrabismx"</title>
   
+  <!-- Tailwind CSS para utilidades de diseño modernas -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Fuente pixelada clásica para detalles y Tahoma para la autenticidad del sistema operativo MS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
   <style>
-    /* Estilos personalizados del Tema Wii */
+    /* Estilos base inspirados en la interfaz clásica de Windows 95/98 */
+    :root {
+      --win98-bg: #c0c0c0;
+      --win98-fg: #000000;
+      --win98-white: #ffffff;
+      --win98-gray: #808080;
+      --win98-dark-gray: #404040;
+      --win98-blue: #000080;
+      --win98-blue-light: #1084d0;
+      --desktop-teal: #008080;
+    }
+
     body {
-      background-color: #f2f2f2;
-      background-image: radial-gradient(#ffffff 20%, transparent 20%), radial-gradient(#ffffff 20%, transparent 20%);
-      background-size: 24px 24px;
-      background-position: 0 0, 12px 12px;
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      overflow-x: hidden;
-      cursor: none; /* Ocultamos el cursor por defecto del sistema */
-    }
-
-    /* Estilo premium del canal de Wii */
-    .wii-channel {
-      background: linear-gradient(to bottom, #ffffff 0%, #f7f7f7 50%, #eaeaea 100%);
-      border: 4px solid #dfdfdf;
-      border-radius: 20px;
-      box-shadow: inset 0 2px 4px rgba(255,255,255,0.95), 
-                  0 4px 6px rgba(0,0,0,0.06),
-                  0 1px 3px rgba(0,0,0,0.08);
-      aspect-ratio: 16 / 10;
-      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      position: relative;
+      font-family: 'Tahoma', 'Geneva', sans-serif;
+      background-color: var(--desktop-teal);
+      color: var(--win98-fg);
       overflow: hidden;
+      user-select: none;
+      image-rendering: pixelated;
     }
 
-    .wii-channel:hover {
-      border-color: #3b82f6; /* Azul Wii */
-      transform: scale(1.06);
-      box-shadow: 0 12px 24px rgba(59, 130, 246, 0.3), 
-                  0 8px 10px rgba(59, 130, 246, 0.15);
-      z-index: 10;
+    /* Bordes clásicos de Windows 98 en 3D Outset (hacia afuera) */
+    .win98-outset {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
     }
 
-    .wii-channel:active {
-      transform: scale(0.97);
-      border-color: #2563eb;
+    /* Bordes de botones al presionarse o áreas de entrada 3D Inset (hacia adentro) */
+    .win98-inset {
+      background-color: var(--win98-white);
+      border: 2px solid;
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+      box-shadow: inset 1px 1px 0px var(--win98-fg), inset -1px -1px 0px #dfdfdf;
     }
 
-    /* Botones de Wii */
-    .wii-btn {
-      background: linear-gradient(to bottom, #ffffff 0%, #eaeaea 100%);
-      border: 3px solid #ccc;
-      border-radius: 50px;
-      box-shadow: 0 3px 5px rgba(0,0,0,0.1), inset 0 1px 2px #fff;
-      transition: all 0.2s ease;
-    }
-    .wii-btn:hover {
-      border-color: #3b82f6;
-      box-shadow: 0 0 12px rgba(59, 130, 246, 0.45);
-      transform: translateY(-2px);
-    }
-    .wii-btn:active {
-      transform: translateY(1px);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+    .win98-button {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+      padding: 3px 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
     }
 
-    /* Estilos del Modal del Canal (Zoom de Canal) */
-    .wii-modal {
-      background: linear-gradient(135deg, #fbfbfb 0%, #ededed 100%);
-      border: 8px solid #eaeaea;
-      border-radius: 36px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+    .win98-button:active {
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+      box-shadow: inset 1px 1px 0px var(--win98-fg);
+      padding: 4px 9px 2px 11px;
     }
 
-    /* Reactivar cursor del sistema en pantallas táctiles para que no haya problemas */
-    @media (pointer: coarse) {
-      body { cursor: auto; }
+    /* Barra de títulos clásica con gradiente azul */
+    .win98-titlebar {
+      background: linear-gradient(90deg, var(--win98-blue), var(--win98-blue-light));
+      color: var(--win98-white);
+      font-weight: bold;
+      font-size: 13px;
+      padding: 3px 5px 3px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .win98-titlebar.inactive {
+      background: linear-gradient(90deg, var(--win98-gray), #b0b0b0);
+    }
+
+    /* Controles pequeños de la ventana */
+    .win98-window-btn {
+      width: 16px;
+      height: 14px;
+      background-color: var(--win98-bg);
+      border: 1px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      font-size: 9px;
+      font-weight: bold;
+      color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .win98-window-btn:active {
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+    }
+
+    /* Scrollbars retro */
+    ::-webkit-scrollbar {
+      width: 16px;
+      height: 16px;
+    }
+    ::-webkit-scrollbar-track {
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"><rect width="1" height="1" fill="%23ffffff"/><rect x="1" y="1" width="1" height="1" fill="%23ffffff"/><rect x="1" width="1" height="1" fill="%23e0e0e0"/><rect y="1" width="1" height="1" fill="%23e0e0e0"/></svg>');
+      background-color: #dfdfdf;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white);
+    }
+
+    /* Menú Inicio */
+    .start-menu {
+      display: none;
+      position: absolute;
+      bottom: 40px;
+      left: 2px;
+      width: 210px;
+      z-index: 9999;
+    }
+
+    .start-menu-sidebar {
+      background: linear-gradient(180deg, var(--win98-blue), var(--win98-blue-light));
+      color: white;
+      writing-mode: vertical-lr;
+      transform: rotate(180deg);
+      font-family: 'VT323', monospace;
+      font-size: 24px;
+      padding: 10px 4px;
+      text-align: center;
+    }
+
+    .start-menu-item:hover {
+      background-color: var(--win98-blue);
+      color: white;
+    }
+
+    /* CURSORES PERSONALIZADOS (Referencia a la carpeta local de assets) */
+    .retro-cursor, body {
+      cursor: url('assets/svg/cursor-estandar.svg'), default, auto;
+    }
+
+    /* Aplicación precisa del cursor de acción a elementos interactivos reales únicamente */
+    a, button, select, option, input, textarea,
+    .win98-button, .win98-window-btn, .desktop-icon, .start-menu-item,
+    .cursor-pointer, .hover\:underline {
+      cursor: url('assets/svg/cursor-accion.svg'), pointer !important;
+    }
+
+    /* Iconos del Escritorio */
+    .desktop-icon {
+      width: 80px;
+      text-align: center;
+      margin: 12px;
+      color: white;
+      text-shadow: 1px 1px 1px black;
+      font-size: 11px;
+    }
+
+    .desktop-icon:focus .icon-text {
+      background-color: var(--win98-blue);
+      outline: 1px dotted white;
+    }
+
+    /* Barra de tareas en el fondo */
+    .taskbar {
+      height: 40px;
+      background-color: var(--win98-bg);
+      border-top: 2px solid var(--win98-white);
+      box-shadow: inset 0px 1px 0px var(--win98-white);
+    }
+
+    /* Ventanas flotantes */
+    .window {
+      position: absolute;
+      min-width: 320px;
+      max-width: 95vw;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .window {
+        width: 96% !important;
+        left: 2% !important;
+        top: 20px !important;
+      }
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-4 md:p-6 select-none">
+<body class="retro-cursor h-screen w-screen relative overflow-hidden flex flex-col justify-between">
 
-  <!-- HEADER PRINCIPAL -->
-  <header class="w-full max-w-7xl mx-auto flex justify-between items-center mb-4 z-10">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 bg-white border-2 border-gray-300 rounded-lg shadow flex items-center justify-center font-bold text-blue-500 text-lg">
-        W
-      </div>
-      <div>
-        <h1 class="text-sm font-semibold text-gray-500 tracking-wider">Estrabismx</h1>
-        <p class="text-xs text-gray-400">Camila Ramírez
-        </p>
-      </div>
+  <!-- ================= ESCRITORIO PRINCIPAL ================= -->
+  <div id="desktop" class="flex-1 w-full relative p-4 flex flex-col flex-wrap content-start items-start justify-start z-10" style="height: calc(100vh - 40px);">
+    
+    <!-- Icono: Mi PC (Abre/Cierra la ventana central) -->
+    <div class="desktop-icon flex flex-col items-center" tabindex="0" onclick="toggleWindow('window-pc')">
+      <!-- SVG clásico de monitor retro -->
+      <svg class="w-10 h-10 mb-1" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="28" height="20" fill="#c0c0c0" stroke="black" stroke-width="2"/>
+        <rect x="5" y="5" width="22" height="14" fill="#000" stroke="black" stroke-width="1"/>
+        <rect x="7" y="7" width="18" height="10" fill="#00a8a8"/>
+        <!-- Base monitor -->
+        <path d="M10 22 L22 22 L24 28 L8 28 Z" fill="#808080" stroke="black" stroke-width="2"/>
+        <!-- Detalle disquetera -->
+        <rect x="3" y="3" width="3" height="3" fill="white"/>
+      </svg>
+      <span class="icon-text px-1">Mi PC</span>
     </div>
 
-    <!-- Botón de Silenciado -->
-    <button id="sound-toggle" class="wii-btn px-4 py-2 text-xs font-bold text-gray-600 flex items-center gap-2">
-      <i data-lucide="volume-2" class="w-4 h-4"></i>
-      <span>SONIDO ACTIVADO</span>
-    </button>
-  </header>
+    <!-- Icono: Proyectos (Redirección Externa) -->
+    <div class="desktop-icon flex flex-col items-center" tabindex="0" onclick="navigateTo('proyectos.html')">
+      <svg class="w-10 h-10 mb-1" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Carpeta Windows 98 -->
+        <path d="M2 6V26H30V10H14L10 6H2Z" fill="#ffdf00" stroke="black" stroke-width="2"/>
+        <path d="M2 10H30" stroke="black" stroke-width="2"/>
+        <rect x="5" y="13" width="10" height="8" fill="#fff" stroke="black" stroke-width="2"/>
+        <line x1="7" y1="15" x2="13" y2="15" stroke="black"/>
+        <line x1="7" y1="17" x2="11" y2="17" stroke="black"/>
+      </svg>
+      <span class="icon-text px-1">Proyectos</span>
+    </div>
 
-  <!-- REJILLA DE CANALES DE LA WII -->
-  <main class="w-full max-w-7xl mx-auto flex-grow flex items-center justify-center my-4 z-10">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 w-full py-4">
+    <!-- Icono: Sobre Mí (Redirección Externa) -->
+    <div class="desktop-icon flex flex-col items-center" tabindex="0" onclick="navigateTo('sobre-mi.html')">
+      <svg class="w-10 h-10 mb-1" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Libreta WordPad -->
+        <rect x="4" y="2" width="24" height="28" fill="#fff" stroke="black" stroke-width="2"/>
+        <rect x="8" y="6" width="16" height="4" fill="#000080"/>
+        <line x1="8" y1="14" x2="24" y2="14" stroke="#808080" stroke-width="2"/>
+        <line x1="8" y1="18" x2="20" y2="18" stroke="#808080" stroke-width="2"/>
+        <line x1="8" y1="22" x2="24" y2="22" stroke="#808080" stroke-width="2"/>
+        <!-- Pluma / Lápiz retro -->
+        <path d="M24 2 L28 6 L18 16 L14 12 Z" fill="#ff0000" stroke="black" stroke-width="1"/>
+      </svg>
+      <span class="icon-text px-1">Sobre Mí</span>
+    </div>
+
+    <!-- Icono: Contacto (Redirección Externa) -->
+    <div class="desktop-icon flex flex-col items-center" tabindex="0" onclick="navigateTo('contacto.html')">
+      <svg class="w-10 h-10 mb-1" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Buzón de correo / Mensaje -->
+        <rect x="4" y="6" width="24" height="18" fill="#c0c0c0" stroke="black" stroke-width="2"/>
+        <path d="M4 6 L16 16 L28 6" stroke="black" stroke-width="2"/>
+        <rect x="20" y="16" width="6" height="5" fill="red"/>
+      </svg>
+      <span class="icon-text px-1">Contacto</span>
+    </div>
+
+    <!-- Icono: Paint (Redirección Externa) -->
+    <div class="desktop-icon flex flex-col items-center" tabindex="0" onclick="navigateTo('paint.html')">
+      <svg class="w-10 h-10 mb-1" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Paleta de Pintura Retro -->
+        <path d="M16 2 C8 2 2 8 2 16 C2 24 8 30 16 30 C20 30 24 28 26 24 C28 20 30 18 30 14 C30 7 24 2 16 2 Z" fill="#fdf5e6" stroke="black" stroke-width="2"/>
+        <!-- Colores en la paleta -->
+        <circle cx="9" cy="11" r="2.5" fill="#ff0000"/>
+        <circle cx="15" cy="8" r="2.5" fill="#00ff00"/>
+        <circle cx="21" cy="11" r="2.5" fill="#0000ff"/>
+        <circle cx="23" cy="18" r="2.5" fill="#ffff00"/>
+        <!-- Pincel -->
+        <path d="M5 25 L25 5 L28 8 L8 28 Z" fill="#8b4513" stroke="black" stroke-width="1"/>
+        <path d="M25 5 L28 8" stroke="white" stroke-width="2"/>
+      </svg>
+      <span class="icon-text px-1">Paint 98</span>
+    </div>
+
+  </div>
+
+
+  <!-- ================= VENTANA CENTRAL: MI PC ================= -->
+  <div id="window-pc" class="window win98-outset z-20" style="width: 440px; top: 15%; left: calc(50vw - 220px);" onclick="focusWindow('window-pc')">
+    <div class="win98-titlebar" id="window-pc-handle">
+      <div class="flex items-center gap-1.5">
+        <svg class="w-4 h-4" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="28" height="20" fill="#c0c0c0" stroke="black" stroke-width="2"/>
+          <rect x="5" y="5" width="22" height="14" fill="#000"/>
+          <path d="M10 22 L22 22 L24 28 L8 28 Z" fill="#808080" stroke="black" stroke-width="2"/>
+        </svg>
+        <span>Mi PC - Menú de Navegación</span>
+      </div>
+      <div class="flex gap-1">
+        <button class="win98-window-btn" onclick="minimizeWindow('window-pc')">_</button>
+        <button class="win98-window-btn" onclick="maximizeWindow('window-pc')">⬜</button>
+        <button class="win98-window-btn" onclick="closeWindow('window-pc')">X</button>
+      </div>
+    </div>
+    
+    <!-- Barra de menú clásica decorativa (Texto estático sin cursor de acción ni efectos interactivos) -->
+    <div class="flex gap-3 px-2 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-[#000000] select-none">
+      <span><u>A</u>rchivo</span>
+      <span><u>E</u>dición</span>
+      <span><u>V</u>er</span>
+      <span>A<u>y</u>uda</span>
+    </div>
+
+    <!-- Contenido interno de la unidad central -->
+    <div class="p-4 bg-white flex-1 overflow-auto win98-inset m-1" style="min-height: 220px;">
+      <p class="text-xs text-gray-600 mb-4 font-mono">Haz clic en un elemento para ingresar a la sección deseada del portafolio:</p>
       
-      <!-- CANAL 1: SOBRE MÍ (CANAL DISCO) -->
-      <button class="wii-channel flex flex-col items-center justify-center p-4 group" onclick="openChannel('about')">
-        <div class="relative w-20 h-20 md:w-24 md:h-24 flex items-center justify-center mb-1">
-          <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-gray-200 to-white border-2 border-gray-300 shadow-inner flex items-center justify-center group-hover:rotate-180 transition-transform duration-1000">
-            <div class="w-16 h-16 rounded-full bg-blue-50 border border-gray-200 flex items-center justify-center">
-              <div class="w-6 h-6 rounded-full bg-white border-2 border-gray-300"></div>
-            </div>
-          </div>
-          <span class="absolute text-[10px] font-bold text-blue-500 tracking-widest bottom-2">Sobre mí</span>
-        </div>
-        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Sobre mí</span>
-      </button>
-
-      <!-- CANAL 2: PROYECTOS (CANAL FOTOS) -->
-      <button class="wii-channel flex flex-col items-center justify-center p-4 group" onclick="openChannel('projects')">
-        <div class="w-20 h-14 md:w-28 md:h-18 bg-white border-2 border-gray-300 rounded shadow-md flex items-center justify-center mb-3 relative overflow-hidden">
-          <div class="absolute inset-1 bg-gradient-to-br from-blue-100 to-cyan-200 rounded flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <i data-lucide="folder-git" class="w-8 h-8 text-blue-500"></i>
-          </div>
-          <div class="absolute bottom-1 right-1 w-3 h-3 bg-green-500 rounded-full"></div>
-        </div>
-        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Proyectos</span>
-      </button>
-
-      <!-- CANAL 3: EXPERIENCIA (CANAL NOTICIAS) -->
-      <button class="wii-channel flex flex-col items-center justify-center p-4 group" onclick="openChannel('experience')">
-        <div class="w-20 h-14 md:w-28 md:h-18 bg-gray-50 border-2 border-gray-300 rounded p-1 mb-3 overflow-hidden text-left relative">
-          <div class="text-[7px] bg-blue-600 text-white px-1 py-0.5 rounded inline-block font-bold mb-1">HISTORIAL</div>
-          <p class="text-[8px] text-gray-500 font-bold leading-none">Mi Trayectoria</p>
-          <div class="absolute bottom-1 right-1 flex gap-0.5">
-            <div class="w-1.5 h-1.5 bg-gray-300 rounded-full"></div>
-            <div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-          </div>
-        </div>
-        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Experiencia</span>
-      </button>
-
-      <!-- CANAL 4: AVATAR MII -->
-      <button class="wii-channel flex flex-col items-center justify-center p-4 group" onclick="openChannel('mii')">
-        <div class="w-20 h-20 md:w-24 md:h-24 bg-orange-50 rounded-full border-2 border-orange-200 flex items-center justify-center mb-1 relative overflow-hidden group-hover:bg-orange-100 transition-colors">
-          <svg viewBox="0 0 64 64" class="w-16 h-16 text-gray-700 translate-y-1.5">
-            <circle cx="32" cy="22" r="14" fill="#ffdbac" />
-            <path d="M14 54 C14 38, 50 38, 50 54" fill="#f97316" />
-            <path d="M18 16 C22 8, 42 8, 46 16 C48 20, 48 26, 44 26 C42 18, 22 18, 20 26 C16 26, 16 20, 18 16 Z" fill="#4a3728" />
-            <circle cx="27" cy="22" r="2" fill="#000" />
-            <circle cx="37" cy="22" r="2" fill="#000" />
-            <path d="M28 28 Q32 31 36 28" stroke="#000" stroke-width="2" fill="none" />
+      <!-- Cuadrícula de Unidades e Iconos dentro del menú -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        
+        <!-- Enlace Proyectos -->
+        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('proyectos.html')">
+          <svg class="w-10 h-10" viewBox="0 0 32 32" fill="none">
+            <path d="M2 6V26H30V10H14L10 6H2Z" fill="#ffdf00" stroke="black" stroke-width="1.5"/>
+            <path d="M2 10H30" stroke="black" stroke-width="1.5"/>
           </svg>
+          <span class="text-xs mt-2 text-center font-semibold">Proyectos (C:)</span>
         </div>
-        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Random</span>
-      </button>
 
-      <!-- CANAL 5: HABILIDADES (CANAL TIEMPO) -->
-      <button class="wii-channel flex flex-col items-center justify-center p-4 group" onclick="openChannel('tech')">
-        <div class="w-20 h-20 md:w-24 md:h-24 flex flex-col items-center justify-center mb-1 relative">
-          <div class="w-14 h-14 rounded-full bg-gradient-to-b from-blue-300 to-indigo-500 flex items-center justify-center text-white relative shadow-inner group-hover:scale-105 transition-transform">
-            <i data-lucide="cloud-sun" class="w-8 h-8"></i>
-          </div>
-          <span class="text-[9px] font-bold text-indigo-500 mt-1">Nivel: Senior</span>
+        <!-- Enlace Sobre Mí -->
+        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('sobre-mi.html')">
+          <svg class="w-10 h-10" viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="2" width="24" height="28" fill="#fff" stroke="black" stroke-width="1.5"/>
+            <rect x="8" y="6" width="16" height="4" fill="#000080"/>
+            <line x1="8" y1="14" x2="24" y2="14" stroke="#808080" stroke-width="1.5"/>
+            <line x1="8" y1="18" x2="20" y2="18" stroke="#808080" stroke-width="1.5"/>
+          </svg>
+          <span class="text-xs mt-2 text-center">Sobre Mí (A:)</span>
         </div>
-        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Habilidades</span>
-      </button>
 
-      <!-- CANAL 6: PROPUESTAS/SERVICIOS (TIENDA WII) -->
-      <button class="wii-channel flex flex-col items-center justify-center p-4 group" onclick="openChannel('shop')">
-        <div class="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center mb-1">
-          <div class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-cyan-500 rounded-2xl flex items-center justify-center text-white relative group-hover:scale-110 transition-transform shadow-md">
-            <i data-lucide="shopping-bag" class="w-8 h-8"></i>
-            <div class="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 rounded-full border border-white"></div>
-          </div>
+        <!-- Enlace Contacto -->
+        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('contacto.html')">
+          <svg class="w-10 h-10" viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="6" width="24" height="18" fill="#c0c0c0" stroke="black" stroke-width="1.5"/>
+            <path d="M4 6 L16 16 L28 6" stroke="black" stroke-width="1.5"/>
+          </svg>
+          <span class="text-xs mt-2 text-center">Contacto.exe</span>
         </div>
-        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Tienda Wii</span>
-      </button>
 
-      <!-- CANALES VACÍOS DE SOPORTE ESTÉTICO -->
-      <div class="wii-channel opacity-50 flex items-center justify-center p-4">
-        <span class="text-xs font-bold text-gray-300">Vacío</span>
+        <!-- Enlace Paint 98 -->
+        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('paint.html')">
+          <svg class="w-10 h-10" viewBox="0 0 32 32" fill="none">
+            <path d="M16 2 C8 2 2 8 2 16 C2 24 8 30 16 30 C24 30 30 24 30 16 Z" fill="#fdf5e6" stroke="black" stroke-width="1.5"/>
+            <circle cx="10" cy="12" r="2" fill="#ff0000"/>
+            <circle cx="16" cy="9" r="2" fill="#00ff00"/>
+            <circle cx="22" cy="12" r="2" fill="#0000ff"/>
+          </svg>
+          <span class="text-xs mt-2 text-center">Paint98.lnk</span>
+        </div>
+
       </div>
-      <div class="wii-channel opacity-50 flex items-center justify-center p-4">
-        <span class="text-xs font-bold text-gray-300">Vacío</span>
+
+      <!-- Información de Sistema / Footer de ventana -->
+      <div class="mt-8 border-t pt-2 border-dashed border-gray-400 font-mono text-[11px] text-gray-600">
+        <p>• Portafolio de Diseño Gráfico y Digital</p>
+        <p>• Versión de la Interfaz: Windows 98 Second Edition</p>
+        <p>• Espacio ocupado en disco: 2.1 MB / Espacio libre: 1.44 MB</p>
       </div>
-
-    </div>
-  </main>
-
-  <!-- BARRA DE MENÚ INFERIOR ESTILO WII -->
-  <footer class="w-full max-w-7xl mx-auto flex items-center justify-between mt-4 border-t-2 border-gray-200 pt-4 z-10">
-    <!-- Opciones de Wii (CV) -->
-    <button class="wii-btn w-20 h-12 md:w-24 md:h-14 flex items-center justify-center text-gray-500 hover:text-blue-500" onclick="openChannel('options')">
-      <div class="text-center">
-        <span class="block text-[10px] font-bold tracking-widest leading-none">Descargar</span>
-        <span class="text-xs font-black tracking-widest">CV</span>
-      </div>
-    </button>
-
-    <!-- Reloj Digital -->
-    <div class="bg-white border-2 border-gray-200 rounded-2xl px-6 py-2 shadow-inner text-center min-w-[150px]">
-      <span id="wii-time" class="text-xl md:text-2xl font-semibold text-gray-600 tracking-wider">00:00</span>
-      <span id="wii-date" class="block text-[10px] text-gray-400 uppercase tracking-widest mt-0.5">00 / 00</span>
     </div>
 
-    <!-- Tablón de Mensajes (Contacto) -->
-    <button class="wii-btn w-20 h-12 md:w-24 md:h-14 flex items-center justify-center text-gray-500 hover:text-blue-500 relative" onclick="openChannel('messages')">
-      <i data-lucide="mail" class="w-6 h-6"></i>
-      <div class="absolute top-1 right-2 w-3 h-3 bg-blue-400 rounded-full animate-ping"></div>
-      <div class="absolute top-1 right-2 w-3 h-3 bg-blue-500 rounded-full border border-white"></div>
-    </button>
+    <!-- Barra de estado -->
+    <div class="bg-[#c0c0c0] px-2 py-1 text-xs flex justify-between border-t border-white">
+      <span>4 elemento(s) de navegación</span>
+      <span class="border-l border-white pl-2">Mi Computador</span>
+    </div>
+  </div>
+
+
+  <!-- ================= DIÁLOGOS DE ALERTA DE SISTEMA (MOCK ALERTS) ================= -->
+  <div id="sys-alert" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 win98-outset" style="width: 320px;">
+    <div class="win98-titlebar">
+      <span>Mensaje del Sistema</span>
+      <button class="win98-window-btn" onclick="closeAlert()">X</button>
+    </div>
+    <div class="p-4 flex gap-3 items-center bg-[#c0c0c0]">
+      <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-yellow-400 border-2 border-black rounded-full font-bold text-lg">!</div>
+      <p id="sys-alert-text" class="text-xs font-semibold"></p>
+    </div>
+    <div class="p-2 flex justify-end bg-[#c0c0c0] border-t border-gray-400">
+      <button class="win98-button font-sans" onclick="closeAlert()">Aceptar</button>
+    </div>
+  </div>
+
+
+  <!-- ================= BARRA DE TAREAS ================= -->
+  <footer class="taskbar w-full flex justify-between items-center px-1 z-50 relative">
+    
+    <div class="flex items-center gap-1.5 h-full">
+      <!-- Botón de Inicio -->
+      <button class="win98-button font-bold text-sm flex items-center gap-1.5" id="start-btn" onclick="toggleStartMenu()" style="height: 28px;">
+        <!-- Pequeño logo clásico de Windows pixelado por divs -->
+        <div class="grid grid-cols-2 gap-0.5 w-3.5 h-3.5">
+          <div class="bg-red-500"></div>
+          <div class="bg-green-500"></div>
+          <div class="bg-blue-500"></div>
+          <div class="bg-yellow-500"></div>
+        </div>
+        <span>Inicio</span>
+      </button>
+
+      <!-- Botones de ventanas abiertas en la barra de tareas -->
+      <div id="taskbar-apps" class="flex items-center gap-1">
+        <!-- Generado de forma dinámica mediante JavaScript -->
+      </div>
+    </div>
+
+    <!-- Bandeja de sistema (Reloj y hardware) -->
+    <div class="win98-inset px-2 py-0.5 flex items-center gap-2" style="background-color: var(--win98-bg); height: 28px;">
+      <!-- Pequeño icono de altavoz -->
+      <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="black">
+        <path d="M11 2 H13 V4 H11 Z M12 6 H14 V8 H12 Z M3 10 H13 V12 H3 Z"/>
+      </svg>
+      <span id="system-clock" class="text-xs font-mono font-bold">12:00 PM</span>
+    </div>
   </footer>
 
-  <!-- MODAL DE CANAL DETALLADO (ZOOM DE CANAL) -->
-  <div id="channel-overlay" class="fixed inset-0 bg-black/40 z-40 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-    <div class="wii-modal w-full max-w-2xl p-6 md:p-8 flex flex-col justify-between items-center text-center relative">
-      <!-- Contenido dinámico del Modal -->
-      <div id="modal-content" class="w-full flex-grow flex flex-col items-center justify-center mb-8">
-        <!-- Render dinámico -->
-      </div>
 
-      <!-- Acciones Clásicas de la Wii -->
-      <div class="flex gap-6 w-full justify-center">
-        <button onclick="closeChannel()" class="wii-btn px-8 py-3 text-xs md:text-sm font-bold text-gray-500 min-w-[120px]">
-          Volver
-        </button>
-        <button id="modal-start-btn" onclick="executeChannelAction()" class="wii-btn border-blue-400 text-blue-600 font-bold px-12 py-3 text-xs md:text-sm min-w-[150px]">
-          Comenzar
-        </button>
+  <!-- ================= MENÚ DE INICIO ================= -->
+  <div class="start-menu win98-outset flex" id="start-menu">
+    <div class="start-menu-sidebar font-bold flex items-center justify-center">
+      Windows 98
+    </div>
+    <div class="flex-1 flex flex-col bg-[#c0c0c0] text-xs py-1 font-sans">
+      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="toggleWindow('window-pc'); toggleStartMenu()">
+        <span>💻</span> <b>Mi Computador (Menú)</b>
+      </div>
+      
+      <div class="border-t border-gray-400 my-1"></div>
+
+      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="navigateTo('proyectos.html')">
+        <span>📁</span> <b>Proyectos (C:)</b>
+      </div>
+      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="navigateTo('sobre-mi.html')">
+        <span>📝</span> <b>Sobre Mí (A:)</b>
+      </div>
+      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="navigateTo('contacto.html')">
+        <span>✉️</span> <b>Contacto.exe</b>
+      </div>
+      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="navigateTo('paint.html')">
+        <span>🎨</span> <b>Paint 98</b>
+      </div>
+      
+      <div class="border-t border-gray-400 my-1"></div>
+      
+      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="triggerShutdown()">
+        <span>🚪</span> <b>Apagar...</b>
       </div>
     </div>
   </div>
 
-  <!-- ALERTA DE SISTEMA ESTILO WII -->
-  <div id="system-alert-overlay" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-    <div class="wii-modal w-full max-w-md p-6 flex flex-col items-center text-center">
-      <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 border border-blue-200">
-        <i data-lucide="info" class="w-6 h-6 text-blue-500"></i>
-      </div>
-      <h4 id="alert-title" class="text-lg font-black text-gray-800 mb-2">Mensaje del Sistema</h4>
-      <p id="alert-message" class="text-xs text-gray-500 mb-6 leading-relaxed">Detalles de la alerta...</p>
-      <button onclick="closeSystemAlert()" class="wii-btn px-8 py-2 text-xs font-bold text-gray-600 min-w-[120px]">
-        Aceptar
-      </button>
+
+  <!-- ================= PANTALLA DE APAGADO RETRO ================= -->
+  <div class="hidden fixed inset-0 bg-black text-green-500 font-mono z-[10000] p-8 flex-col justify-center items-center text-center" id="shutdown-screen">
+    <div class="max-w-md">
+      <p class="text-xl mb-6 text-red-500 font-bold">*** APAGADO COMPLETADO ***</p>
+      <p class="mb-4">Has salido del Portafolio Interactivo.</p>
+      <p class="mb-8">Para volver a explorar los diseños y la experiencia, haz clic en el botón inferior para reiniciar el escritorio.</p>
+      <h1 class="text-orange-500 font-bold text-2xl animate-pulse">Ahora es seguro apagar su equipo.</h1>
+      <button class="win98-button mt-8 text-black font-sans" onclick="restartSystem()">Reiniciar Escritorio</button>
     </div>
   </div>
 
+
+  <!-- ================= CODIGO JAVASCRIPT ================= -->
   <script>
-    // Inicializar Iconos
-    lucide.createIcons();
+    // Z-index para orden de superposición de ventanas
+    let maxZIndex = 100;
 
-    // Variables de Estado de Audio
-    let audioCtx = null;
-    let bgmInterval = null;
-    let isMuted = false;
-    let currentOpenChannel = null;
-
-    // Inicializar Audio Context de forma segura tras una interacción del usuario
-    function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        playAmbientLoop();
-      }
-    }
-
-    // SINTETIZADOR Retro de efectos de Wii
-    function playSound(type) {
-      if (!audioCtx || isMuted) return;
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-
-      const now = audioCtx.currentTime;
-
-      if (type === 'hover') {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(580, now);
-        osc.frequency.exponentialRampToValueAtTime(80, now + 0.08);
-
-        gain.gain.setValueAtTime(0.06, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-
-        osc.start(now);
-        osc.stop(now + 0.08);
-
-      } else if (type === 'click') {
-        const osc1 = audioCtx.createOscillator();
-        const osc2 = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        osc1.connect(gain);
-        osc2.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(523.25, now);
-        osc1.frequency.exponentialRampToValueAtTime(1046.50, now + 0.35);
-
-        osc2.type = 'triangle';
-        osc2.frequency.setValueAtTime(659.25, now);
-        osc2.frequency.exponentialRampToValueAtTime(1318.51, now + 0.35);
-
-        gain.gain.setValueAtTime(0.12, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-
-        osc1.start(now);
-        osc2.start(now);
-        osc1.stop(now + 0.45);
-        osc2.stop(now + 0.45);
-      }
-    }
-
-    // Música de fondo generativa retro-ambient de Wii
-    function playAmbientLoop() {
-      if (!audioCtx || isMuted) return;
-
-      const playChord = () => {
-        if (isMuted) return;
-        const now = audioCtx.currentTime;
-        
-        const chords = [
-          [261.63, 329.63, 392.00, 493.88], // Cmaj7
-          [293.66, 349.23, 440.00, 523.25], // Dmin7
-          [349.23, 440.00, 523.25, 659.25], // Fmaj7
-          [293.66, 392.00, 493.88, 587.33]  // G7
-        ];
-
-        const chord = chords[Math.floor(Math.random() * chords.length)];
-
-        chord.forEach((freq, index) => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, now + (index * 0.12));
-          
-          gain.gain.setValueAtTime(0, now);
-          gain.gain.linearRampToValueAtTime(0.015, now + 0.6 + (index * 0.12));
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 3.8);
-          
-          osc.start(now);
-          osc.stop(now + 4.0);
-        });
-      };
-
-      playChord();
-      bgmInterval = setInterval(playChord, 4000);
-    }
-
-    // Control del sonido global
-    const soundToggleBtn = document.getElementById('sound-toggle');
-    soundToggleBtn.addEventListener('click', (e) => {
-      isMuted = !isMuted;
-      if (isMuted) {
-        clearInterval(bgmInterval);
-        soundToggleBtn.innerHTML = `<i data-lucide="volume-x" class="w-4 h-4"></i><span>SILENCIADO</span>`;
-      } else {
-        initAudio();
-        soundToggleBtn.innerHTML = `<i data-lucide="volume-2" class="w-4 h-4"></i><span>SONIDO ACTIVADO</span>`;
-      }
-      lucide.createIcons();
-      e.stopPropagation();
-    });
-
-    // Agregar sonidos Hover de forma global
-    function assignSoundEvents() {
-      const interactiveElements = document.querySelectorAll('button, .wii-channel, .wii-btn, input, textarea');
-      interactiveElements.forEach(el => {
-        el.removeEventListener('mouseenter', hoverSoundTrigger);
-        el.addEventListener('mouseenter', hoverSoundTrigger);
-      });
-    }
-    
-    function hoverSoundTrigger() {
-      playSound('hover');
-    }
-
-    // Escuchar el primer clic en la pantalla para inicializar sonidos y el audio de fondo
-    window.addEventListener('click', () => {
-      initAudio();
-    }, { once: true });
-
-    // Inicializar eventos de mouse al cargar la página
-    window.addEventListener('DOMContentLoaded', () => {
-      assignSoundEvents();
-    });
-
-    // Reloj de la barra inferior
-    function updateWiiClock() {
-      const now = new Date();
-      let hours = now.getHours();
-      let minutes = now.getMinutes();
+    // Sistema de Reloj en tiempo real
+    function updateClock() {
+      const date = new Date();
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
       const ampm = hours >= 12 ? 'PM' : 'AM';
       hours = hours % 12;
-      hours = hours ? hours : 12;
+      hours = hours ? hours : 12; // Formato de 12 horas
       minutes = minutes < 10 ? '0' + minutes : minutes;
-
-      document.getElementById('wii-time').textContent = `${hours}:${minutes} ${ampm}`;
-
-      const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-      const dayName = days[now.getDay()];
-      const day = now.getDate();
-      const month = now.getMonth() + 1;
-      document.getElementById('wii-date').textContent = `${dayName}. ${day} / ${month}`;
+      const strTime = hours + ':' + minutes + ' ' + ampm;
+      document.getElementById('system-clock').textContent = strTime;
     }
-    setInterval(updateWiiClock, 1000);
-    updateWiiClock();
+    setInterval(updateClock, 1000);
+    updateClock();
 
-    // --- Sistema de Mensajería Wii (Reemplazo para alerts nativos) ---
-    function showSystemAlert(title, message) {
-      document.getElementById('alert-title').textContent = title;
-      document.getElementById('alert-message').textContent = message;
-      document.getElementById('system-alert-overlay').classList.remove('hidden');
-      playSound('click');
+    // Redirección hacia las otras páginas externas (Anexos)
+    function navigateTo(url) {
+      window.location.href = url;
     }
 
-    function closeSystemAlert() {
-      playSound('hover');
-      document.getElementById('system-alert-overlay').classList.add('hidden');
-    }
-
-    // BASE DE DATOS DE CONTENIDOS (Canales de Portafolio)
-    const channelsData = {
-      about: {
-        title: "Sobre Mí - Estrabismx",
-        description: "Una pequeña descripción sobre mi personalidad, enfoque creativo y filosofía de trabajo.",
-        html: `
-          <div class="flex flex-col items-center">
-            <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4 border-2 border-blue-200">
-              <i data-lucide="user" class="w-10 h-10 text-blue-500"></i>
-            </div>
-            <h2 class="text-xl font-black text-gray-700 mb-2">¡Hola, soy Estrabismx!</h2>
-            <p class="text-sm text-gray-600 max-w-md leading-relaxed text-center">
-              Soy estudiante de Diseño, no me encasillo en en una sola área, me gusta la experimentación en diversos ambitos, ya sea la fabricación digital, la electrónica, el desarrollo más artesanal 
-            </p>
-          </div>
-        `,
-        action: () => showSystemAlert("Sobre Mí", "¡Perfecto! Aquí puedes agregar más detalles tuyos en un futuro.")
-      },
-      projects: {
-        title: "Proyectos - Colección de Trabajos",
-        description: "Una vitrina de mis mejores proyectos interactivos y diseños profesionales.",
-        html: `
-          <div class="w-full max-h-64 overflow-y-auto pr-2">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div class="bg-white p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 transition-colors text-left">
-                <span class="text-[9px] font-bold text-blue-500 uppercase tracking-widest">DISEÑO INDUSTRIAL & 3D</span>
-                <h4 class="text-xs font-black text-gray-700 mb-1">Cajas Modulares</h4>
-                <p class="text-[10px] text-gray-500 mb-2">Diseño y optimización de piezas para prototipado electrónico y ensamble modular en impresión 3D.</p>
-                <div class="flex gap-1">
-                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">Ender 3</span>
-                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">PLA</span>
-                </div>
-              </div>
-              <div class="bg-white p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 transition-colors text-left">
-                <span class="text-[9px] font-bold text-green-500 uppercase tracking-widest">ELECTRÓNICA ANALÓGICA</span>
-                <h4 class="text-xs font-black text-gray-700 mb-1">Sintetizador CMOS</h4>
-                <p class="text-[10px] text-gray-500 mb-2">Circuitos de oscilación de audio desarrollados con chips de lógica CMOS 4017 y 4093.</p>
-                <div class="flex gap-1">
-                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">ICs CMOS</span>
-                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">Hardware</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        `,
-        action: () => window.open('https://github.com', '_blank')
-      },
-      experience: {
-        title: "Experiencia - Historial Profesional",
-        description: "Lugares y proyectos académicos donde he tenido el placer de aportar mi creatividad.",
-        html: `
-          <div class="w-full max-h-64 overflow-y-auto text-left pl-2">
-            <div class="border-l-2 border-blue-300 pl-4 space-y-4">
-              <div class="relative">
-                <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white"></div>
-                <span class="text-[9px] font-bold text-gray-400">2026 - Presente</span>
-                <h4 class="text-xs font-black text-gray-700">Diseño y Prototipado Técnico</h4>
-                <p class="text-[10px] text-blue-500 font-semibold mb-1">Proyectos Académicos Colaborativos</p>
-                <p class="text-[10px] text-gray-500">Documentación de repositorios de hardware de código abierto y diseño estratégico corporativo.</p>
-              </div>
-              <div class="relative">
-                <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white"></div>
-                <span class="text-[9px] font-bold text-gray-400">2025</span>
-                <h4 class="text-xs font-black text-gray-700">Exploraciones en Generative Art</h4>
-                <p class="text-[10px] text-blue-500 font-semibold mb-1">Desarrollo con p5.js</p>
-                <p class="text-[10px] text-gray-500">Creación de algoritmos matemáticos aplicados a la cerámica decorativa y patrones visuales.</p>
-              </div>
-            </div>
-          </div>
-        `,
-        action: () => showSystemAlert("Canal Experiencia", "¡Has seleccionado ver más de mi experiencia! Podrías enlazar esto a tu LinkedIn.")
-      },
-      mii: {
-        title: "Canal Mii - Mi Avatar",
-        description: "Detalles curiosos sobre mí representados en un formato divertido estilo consola de videojuegos.",
-        html: `
-          <div class="flex flex-col items-center">
-            <div class="flex gap-4 items-center mb-2">
-              <div class="w-16 h-16 bg-orange-100 rounded-full border-2 border-orange-300 flex items-center justify-center">
-                <svg viewBox="0 0 64 64" class="w-12 h-12 text-gray-700 translate-y-1">
-                  <circle cx="32" cy="22" r="14" fill="#ffdbac" />
-                  <path d="M14 54 C14 38, 50 38, 50 54" fill="#f97316" />
-                  <circle cx="27" cy="22" r="2" fill="#000" />
-                  <circle cx="37" cy="22" r="2" fill="#000" />
-                  <path d="M28 28 Q32 31 36 28" stroke="#000" stroke-width="2" fill="none" />
-                </svg>
-              </div>
-              <div class="text-left">
-                <h4 class="text-sm font-black text-gray-700">Mii de Estrabismx</h4>
-                <p class="text-xs text-gray-400">Atributos del Mii:</p>
-                <div class="flex flex-wrap gap-1 mt-1">
-                  <span class="bg-orange-100 text-orange-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">Maker</span>
-                  <span class="bg-blue-100 text-blue-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">Open-Source</span>
-                  <span class="bg-green-100 text-green-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">Creativo</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        `,
-        action: () => showSystemAlert("Canal Mii", "¡Tu perfil creativo de Mii está cargado con éxito!")
-      },
-      tech: {
-        title: "Canal de Habilidades - Nivel de Stats",
-        description: "Mis principales habilidades técnicas representadas como estadísticas de nivel de mi sistema de - diseño.",
-        html: `
-          <div class="w-full max-w-md">
-            <div class="space-y-3">
-              <div>
-                <div class="flex justify-between text-xs font-bold text-gray-500 mb-1">
-                  <span>DISEÑO INDUSTRIAL & PROTOTIPADO 3D</span>
-                  <span class="text-blue-500">90%</span>
-                </div>
-                <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
-                  <div class="bg-blue-500 h-full rounded-full" style="width: 90%;"></div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between text-xs font-bold text-gray-500 mb-1">
-                  <span>ELECTRÓNICA ANALÓGICA & AUDIO</span>
-                  <span class="text-blue-500">85%</span>
-                </div>
-                <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
-                  <div class="bg-blue-500 h-full rounded-full" style="width: 85%;"></div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between text-xs font-bold text-gray-500 mb-1">
-                  <span>PROGRAMACIÓN CREATIVA (p5.js / Processing)</span>
-                  <span class="text-blue-500">80%</span>
-                </div>
-                <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
-                  <div class="bg-blue-500 h-full rounded-full" style="width: 80%;"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `,
-        action: () => showSystemAlert("Canal Habilidades", "Estadísticas de habilidades actualizadas en tiempo real.")
-      },
-      shop: {
-        title: "Tienda de Servicios - Contrataciones",
-        description: "Echa un vistazo a mi catálogo de servicios freelance para materializar tus ideas más brillantes.",
-        html: `
-          <div class="flex flex-col items-center">
-            <h2 class="text-xl font-black text-gray-700 mb-2">Servicios Disponibles</h2>
-            <div class="grid grid-cols-2 gap-3 max-w-sm">
-              <div class="bg-white p-2 rounded-xl border border-gray-200 text-center">
-                <i data-lucide="layers" class="w-6 h-6 text-cyan-500 mx-auto mb-1"></i>
-                <h4 class="text-[10px] font-bold text-gray-700">Modelado 3D</h4>
-                <p class="text-[8px] text-gray-400">Modelado y optimización CAD listo para imprimir.</p>
-              </div>
-              <div class="bg-white p-2 rounded-xl border border-gray-200 text-center">
-                <i data-lucide="cpu" class="w-6 h-6 text-cyan-500 mx-auto mb-1"></i>
-                <h4 class="text-[10px] font-bold text-gray-700">Prototipado</h4>
-                <p class="text-[8px] text-gray-400">Hardware analógico y electrónica para ensamble.</p>
-              </div>
-            </div>
-          </div>
-        `,
-        action: () => openChannel('messages')
-      },
-      options: {
-        title: "Opciones de Wii - Descarga de CV",
-        description: "Obtén mi Curriculum Vitae oficial en formato PDF para conocer mi trasfondo detallado.",
-        html: `
-          <div class="flex flex-col items-center">
-            <div class="w-16 h-16 bg-gray-100 rounded-2xl border-2 border-gray-300 flex items-center justify-center mb-4">
-              <i data-lucide="file-down" class="w-8 h-8 text-gray-600"></i>
-            </div>
-            <h2 class="text-lg font-black text-gray-700 mb-1">Descargar Mi CV</h2>
-            <p class="text-xs text-gray-500 max-w-xs mb-2">Historial laboral formateado y optimizado listo para imprimir.</p>
-          </div>
-        `,
-        action: () => showSystemAlert("Descargar CV", "La descarga de tu archivo CV.pdf ha comenzado con éxito.")
-      },
-      messages: {
-        title: "Tablón de Mensajes - Contacto Directo",
-        description: "¡Envíame un mensaje rápido! Me pondré en contacto contigo lo antes posible para tus ideas.",
-        html: `
-          <div class="w-full max-w-md mx-auto">
-            <h2 class="text-xl font-black text-gray-700 mb-2">Enviar Mensaje</h2>
-            <form class="space-y-2 text-left" id="contact-form" onsubmit="event.preventDefault(); showSystemAlert('Mensaje Enviado', '¡Tu mensaje ha sido enviado exitosamente! Me pondré en contacto contigo pronto.');">
-              <input type="text" placeholder="Tu Nombre" required class="w-full p-2 text-xs border border-gray-300 rounded-lg outline-none focus:border-blue-500">
-              <input type="email" placeholder="Tu Correo Electrónico" required class="w-full p-2 text-xs border border-gray-300 rounded-lg outline-none focus:border-blue-500">
-              <textarea placeholder="Hola, me gustaría platicar sobre un proyecto contigo..." required class="w-full p-2 text-xs border border-gray-300 rounded-lg h-20 outline-none resize-none focus:border-blue-500"></textarea>
-            </form>
-          </div>
-        `,
-        action: () => {
-          const form = document.getElementById('contact-form');
-          if (form) {
-            form.requestSubmit();
-          }
-        }
-      }
-    };
-
-    // --- ACCIONES DE LOS POPUPS (CANAL ZOOM) ---
-    function openChannel(channelKey) {
-      currentOpenChannel = channelKey;
-      const channel = channelsData[channelKey];
-      playSound('click');
-
-      const modalContent = document.getElementById('modal-content');
-      modalContent.innerHTML = `
-        <div class="w-full flex flex-col items-center">
-          <span class="text-xs font-black text-blue-500 tracking-wider uppercase mb-2">Canal Seleccionado</span>
-          <h3 class="text-2xl font-black text-gray-800 mb-4">${channel.title}</h3>
-          <div class="w-full py-4 min-h-[140px] flex items-center justify-center">
-            ${channel.html}
-          </div>
-          <p class="text-xs text-gray-400 max-w-md leading-relaxed mt-4">${channel.description}</p>
-        </div>
-      `;
-
-      lucide.createIcons();
-      assignSoundEvents();
-
-      const startBtn = document.getElementById('modal-start-btn');
-      if (channelKey === 'messages') {
-        startBtn.textContent = "Enviar Correo";
-      } else if (channelKey === 'options') {
-        startBtn.textContent = "Descargar CV";
+    // Mostrar u ocultar menú de inicio
+    function toggleStartMenu() {
+      const menu = document.getElementById('start-menu');
+      const btn = document.getElementById('start-btn');
+      if (menu.style.display === 'flex') {
+        menu.style.display = 'none';
+        btn.classList.remove('win98-inset');
       } else {
-        startBtn.textContent = "Comenzar";
-      }
-
-      document.getElementById('channel-overlay').classList.remove('hidden');
-    }
-
-    function closeChannel() {
-      playSound('hover');
-      document.getElementById('channel-overlay').classList.add('hidden');
-      currentOpenChannel = null;
-    }
-
-    function executeChannelAction() {
-      if (currentOpenChannel && channelsData[currentOpenChannel]) {
-        playSound('click');
-        channelsData[currentOpenChannel].action();
+        menu.style.display = 'flex';
+        btn.classList.add('win98-inset');
       }
     }
 
-    // ==========================================
-    // CÓDIGO DE INTEGRACIÓN DEL CURSOR p5.JS
-    // ==========================================
-    const COLS = 32;
-    const ROWS = 32;
-    let pixelSize;
+    // Cerrar menú inicio al hacer clic en cualquier parte del escritorio
+    document.getElementById('desktop').addEventListener('click', (e) => {
+      const menu = document.getElementById('start-menu');
+      const btn = document.getElementById('start-btn');
+      if (e.target !== btn && !btn.contains(e.target) && e.target !== menu) {
+        menu.style.display = 'none';
+        btn.classList.remove('win98-inset');
+      }
+    });
 
-    // Tu mapa de píxeles Wii original
-    const pixelMap = [
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,2,2,2,1,1,1,1,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,1,2,2,2,1,2,2,2,1,1,1,0,0,0,0,0,0],
-      [0,0,0,0,1,1,1,1,0,0,1,2,2,2,2,1,2,2,2,1,2,2,2,1,2,2,1,0,0,0,0,0],
-      [0,0,0,1,2,2,2,2,1,1,1,2,2,2,2,2,2,2,2,1,2,2,2,1,2,2,1,0,0,0,0,0],
-      [0,0,1,2,2,2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,2,1,2,2,1,0,0,0,0,0],
-      [0,0,1,2,2,2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0],
-      [0,0,0,1,1,2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0],
-      [0,0,0,0,0,1,1,2,2,2,1,2,2,2,2,2,3,3,2,2,2,2,2,2,2,2,1,0,0,0,0,0],
-      [0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,3,3,3,2,2,2,2,2,2,2,2,1,0,0,0,0,0],
-      [0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,2,2,2,1,0,0,0,0,0],
-      [0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,2,2,2,1,0,0,0,0,0],
-      [0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,2,2,1,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,3,3,2,2,2,2,2,2,2,1,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,3,3,3,3,2,2,2,2,2,2,1,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-    ];
-
-    function setup() {
-      // El canvas de p5 cubrirá exactamente la pantalla
-      let canvas = createCanvas(windowWidth, windowHeight);
-      canvas.position(0, 0);
-      // 'pointer-events: none' permite hacer clic e interactuar con los botones que queden "detrás" del canvas
-      canvas.style('pointer-events', 'none');
-      canvas.style('z-index', '9999');
-      noStroke();
+    // Gestión interactiva de la Ventana Central ("Mi PC")
+    function focusWindow(id) {
+      const win = document.getElementById(id);
+      if (!win) return;
       
-      // Calibramos el tamaño de los píxeles (1.5 hace que el cursor mida unos 48px, perfecto para un puntero)
-      pixelSize = 1.5;
-      noCursor(); // Ocultamos el puntero por defecto del sistema
+      // Desactivar barras de título de otras ventanas (si hubiese más en el futuro)
+      document.querySelectorAll('.window').forEach(w => {
+        const titlebar = w.querySelector('.win98-titlebar');
+        if (titlebar) titlebar.classList.add('inactive');
+      });
+
+      // Traer la ventana actual al primer plano
+      maxZIndex++;
+      win.style.zIndex = maxZIndex;
+      const titlebar = win.querySelector('.win98-titlebar');
+      if (titlebar) titlebar.classList.remove('inactive');
+
+      updateTaskbar();
     }
 
-    function windowResized() {
-      resizeCanvas(windowWidth, windowHeight);
-    }
-
-    function draw() {
-      clear(); // Reemplaza background para que el canvas sea completamente transparente y deje ver la Wii
-
-      // Si es un dispositivo móvil (pantalla táctil), apagamos el dibujo para no estorbar
-      if (matchMedia('(pointer: coarse)').matches) {
-        return;
+    // Alternar visibilidad de ventana
+    function toggleWindow(id) {
+      const win = document.getElementById(id);
+      if (!win) return;
+      if (win.style.display === 'none') {
+        win.style.display = 'flex';
+        focusWindow(id);
+      } else {
+        win.style.display = 'none';
+        updateTaskbar();
       }
+    }
 
-      // Hotspot de contacto calibrado en la punta del dedo índice (Fila 1, Columna 12 en la matriz)
-      let startX = mouseX - (12.5 * pixelSize);
-      let startY = mouseY - (1 * pixelSize);
+    function closeWindow(id) {
+      const win = document.getElementById(id);
+      if (win) {
+        win.style.display = 'none';
+        updateTaskbar();
+      }
+    }
 
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          let pixelType = pixelMap[r][c];
+    function minimizeWindow(id) {
+      closeWindow(id);
+    }
 
-          if (pixelType === 1) {
-            fill('#007BFF'); // Azul brillante principal
-          } else if (pixelType === 2) {
-            fill('#E2E8F0'); // Gris claro (relleno)
-          } else if (pixelType === 3) {
-            fill('#0056B3'); // Azul oscuro (número 1 central)
-          } else if (pixelType === 4) {
-            fill('#002B5C'); // Azul marino muy oscuro (sombra 3D)
-          } else {
-            continue; // Saltar píxeles vacíos (0)
-          }
+    // Maximizar ventana adaptando dimensiones
+    function maximizeWindow(id) {
+      const win = document.getElementById(id);
+      if (!win) return;
+      if (win.classList.contains('maximized-win')) {
+        win.classList.remove('maximized-win');
+        win.style.width = win.dataset.preWidth || '440px';
+        win.style.height = 'auto';
+        win.style.top = win.dataset.preTop || '15%';
+        win.style.left = win.dataset.preLeft || 'calc(50vw - 220px)';
+      } else {
+        // Respaldar posiciones previas
+        win.dataset.preWidth = win.style.width;
+        win.dataset.preTop = win.style.top;
+        win.dataset.preLeft = win.style.left;
 
-          rect(startX + (c * pixelSize), startY + (r * pixelSize), pixelSize, pixelSize);
+        win.classList.add('maximized-win');
+        win.style.width = '100vw';
+        win.style.height = 'calc(100vh - 40px)';
+        win.style.top = '0px';
+        win.style.left = '0px';
+      }
+    }
+
+    // Mantener la barra de tareas sincronizada con el estado de "Mi PC"
+    function updateTaskbar() {
+      const container = document.getElementById('taskbar-apps');
+      container.innerHTML = '';
+
+      const winPc = document.getElementById('window-pc');
+      if (winPc && winPc.style.display !== 'none') {
+        const btn = document.createElement('button');
+        btn.className = 'win98-button text-xs font-semibold flex items-center gap-1.5';
+        btn.style.height = '28px';
+
+        const isFocused = parseInt(winPc.style.zIndex) === maxZIndex;
+        if (isFocused) {
+          btn.classList.add('win98-inset');
         }
+
+        btn.innerHTML = `<span>💻</span> <span>Mi PC</span>`;
+        btn.onclick = () => {
+          if (isFocused) {
+            minimizeWindow('window-pc');
+          } else {
+            focusWindow('window-pc');
+          }
+        };
+        container.appendChild(btn);
       }
+    }
+
+    // Funciones de Drag & Drop (Arrastrar Ventana de forma fluida)
+    function makeDraggable(windowEl, handleEl) {
+      let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+      
+      handleEl.onmousedown = dragMouseDown;
+      handleEl.ontouchstart = dragMouseDown;
+
+      function dragMouseDown(e) {
+        e = e || window.event;
+        if (e.target.classList.contains('win98-window-btn')) return;
+
+        focusWindow(windowEl.id);
+
+        const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+
+        pos3 = clientX;
+        pos4 = clientY;
+        
+        document.onmouseup = closeDragElement;
+        document.ontouchend = closeDragElement;
+        
+        document.onmousemove = elementDrag;
+        document.ontouchmove = elementDrag;
+      }
+
+      function elementDrag(e) {
+        e = e || window.event;
+        
+        const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+
+        pos1 = pos3 - clientX;
+        pos2 = pos4 - clientY;
+        pos3 = clientX;
+        pos4 = clientY;
+
+        let newTop = windowEl.offsetTop - pos2;
+        let newLeft = windowEl.offsetLeft - pos1;
+
+        // Validar márgenes básicos de arrastre para no perder la ventana
+        if (newTop < 0) newTop = 0;
+        if (newLeft < 0) newLeft = 0;
+
+        windowEl.style.top = newTop + "px";
+        windowEl.style.left = newLeft + "px";
+      }
+
+      function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+        document.ontouchend = null;
+        document.ontouchmove = null;
+      }
+    }
+
+    // Inicializar utilidades al cargar
+    document.addEventListener("DOMContentLoaded", () => {
+      const winPc = document.getElementById('window-pc');
+      const winPcHandle = document.getElementById('window-pc-handle');
+      
+      makeDraggable(winPc, winPcHandle);
+      
+      // Mostrar y enfocar la ventana central al cargar la página automáticamente
+      winPc.style.display = 'flex';
+      focusWindow('window-pc');
+    });
+
+    // Alertas personalizadas estilo Windows 98
+    function showAlert(text) {
+      document.getElementById('sys-alert-text').innerText = text;
+      document.getElementById('sys-alert').classList.remove('hidden');
+      document.getElementById('sys-alert').style.zIndex = maxZIndex + 50;
+    }
+
+    function closeAlert() {
+      document.getElementById('sys-alert').classList.add('hidden');
+    }
+
+    // Acciones de apagado y restauración
+    function triggerShutdown() {
+      document.getElementById('shutdown-screen').style.display = 'flex';
+    }
+
+    function restartSystem() {
+      document.getElementById('shutdown-screen').style.display = 'none';
+      const winPc = document.getElementById('window-pc');
+      winPc.style.display = 'flex';
+      focusWindow('window-pc');
     }
   </script>
 </body>
