@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C:\Mis Documentos\Proyectos</title>
+  
+  <!-- Tailwind CSS para utilidades de diseño modernas -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Fuente pixelada clásica para detalles y Tahoma para la autenticidad del sistema operativo MS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+  <style>
+    /* Estilos base inspirados en la interfaz clásica de Windows 95/98 */
+    :root {
+      --win98-bg: #c0c0c0;
+      --win98-fg: #000000;
+      --win98-white: #ffffff;
+      --win98-gray: #808080;
+      --win98-dark-gray: #404040;
+      --win98-blue: #000080;
+      --win98-blue-light: #1084d0;
+      --desktop-teal: #008080;
+    }
+
+    body {
+      font-family: 'Tahoma', 'Geneva', sans-serif;
+      background-color: var(--win98-bg);
+      color: var(--win98-fg);
+      overflow: hidden;
+      user-select: none;
+      image-rendering: pixelated;
+    }
+
+    /* Bordes clásicos de Windows 98 en 3D Outset (hacia afuera) */
+    .win98-outset {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+    }
+
+    /* Bordes de botones al presionarse o áreas de entrada 3D Inset (hacia adentro) */
+    .win98-inset {
+      background-color: var(--win98-white);
+      border: 2px solid;
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+      box-shadow: inset 1px 1px 0px var(--win98-fg), inset -1px -1px 0px #dfdfdf;
+    }
+
+    /* Botón clásico de Windows 98 */
+    .win98-button {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+      padding: 3px 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .win98-button:active {
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+      box-shadow: inset 1px 1px 0px var(--win98-fg);
+      padding: 4px 7px 2px 9px;
+    }
+
+    /* Botón clásico de Windows 98 estático (sin hover interactivo ni click activo) */
+    .win98-button-static {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+      padding: 3px 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--win98-fg);
+      cursor: url('assets/svg/cursor-estandar.svg'), default !important;
+    }
+
+    /* Scrollbars retro */
+    ::-webkit-scrollbar {
+      width: 16px;
+      height: 16px;
+    }
+    ::-webkit-scrollbar-track {
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"><rect width="1" height="1" fill="%23ffffff"/><rect x="1" y="1" width="1" height="1" fill="%23ffffff"/><rect x="1" width="1" height="1" fill="%23e0e0e0"/><rect y="1" width="1" height="1" fill="%23e0e0e0"/></svg>');
+      background-color: #dfdfdf;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white);
+    }
+
+    /* CURSORES PERSONALIZADOS (Enlace a la carpeta local de assets) */
+ html, body, .retro-cursor {
+      cursor: url('assets/svg/cursor-estandar.svg') 0 0, default !important;
+    }
+
+    /* Aplicación precisa del cursor de acción a todos los elementos verdaderamente interactivos */
+    a, button, select, option, input, textarea,
+    .win98-button, .win98-window-btn, .file-icon,
+    .cursor-pointer, .hover\:underline {
+      cursor: url('assets/svg/cursor-accion.svg'), pointer !important;
+    }
+
+    /* Icono de archivo en el explorador */
+    .file-icon {
+      width: 75px;
+      text-align: center;
+      margin: 8px;
+      font-size: 11px;
+      outline: none;
+    }
+
+    .file-icon:focus .icon-text {
+      background-color: var(--win98-blue);
+      color: var(--win98-white);
+      outline: 1px dotted var(--win98-white);
+    }
+
+    .file-icon:focus svg {
+      filter: drop-shadow(0px 0px 1px var(--win98-blue-light)) brightness(0.9);
+    }
+
+    /* Barra de títulos clásica */
+    .win98-titlebar {
+      background: linear-gradient(90deg, var(--win98-blue), var(--win98-blue-light));
+      color: var(--win98-white);
+      font-weight: bold;
+      font-size: 13px;
+      padding: 3px 5px 3px 6px;
+    }
+  </style>
+</head>
+<body class="retro-cursor h-screen w-screen p-1 flex flex-col justify-between">
+
+  <!-- ================= VENTANA PRINCIPAL DEL EXPLORADOR ================= -->
+  <div class="flex-1 flex flex-col win98-outset overflow-hidden">
+    
+    <!-- Barra de Título superior -->
+    <div class="win98-titlebar flex justify-between items-center select-none">
+      <div class="flex items-center gap-1.5">
+        <svg class="w-4 h-4" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 6V26H30V10H14L10 6H2Z" fill="#ffdf00" stroke="black" stroke-width="2"/>
+        </svg>
+        <span>Explorando - C:\Mis Documentos\Proyectos</span>
+      </div>
+      <div class="flex gap-1">
+        <button class="win98-window-btn cursor-pointer w-[16px] h-[14px] bg-[#c0c0c0] border border-white border-r-gray-600 border-b-gray-600 flex items-center justify-center font-bold text-[9px] text-black" onclick="navigateTo('index.html')">_</button>
+        <button class="win98-window-btn cursor-pointer w-[16px] h-[14px] bg-[#c0c0c0] border border-white border-r-gray-600 border-b-gray-600 flex items-center justify-center font-bold text-[9px] text-black" onclick="navigateTo('index.html')">⬜</button>
+        <button class="win98-window-btn cursor-pointer w-[16px] h-[14px] bg-[#c0c0c0] border border-white border-r-gray-600 border-b-gray-600 flex items-center justify-center font-bold text-[9px] text-black" onclick="navigateTo('index.html')">X</button>
+      </div>
+    </div>
+
+    <!-- Barra de menú decorativa (Texto estático sin interacción ni cursor de acción) -->
+    <div class="flex gap-3 px-2 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-black select-none">
+      <span><u>A</u>rchivo</span>
+      <span><u>E</u>dición</span>
+      <span><u>V</u>er</span>
+      <span><u>F</u>avoritos</span>
+      <span>Herra<u>m</u>ientas</span>
+      <span>A<u>y</u>uda</span>
+    </div>
+
+    <!-- Barra de Herramientas (Botones del Explorador) -->
+    <div class="flex items-center gap-1 p-1 bg-[#c0c0c0] border-b border-[#808080] select-none">
+      <!-- Botón Atrás (vuelve al escritorio central) - Sigue siendo interactivo -->
+      <button class="win98-button flex items-center gap-1" onclick="navigateTo('index.html')">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        <span>Atrás</span>
+      </button>
+
+      <!-- Botón Adelante (Estático decorativo) -->
+      <div class="win98-button-static flex items-center gap-1 opacity-50">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+        <span class="text-gray-600">Adelante</span>
+      </div>
+
+      <!-- Botón Subir Carpeta (Estático decorativo) -->
+      <div class="win98-button-static">
+        <svg class="w-4 h-4" viewBox="0 0 32 32" fill="none">
+          <path d="M16 4 L6 14 L12 14 L12 28 L20 28 L20 14 L26 14 Z" fill="#808080" stroke="black" stroke-width="1.5"/>
+        </svg>
+      </div>
+
+      <div class="w-[2px] h-6 bg-gray-400 mx-1 border-r border-white"></div>
+
+      <!-- Botones de Corte y Copiado estéticos -->
+      <div class="win98-button-static opacity-70">Cortar</div>
+      <div class="win98-button-static opacity-70">Copiar</div>
+      
+      <div class="w-[2px] h-6 bg-gray-400 mx-1 border-r border-white"></div>
+
+      <!-- Botón Vistas estético -->
+      <div class="win98-button-static">Vistas</div>
+    </div>
+
+    <!-- Barra de Dirección -->
+    <div class="flex items-center gap-2 p-1.5 bg-[#c0c0c0] border-b border-[#808080] text-xs select-none">
+      <span class="text-gray-600 font-semibold">Dirección:</span>
+      <div class="flex-1 bg-white win98-inset px-2 py-0.5 flex items-center font-mono">
+        <span class="text-yellow-600 mr-1">📁</span>
+        <span class="text-black overflow-hidden whitespace-nowrap">C:\Mis Documentos\Proyectos_De_Diseno</span>
+      </div>
+      <!-- Botón Ir estético -->
+      <div class="win98-button-static">Ir</div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL: SPLIT VIEW -->
+    <div class="flex-1 flex bg-white win98-inset m-1 overflow-hidden">
+      
+      <!-- Panel de Vista Web de Windows 98 (Lateral Izquierdo) -->
+      <div class="w-full md:w-80 bg-[#f0f0f0] border-r border-gray-400 p-4 flex flex-col justify-between overflow-y-auto select-none" id="preview-panel">
+        <!-- Cargado dinámicamente mediante JS cuando se selecciona un archivo -->
+        <div class="flex flex-col h-full justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-[#000080] border-b-2 border-[#000080] pb-1 uppercase font-mono">Proyectos</h2>
+            <p class="text-xs text-gray-600 mt-2 font-mono">Selecciona un archivo del directorio de la derecha para visualizar la información de diseño y ejecutar el ejecutable.</p>
+          </div>
+          
+          <div class="mt-4 border border-dashed border-gray-400 p-2 bg-gray-200">
+            <span class="text-[10px] font-mono block text-gray-500">Unidad de Almacenamiento: C:</span>
+            <span class="text-[10px] font-mono block text-gray-500">Tipo: Carpeta del Sistema</span>
+            <span class="text-[10px] font-mono block text-gray-500">Autor: Camila Ramírez</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cuadrícula de Archivos (Lateral Derecho) -->
+      <div class="flex-1 p-4 overflow-y-auto bg-white flex flex-wrap content-start gap-4">
+        
+        <!-- Proyecto 1 -->
+        <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p1')" ondblclick="runDemo('p1')">
+          <svg class="w-12 h-12 mb-1" viewBox="0 0 32 32" fill="none">
+            <path d="M4 2 L22 2 L28 8 L28 30 L4 30 Z" fill="#ffffff" stroke="black" stroke-width="2"/>
+            <path d="M22 2 L22 8 L28 8" fill="#e0e0e0" stroke="black" stroke-width="2"/>
+            <rect x="8" y="12" width="12" height="2" fill="#ff0000"/>
+            <rect x="8" y="16" width="12" height="2" fill="#0000ff"/>
+            <rect x="8" y="20" width="8" height="2" fill="black"/>
+          </svg>
+          <span class="icon-text px-1 truncate w-full">branding_st.lnk</span>
+        </div>
+
+        <!-- Proyecto 2 -->
+        <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p2')" ondblclick="runDemo('p2')">
+          <svg class="w-12 h-12 mb-1" viewBox="0 0 32 32" fill="none">
+            <path d="M4 2 L22 2 L28 8 L28 30 L4 30 Z" fill="#ffffff" stroke="black" stroke-width="2"/>
+            <path d="M22 2 L22 8 L28 8" fill="#e0e0e0" stroke="black" stroke-width="2"/>
+            <!-- Simbolizando HTML/Web -->
+            <rect x="8" y="12" width="12" height="10" fill="#e0f0ff" stroke="black"/>
+            <circle cx="14" cy="17" r="2.5" fill="#1084d0"/>
+          </svg>
+          <span class="icon-text px-1 truncate w-full">web_retro.html</span>
+        </div>
+
+        <!-- Proyecto 3 -->
+        <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p3')" ondblclick="runDemo('p3')">
+          <svg class="w-12 h-12 mb-1" viewBox="0 0 32 32" fill="none">
+            <path d="M4 2 L22 2 L28 8 L28 30 L4 30 Z" fill="#ffffff" stroke="black" stroke-width="2"/>
+            <path d="M22 2 L22 8 L28 8" fill="#e0e0e0" stroke="black" stroke-width="2"/>
+            <!-- Simbolizando Bitmap / Imagen -->
+            <rect x="7" y="11" width="14" height="12" fill="#ffe4e1" stroke="black"/>
+            <circle cx="11" cy="15" r="2" fill="red"/>
+            <polygon points="8,21 13,15 18,21" fill="green"/>
+          </svg>
+          <span class="icon-text px-1 truncate w-full">isomet_icons.bmp</span>
+        </div>
+
+        <!-- Proyecto 4 -->
+        <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p4')" ondblclick="runDemo('p4')">
+          <svg class="w-12 h-12 mb-1" viewBox="0 0 32 32" fill="none">
+            <!-- Icono ejecutable / engranaje -->
+            <rect x="4" y="4" width="24" height="24" fill="#c0c0c0" stroke="black" stroke-width="2"/>
+            <circle cx="16" cy="16" r="6" fill="#808080" stroke="black" stroke-width="1.5"/>
+            <rect x="14" y="6" width="4" height="20" fill="black"/>
+            <rect x="6" y="14" width="20" height="4" fill="black"/>
+          </svg>
+          <span class="icon-text px-1 truncate w-full">vintage_play.exe</span>
+        </div>
+
+        <!-- Proyecto 5 -->
+        <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p5')" ondblclick="runDemo('p5')">
+          <svg class="w-12 h-12 mb-1" viewBox="0 0 32 32" fill="none">
+            <path d="M4 2 L22 2 L28 8 L28 30 L4 30 Z" fill="#ffffff" stroke="black" stroke-width="2"/>
+            <path d="M22 2 L22 8 L28 8" fill="#e0e0e0" stroke="black" stroke-width="2"/>
+            <!-- Paleta de color artística -->
+            <circle cx="11" cy="15" r="3" fill="#ff00ff"/>
+            <circle cx="19" cy="15" r="3" fill="#ffff00"/>
+            <circle cx="15" cy="22" r="3" fill="#00ffff"/>
+          </svg>
+          <span class="icon-text px-1 truncate w-full">poster_90s.jpg</span>
+        </div>
+
+        <!-- Proyecto 6 -->
+        <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p6')" ondblclick="runDemo('p6')">
+          <svg class="w-12 h-12 mb-1" viewBox="0 0 32 32" fill="none">
+            <!-- Icono de documento de texto -->
+            <path d="M4 2 L22 2 L28 8 L28 30 L4 30 Z" fill="#ffffff" stroke="black" stroke-width="2"/>
+            <path d="M22 2 L22 8 L28 8" fill="#e0e0e0" stroke="black" stroke-width="2"/>
+            <text x="8" y="24" font-family="monospace" font-size="9" font-weight="bold" fill="blue">W</text>
+            <line x1="14" y1="16" x2="24" y2="16" stroke="gray" stroke-width="1.5"/>
+            <line x1="14" y1="20" x2="24" y2="20" stroke="gray" stroke-width="1.5"/>
+          </svg>
+          <span class="icon-text px-1 truncate w-full">typ_catalog.doc</span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Barra de Estado inferior de la ventana -->
+    <div class="bg-[#c0c0c0] px-2 py-0.5 text-xs flex justify-between border-t border-white select-none">
+      <span id="status-left">Selecciona un elemento para ver su descripción.</span>
+      <span class="border-l border-white pl-2" id="status-right">6 archivo(s) (1.44 MB)</span>
+    </div>
+
+  </div>
+
+  <!-- ================= DIÁLOGOS DE ALERTA DE SISTEMA (MOCK ALERTS) ================= -->
+  <div id="sys-alert" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 win98-outset" style="width: 320px;">
+    <div class="win98-titlebar flex justify-between items-center select-none">
+      <span>Explorador de Windows</span>
+      <button class="win98-window-btn cursor-pointer" onclick="closeAlert()">X</button>
+    </div>
+    <div class="p-4 flex gap-3 items-center bg-[#c0c0c0]">
+      <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-blue-600 border-2 border-black rounded-full font-bold text-white text-lg">i</div>
+      <p id="sys-alert-text" class="text-xs font-semibold"></p>
+    </div>
+    <div class="p-2 flex justify-end bg-[#c0c0c0] border-t border-gray-400">
+      <button class="win98-button font-sans" onclick="closeAlert()">Aceptar</button>
+    </div>
+  </div>
+
+  <!-- ================= CODIGO JAVASCRIPT ================= -->
+  <script>
+    // Base de datos de los 6 proyectos configurables
+    const proyectos = {
+      p1: {
+        title: "branding_st.lnk",
+        fullTitle: "Identidad Visual - Studio Pixel",
+        type: "Acceso directo de diseño",
+        year: "1998",
+        size: "142 KB",
+        image: "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=400&q=80",
+        desc: "Rediseño de manual de marca retro-futurista basado en retículas ortogonales y tipografía pixelada para un estudio de arte digital.",
+        tags: ["Branding", "Identidad", "Illustrator"]
+      },
+      p2: {
+        title: "web_retro.html",
+        fullTitle: "Diseño Web Estilo Web 1.0",
+        type: "Documento HTML",
+        year: "2025",
+        size: "34 KB",
+        image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=400&q=80",
+        desc: "Maquetación nostálgica con tablas y marcos simulando el internet de los noventa. Optimizado para Netscape Navigator.",
+        tags: ["HTML", "CSS", "UI Retro"]
+      },
+      p3: {
+        title: "isomet_icons.bmp",
+        fullTitle: "Iconografía Isométrica 3D",
+        type: "Imagen de mapa de bits",
+        year: "2026",
+        size: "920 KB",
+        image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80",
+        desc: "Galería de ilustraciones y assets pixelados representando consolas, disquetes de 3.5 pulgadas y hardware del siglo pasado.",
+        tags: ["Isometric", "Pixel-Art", "Blender"]
+      },
+      p4: {
+        title: "vintage_play.exe",
+        fullTitle: "Reproductor Vintage Player",
+        type: "Aplicación interactiva",
+        year: "2025",
+        size: "2.1 MB",
+        image: "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&q=80",
+        desc: "Concepto de UI táctil para reproductor de audio, incorporando físicas analógicas basadas en reproductores de casete clásicos.",
+        tags: ["Mobile UX", "Concept", "Figma"]
+      },
+      p5: {
+        title: "poster_90s.jpg",
+        fullTitle: "Afiche Publicitario Vaporwave",
+        type: "Imagen JPEG",
+        year: "2026",
+        size: "340 KB",
+        image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80",
+        desc: "Diseño de afiche estético utilizando paletas cromáticas encendidas (cian y magenta) y patrones de cuadrícula abstracta.",
+        tags: ["Editorial", "Vaporwave", "Posters"]
+      },
+      p6: {
+        title: "typ_catalog.doc",
+        fullTitle: "Catálogo de Tipografías Monospace",
+        type: "Documento de Microsoft Word",
+        year: "1999",
+        size: "72 KB",
+        image: "https://images.unsplash.com/photo-1516962215378-7fa2e137ae93?w=400&q=80",
+        desc: "Estudio tipográfico comparativo entre fuentes monoespaciadas clásicas para legibilidad óptima en terminales CRT.",
+        tags: ["Tipografía", "Análisis", "Layout"]
+      }
+    };
+
+    // Redirección
+    function navigateTo(url) {
+      window.location.href = url;
+    }
+
+    // Alertas retro personalizadas
+    function alertSystem(msg) {
+      document.getElementById('sys-alert-text').innerText = msg;
+      document.getElementById('sys-alert').classList.remove('hidden');
+    }
+
+    // Cerrar alerta
+    function closeAlert() {
+      document.getElementById('sys-alert').classList.add('hidden');
+    }
+
+    // Seleccionar y visualizar proyecto (Win98 Web View)
+    function selectProject(id) {
+      const p = proyectos[id];
+      if (!p) return;
+
+      // Actualizar Barra de Estado
+      document.getElementById('status-left').innerText = `Seleccionado: ${p.title} (${p.size})`;
+
+      // Actualizar Panel Izquierdo
+      const panel = document.getElementById('preview-panel');
+      panel.innerHTML = `
+        <div class="flex flex-col h-full justify-between font-mono text-xs">
+          <div>
+            <h2 class="text-base font-bold text-[#000080] border-b-2 border-[#000080] pb-1 uppercase truncate">${p.title}</h2>
+            
+            <div class="border-2 border-inset bg-black p-1 my-3">
+              <img src="${p.image}" alt="${p.fullTitle}" class="w-full h-32 object-cover" onerror="this.src='https://placehold.co/400x150/000000/00ff00?text=Vista+Previa'">
+            </div>
+
+            <p class="font-bold text-[#000080] mb-1">${p.fullTitle}</p>
+            <p class="text-gray-700 leading-tight mb-3 text-[11px]">${p.desc}</p>
+            
+            <div class="flex flex-wrap gap-1 mb-3">
+              ${p.tags.map(t => `<span class="bg-gray-200 text-gray-800 px-1 border border-gray-400 text-[9px]">${t}</span>`).join('')}
+            </div>
+          </div>
+          
+          <div class="flex flex-col gap-2">
+            <button class="win98-button w-full text-xs font-bold font-sans" onclick="runDemo('${id}')">Ejecutar demo.exe</button>
+            <div class="border border-dashed border-gray-400 p-2 bg-gray-200">
+              <span class="text-[10px] block text-gray-500">Año: ${p.year}</span>
+              <span class="text-[10px] block text-gray-500">Tipo: ${p.type}</span>
+              <span class="text-[10px] block text-gray-500">Tamaño en disco: ${p.size}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Lanzar animación simulando cargar
+    function runDemo(id) {
+      const p = proyectos[id];
+      if (p) {
+        alertSystem(`Iniciando simulación del sistema...\n\nArchivo: ${p.title}\nEstado: Ejecutando en entorno sandbox.\n\n¡La simulación está en línea!`);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sobre Mí - Biografía.doc - WordPad</title>
+  
+  <!-- Tailwind CSS para utilidades de diseño modernas -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Fuentes para simular tipografías del sistema operativo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+  <style>
+    /* Estilos base inspirados en la interfaz clásica de Windows 95/98 */
+    :root {
+      --win98-bg: #c0c0c0;
+      --win98-fg: #000000;
+      --win98-white: #ffffff;
+      --win98-gray: #808080;
+      --win98-dark-gray: #404040;
+      --win98-blue: #000080;
+      --win98-blue-light: #1084d0;
+      --desktop-teal: #008080;
+    }
+
+    body {
+      font-family: 'Tahoma', 'Geneva', sans-serif;
+      background-color: var(--desktop-teal);
+      color: var(--win98-fg);
+      overflow: hidden;
+      user-select: none;
+      image-rendering: pixelated;
+    }
+
+    /* Bordes clásicos de Windows 98 en 3D Outset (hacia afuera) */
+    .win98-outset {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+    }
+
+    /* Bordes de botones al presionarse o áreas de entrada 3D Inset (hacia adentro) */
+    .win98-inset {
+      background-color: var(--win98-white);
+      border: 2px solid;
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+      box-shadow: inset 1px 1px 0px var(--win98-fg), inset -1px -1px 0px #dfdfdf;
+    }
+
+    /* Botón clásico de Windows 98 */
+    .win98-button {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+      padding: 3px 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .win98-button:active, .win98-button.active {
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+      box-shadow: inset 1px 1px 0px var(--win98-fg);
+      padding: 4px 7px 2px 9px;
+    }
+
+    /* Botón clásico de Windows 98 estático (sin hover interactivo ni click activo) */
+    .win98-button-static {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+      padding: 3px 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--win98-fg);
+      cursor: url('assets/svg/cursor-estandar.svg'), default !important;
+    }
+
+    /* Scrollbars retro */
+    ::-webkit-scrollbar {
+      width: 16px;
+      height: 16px;
+    }
+    ::-webkit-scrollbar-track {
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"><rect width="1" height="1" fill="%23ffffff"/><rect x="1" y="1" width="1" height="1" fill="%23ffffff"/><rect x="1" width="1" height="1" fill="%23e0e0e0"/><rect y="1" width="1" height="1" fill="%23e0e0e0"/></svg>');
+      background-color: #dfdfdf;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white);
+    }
+
+    /* CURSORES PERSONALIZADOS (Enlace a la carpeta local de assets) */
+    .retro-cursor, body {
+      cursor: url('assets/svg/cursor-estandar.svg'), default, auto;
+    }
+
+    /* Aplicación precisa del cursor de acción a todos los elementos verdaderamente interactivos */
+    a, button, select, option, input, textarea,
+    .win98-button, .win98-window-btn, .file-icon,
+    .cursor-pointer, .hover\:underline {
+      cursor: url('assets/svg/cursor-accion.svg'), pointer !important;
+    }
+
+    /* Barra de títulos clásica */
+    .win98-titlebar {
+      background: linear-gradient(90deg, var(--win98-blue), var(--win98-blue-light));
+      color: var(--win98-white);
+      font-weight: bold;
+      font-size: 13px;
+      padding: 3px 5px 3px 6px;
+    }
+
+    /* Regla simulada de WordPad */
+    .wordpad-ruler {
+      background-color: var(--win98-bg);
+      height: 20px;
+      position: relative;
+      border-bottom: 1px solid var(--win98-gray);
+    }
+
+    .ruler-tick {
+      position: absolute;
+      bottom: 0;
+      width: 1px;
+      background-color: var(--win98-gray);
+    }
+
+    /* Clases dinámicas aplicadas por JavaScript */
+    .font-sans-serif {
+      font-family: 'Tahoma', 'Geneva', sans-serif !important;
+    }
+    .font-serif {
+      font-family: 'Times New Roman', Times, serif !important;
+    }
+    .font-mono-retro {
+      font-family: 'VT323', monospace !important;
+      font-size: 1.45em !important;
+    }
+  </style>
+</head>
+<body class="retro-cursor h-screen w-screen p-1 flex flex-col justify-between">
+
+  <!-- ================= VENTANA PRINCIPAL DE WORDPAD ================= -->
+  <div class="flex-1 flex flex-col win98-outset overflow-hidden">
+    
+    <!-- Barra de Título superior -->
+    <div class="win98-titlebar flex justify-between items-center select-none">
+      <div class="flex items-center gap-1.5">
+        <!-- Icono de documento de WordPad (Libreta de notas con lápiz) -->
+        <svg class="w-4 h-4" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="2" width="20" height="28" fill="#fff" stroke="black" stroke-width="2"/>
+          <rect x="10" y="6" width="12" height="3" fill="#000080"/>
+          <line x1="10" y1="13" x2="22" y2="13" stroke="#808080" stroke-width="2"/>
+          <line x1="10" y1="17" x2="22" y2="17" stroke="#808080" stroke-width="2"/>
+          <line x1="10" y1="21" x2="18" y2="21" stroke="#808080" stroke-width="2"/>
+        </svg>
+        <span>Biografia.doc - WordPad</span>
+      </div>
+      <div class="flex gap-1">
+        <button class="win98-window-btn cursor-pointer w-[16px] h-[14px] bg-[#c0c0c0] border border-white border-r-gray-600 border-b-gray-600 flex items-center justify-center font-bold text-[9px] text-black" onclick="navigateTo('index.html')">_</button>
+        <button class="win98-window-btn cursor-pointer w-[16px] h-[14px] bg-[#c0c0c0] border border-white border-r-gray-600 border-b-gray-600 flex items-center justify-center font-bold text-[9px] text-black" onclick="navigateTo('index.html')">⬜</button>
+        <button class="win98-window-btn cursor-pointer w-[16px] h-[14px] bg-[#c0c0c0] border border-white border-r-gray-600 border-b-gray-600 flex items-center justify-center font-bold text-[9px] text-black" onclick="navigateTo('index.html')">X</button>
+      </div>
+    </div>
+
+    <!-- Barra de menú decorativa (Texto estático sin interacción ni cursor de acción) -->
+    <div class="flex gap-3 px-2 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-black select-none">
+      <span><u>A</u>rchivo</span>
+      <span><u>E</u>dición</span>
+      <span><u>V</u>er</span>
+      <span><u>I</u>nsertar</span>
+      <span><u>F</u>ormato</span>
+      <span>A<u>y</u>uda</span>
+    </div>
+
+    <!-- Barra de Herramientas Estándar (WordPad) -->
+    <div class="flex items-center gap-1 p-1 bg-[#c0c0c0] border-b border-white select-none">
+      <!-- Botón Atrás (vuelve al escritorio central) - Sigue siendo interactivo -->
+      <button class="win98-button flex items-center gap-1" onclick="navigateTo('index.html')">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        <span>Atrás</span>
+      </button>
+
+      <div class="w-[2px] h-6 bg-gray-400 mx-1 border-r border-white"></div>
+
+      <!-- Iconos de comandos clásicos estáticos (Nuevo, Abrir, Guardar) -->
+      <div class="win98-button-static opacity-60">Nuevo</div>
+      <div class="win98-button-static opacity-60">Abrir</div>
+      <div class="win98-button-static opacity-60">Guardar</div>
+
+      <div class="w-[2px] h-6 bg-gray-400 mx-1 border-r border-white"></div>
+
+      <!-- Buscar e Imprimir estéticos -->
+      <div class="win98-button-static opacity-60">Imprimir</div>
+      <div class="win98-button-static opacity-60">Buscar</div>
+    </div>
+
+    <!-- Barra de Formato Interactiva (Funcional) -->
+    <div class="flex items-center gap-2 p-1 bg-[#c0c0c0] border-b border-[#808080] text-xs select-none flex-wrap">
+      
+      <!-- Selector de Tipografía Funcional -->
+      <select id="fontFamilySelect" class="win98-inset p-0.5 bg-white text-black text-xs border border-gray-400 focus:outline-none cursor-pointer" onchange="changeFontFamily(this.value)">
+        <option value="font-sans-serif" selected>MS Sans Serif</option>
+        <option value="font-serif">Times New Roman</option>
+        <option value="font-mono-retro">Retro Monospace</option>
+      </select>
+
+      <!-- Selector de Tamaño Funcional -->
+      <select id="fontSizeSelect" class="win98-inset p-0.5 bg-white text-black text-xs border border-gray-400 focus:outline-none cursor-pointer" onchange="changeFontSize(this.value)">
+        <option value="text-xs" selected>10</option>
+        <option value="text-sm">12</option>
+        <option value="text-base">14</option>
+        <option value="text-lg">16</option>
+      </select>
+
+      <div class="w-[2px] h-5 bg-gray-400 mx-0.5 border-r border-white"></div>
+
+      <!-- Botones de estilo (Negrita, Itálica, Subrayado) -->
+      <button id="btnBold" class="win98-button font-bold text-xs" onclick="toggleStyle('bold')">B</button>
+      <button id="btnItalic" class="win98-button italic text-xs" onclick="toggleStyle('italic')">I</button>
+      <button id="btnUnderline" class="win98-button underline text-xs" onclick="toggleStyle('underline')">U</button>
+
+      <div class="w-[2px] h-5 bg-gray-400 mx-0.5 border-r border-white"></div>
+
+      <!-- Botones de alineación decorativos -->
+      <div class="win98-button-static opacity-70">Izquierda</div>
+      <div class="win98-button-static opacity-70">Centro</div>
+    </div>
+
+    <!-- Regla de WordPad Clásica -->
+    <div class="wordpad-ruler w-full flex items-end select-none overflow-hidden" id="ruler-container">
+      <!-- Los ticks se generarán dinámicamente mediante JS -->
+    </div>
+
+    <!-- CONTENEDOR DE LA PÁGINA ESCRITA (WordPad Sheet) -->
+    <div class="flex-1 bg-gray-600 p-4 overflow-y-auto flex justify-center items-start">
+      
+      <!-- Hoja de papel simulada con márgenes -->
+      <div class="w-full max-w-2xl bg-white text-black shadow-lg p-8 md:p-12 min-h-[120%] win98-inset select-text" id="docSheet">
+        
+        <!-- Contenido real del documento editable/lectura -->
+        <div id="docContent" class="font-sans-serif text-xs leading-relaxed transition-all duration-150">
+          
+          <!-- Encabezado / Título (Con tamaños de em relativos) -->
+          <div class="text-center mb-8 border-b-2 border-gray-300 pb-4">
+            <h1 class="text-[1.55em] font-bold uppercase tracking-wider text-blue-900">Camila Ramírez "Estrabismx"</h1>
+            <p class="text-[0.85em] text-gray-500 font-mono mt-1">SISTEMA OPERATIVO DE DISEÑO GRÁFICO & BRANDING</p>
+          </div>
+
+          <!-- Párrafo Biografía -->
+          <section class="mb-8">
+            <h2 class="text-[1.15em] font-bold text-blue-800 border-b border-gray-200 pb-0.5 mb-2 uppercase">I. Perfil del Sistema</h2>
+            <p class="mb-4">
+              Diseñadora Gráfica con base en Santiago de Chile, operando bajo la identidad digital de <b>"Estrabismx"</b>. Especialista en la creación de interfaces, manuales de marca sistemáticos e ilustraciones digitales de carácter nostálgico.
+            </p>
+            <p>
+              Mi metodología de trabajo combina la solidez constructiva del diseño clásico con la versatilidad de la cultura digital contemporánea. Creo firmemente que un buen sistema gráfico debe ser atemporal, intuitivo y con una fuerte identidad que conecte emocionalmente con su usuario final.
+            </p>
+          </section>
+
+          <!-- Habilidades (Sizing proporcionales en em) -->
+          <section class="mb-8">
+            <h2 class="text-[1.15em] font-bold text-blue-800 border-b border-gray-200 pb-0.5 mb-2 uppercase">II. Especificaciones de Hardware</h2>
+            <p class="mb-4">Habilidades críticas instaladas en el núcleo de procesamiento:</p>
+            
+            <div class="space-y-3">
+              <div>
+                <div class="flex justify-between text-[0.85em] font-mono mb-1">
+                  <span>Sistemas de Identidad de Marca & Branding</span>
+                  <span>95%</span>
+                </div>
+                <!-- Barra de progreso tridimensional de Windows 98 -->
+                <div class="h-4 bg-gray-200 border border-gray-600 relative overflow-hidden win98-inset">
+                  <div class="h-full bg-blue-900" style="width: 95%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[0.85em] font-mono mb-1">
+                  <span>Diseño de Interfaces (UI/UX) & Figma</span>
+                  <span>90%</span>
+                </div>
+                <div class="h-4 bg-gray-200 border border-gray-600 relative overflow-hidden win98-inset">
+                  <div class="h-full bg-blue-900" style="width: 90%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[0.85em] font-mono mb-1">
+                  <span>Ilustración Isométrica & Pixel-Art</span>
+                  <span>85%</span>
+                </div>
+                <div class="h-4 bg-gray-200 border border-gray-600 relative overflow-hidden win98-inset">
+                  <div class="h-full bg-blue-900" style="width: 85%;"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Experiencia laboral -->
+          <section class="mb-8">
+            <h2 class="text-[1.15em] font-bold text-blue-800 border-b border-gray-200 pb-0.5 mb-2 uppercase">III. Historial de Versiones (Experiencia)</h2>
+            <div class="space-y-4">
+              <div class="border-l-2 border-blue-900 pl-3">
+                <p class="font-bold text-gray-800">Diseñadora de Marca Independiente (Freelancer)</p>
+                <p class="text-[0.85em] text-gray-500 font-mono mb-1">Versión 2.0 (2023 - Presente)</p>
+                <p class="text-[0.95em]">Desarrollo de proyectos de branding para emprendedores y empresas digitales, abarcando desde la dirección de arte hasta la entrega de guías de marca.</p>
+              </div>
+
+              <div class="border-l-2 border-blue-900 pl-3">
+                <p class="font-bold text-gray-800">Diseñadora Gráfica Junior - Agencia Pixel</p>
+                <p class="text-[0.85em] text-gray-500 font-mono mb-1">Versión 1.0 (2021 - 2023)</p>
+                <p class="text-[0.95em]">Maquetación editorial, diseño de anuncios digitales e ilustración isométrica para campañas interactivas.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Footer de firma -->
+          <div class="text-right mt-12 border-t pt-4 border-dashed border-gray-300">
+            <p class="font-mono text-[0.85em] text-gray-500">Documento Guardado el: 14 de Julio de 2026</p>
+            <p class="text-[1.1em] font-bold text-blue-900">Camila Ramírez S.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Barra de Estado inferior -->
+    <div class="bg-[#c0c0c0] px-2 py-0.5 text-xs flex justify-between border-t border-white select-none">
+      <span>Para Ayuda, presione F1</span>
+      <span class="border-l border-white pl-2">Línea 1, Col 1</span>
+    </div>
+
+  </div>
+
+  <!-- ================= CODIGO JAVASCRIPT ================= -->
+  <script>
+    // Redirección hacia index.html
+    function navigateTo(url) {
+      window.location.href = url;
+    }
+
+    // Generador dinámico de ticks de la regla de WordPad
+    function generateRuler() {
+      const container = document.getElementById('ruler-container');
+      container.innerHTML = '';
+      
+      const width = window.innerWidth;
+      const spacing = 15; // pixeles por centímetro/unidad
+      const totalTicks = Math.floor(width / spacing);
+
+      for (let i = 0; i < totalTicks; i++) {
+        const tick = document.createElement('div');
+        tick.className = 'ruler-tick';
+        tick.style.left = `${i * spacing}px`;
+
+        // Marcas más altas para unidades principales
+        if (i % 5 === 0) {
+          tick.style.height = '12px';
+          if (i > 0) {
+            const num = document.createElement('span');
+            num.className = 'absolute text-[8px] font-mono font-bold text-gray-700';
+            num.style.left = `${i * spacing - 3}px`;
+            num.style.top = '2px';
+            num.innerText = i / 5;
+            container.appendChild(num);
+          }
+        } else {
+          tick.style.height = '6px';
+        }
+
+        container.appendChild(tick);
+      }
+    }
+
+    window.addEventListener('resize', generateRuler);
+    generateRuler();
+
+    // INTERACTIVIDAD DE FORMATEO DE WORDPAD
+
+    // Cambio de Familia Tipográfica
+    function changeFontFamily(val) {
+      const content = document.getElementById('docContent');
+      // Limpiar clases previas de familia
+      content.classList.remove('font-sans-serif', 'font-serif', 'font-mono-retro');
+      // Aplicar nueva
+      content.classList.add(val);
+    }
+
+    // Cambio de Tamaño de Fuente
+    function changeFontSize(val) {
+      const content = document.getElementById('docContent');
+      // Limpiar clases previas de tamaño de Tailwind
+      content.classList.remove('text-xs', 'text-sm', 'text-base', 'text-lg');
+      // Aplicar nueva
+      content.classList.add(val);
+    }
+
+    // Alternar Estilos de Texto (Bold, Italic, Underline)
+    function toggleStyle(style) {
+      const content = document.getElementById('docContent');
+      const btnBold = document.getElementById('btnBold');
+      const btnItalic = document.getElementById('btnItalic');
+      const btnUnderline = document.getElementById('btnUnderline');
+
+      if (style === 'bold') {
+        content.classList.toggle('font-bold');
+        btnBold.classList.toggle('active');
+      } else if (style === 'italic') {
+        content.classList.toggle('italic');
+        btnItalic.classList.toggle('active');
+      } else if (style === 'underline') {
+        content.classList.toggle('underline');
+        btnUnderline.classList.toggle('active');
+      }
+    }
+  </script>
+</body>
+</html>
