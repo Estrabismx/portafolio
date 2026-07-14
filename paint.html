@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sin título - Paint</title>
+  
+  <!-- Tailwind CSS para utilidades de maquetación rápida -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Estilos estéticos de Windows 98 */
+    :root {
+      --win98-bg: #c0c0c0;
+      --win98-fg: #000000;
+      --win98-white: #ffffff;
+      --win98-gray: #808080;
+      --win98-dark-gray: #404040;
+      --win98-blue: #000080;
+      --win98-blue-light: #1084d0;
+      --desktop-teal: #008080;
+    }
+
+    body {
+      font-family: 'Tahoma', 'Geneva', sans-serif;
+      background-color: var(--win98-bg);
+      color: var(--win98-fg);
+      overflow: hidden;
+      user-select: none;
+      image-rendering: pixelated;
+    }
+
+    /* Bordes clásicos 3D Outset (hacia afuera) */
+    .win98-outset {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+    }
+
+    /* Bordes clásicos 3D Inset (hacia adentro) */
+    .win98-inset {
+      background-color: var(--win98-white);
+      border: 2px solid;
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+      box-shadow: inset 1px 1px 0px var(--win98-fg), inset -1px -1px 0px #dfdfdf;
+    }
+
+    /* Botones clásicos */
+    .win98-button {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .win98-button:active, .win98-button.active {
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+      box-shadow: inset 1px 1px 0px var(--win98-fg);
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"><rect width="2" height="2" fill="%23ffffff"/><rect x="2" y="2" width="2" height="2" fill="%23ffffff"/><rect x="2" width="2" height="2" fill="%23dfdfdf"/><rect y="2" width="2" height="2" fill="%23dfdfdf"/></svg>');
+    }
+
+    /* Estilo de la caja de herramientas de Paint */
+    .tool-button {
+      width: 25px;
+      height: 25px;
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tool-button:active, .tool-button.active {
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+      box-shadow: inset 1px 1px 0px var(--win98-fg);
+      background-color: #e0e0e0;
+    }
+
+    /* CURSORES PERSONALIZADOS (Enlazados a tu carpeta local de assets) */
+    html, body {
+      cursor: url('assets/svg/cursor-estandar.svg') 0 0, default !important;
+    }
+
+    a, button, select, option, input, textarea,
+    .win98-button, .tool-button, .cursor-pointer, .hover\:underline {
+      cursor: url('assets/svg/cursor-accion.svg') 0 0, pointer !important;
+    }
+
+    /* Caja del Canvas Paint */
+    .canvas-container {
+      background-color: var(--win98-gray);
+      overflow: auto;
+    }
+
+    canvas {
+      background-color: #ffffff;
+      display: block;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between select-none">
+
+  <!-- ================= VENTANA PRINCIPAL DE PAINT ================= -->
+  <div class="flex-1 flex flex-col win98-outset m-1 overflow-hidden">
+    
+    <!-- Barra de títulos clásica -->
+    <div class="bg-gradient-to-r from-[#000080] to-[#1084d0] text-white font-bold text-sm px-2 py-1 flex justify-between items-center select-none">
+      <div class="flex items-center gap-1.5">
+        <!-- Icono clásico de paleta de pintura en SVG -->
+        <svg class="w-4 h-4" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 2 C8 2 2 8 2 16 C2 24 8 30 16 30 C20 30 24 28 26 24 C28 20 30 18 30 14 C30 7 24 2 16 2 Z" fill="#fdf5e6" stroke="black" stroke-width="1.5"/>
+          <circle cx="10" cy="11" r="2" fill="#ff0000"/>
+          <circle cx="16" cy="8" r="2" fill="#00ff00"/>
+          <circle cx="22" cy="11" r="2" fill="#0000ff"/>
+        </svg>
+        <span>sin título - Paint</span>
+      </div>
+      <div class="flex gap-1">
+        <!-- Volver al menú de inicio (index) -->
+        <button class="win98-button w-5 h-4 text-[10px] font-bold text-black" onclick="window.location.href='index.html'">_</button>
+        <button class="win98-button w-5 h-4 text-[10px] font-bold text-black" onclick="window.location.href='index.html'">X</button>
+      </div>
+    </div>
+
+    <!-- Barra de menú clásica interactiva -->
+    <div class="flex gap-4 px-3 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-[#000000]">
+      <div class="relative group">
+        <span class="hover:bg-blue-800 hover:text-white px-1 py-0.5 cursor-pointer"><u>A</u>rchivo</span>
+        <div class="hidden group-hover:block absolute left-0 top-full bg-[#c0c0c0] win98-outset z-50 py-1 min-width-[120px]">
+          <button class="w-full text-left px-4 py-1 hover:bg-blue-800 hover:text-white" onclick="clearCanvas()">Nuevo</button>
+          <button class="w-full text-left px-4 py-1 hover:bg-blue-800 hover:text-white" onclick="downloadImage()">Guardar como...</button>
+          <div class="border-t border-gray-400 my-1"></div>
+          <button class="w-full text-left px-4 py-1 hover:bg-blue-800 hover:text-white" onclick="window.location.href='index.html'">Salir</button>
+        </div>
+      </div>
+      <div class="relative group">
+        <span class="hover:bg-blue-800 hover:text-white px-1 py-0.5 cursor-pointer"><u>E</u>dición</span>
+        <div class="hidden group-hover:block absolute left-0 top-full bg-[#c0c0c0] win98-outset z-50 py-1 min-width-[120px]">
+          <button class="w-full text-left px-4 py-1 hover:bg-blue-800 hover:text-white" onclick="undo()">Deshacer (Ctrl+Z)</button>
+          <button class="w-full text-left px-4 py-1 hover:bg-blue-800 hover:text-white" onclick="redo()">Rehacer (Ctrl+Y)</button>
+        </div>
+      </div>
+      <span class="text-gray-500 select-none"><u>V</u>er</span>
+      <span class="text-gray-500 select-none"><u>I</u>magen</span>
+      <span class="text-gray-500 select-none"><u>O</u>pciones</span>
+      <span class="text-gray-500 select-none">A<u>y</u>uda</span>
+    </div>
+
+    <!-- Área de trabajo central -->
+    <div class="flex-1 flex overflow-hidden">
+      
+      <!-- Caja de Herramientas Lateral Izquierda -->
+      <div class="w-14 bg-[#c0c0c0] border-r-2 border-white p-1.5 flex flex-col gap-1 items-center select-none">
+        <div class="grid grid-cols-2 gap-1" id="toolbox">
+          
+          <!-- Borrador -->
+          <button class="tool-button" id="tool-eraser" onclick="setTool('eraser')" title="Borrador">
+            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><rect x="3" y="3" width="10" height="10" fill="pink" stroke="black"/><path d="M3 10 L13 10" stroke="black"/></svg>
+          </button>
+          
+          <!-- Relleno de color -->
+          <button class="tool-button" id="tool-fill" onclick="setTool('fill')" title="Relleno con color">
+            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><path d="M2 12 L10 4 L12 6 L4 14 Z" fill="gray" stroke="black"/><path d="M12 6 L14 8 L11 11 L9 9 Z" fill="red"/><path d="M14 14 C14 14 11 12 11 10 C11 9 12 8 13 8 C14 8 15 9 15 11 C15 13 14 14 14 14 Z" fill="blue"/></svg>
+          </button>
+
+          <!-- Gotero selector -->
+          <button class="tool-button" id="tool-picker" onclick="setTool('picker')" title="Seleccionar color">
+            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><path d="M2 14 L4 14 L12 6 L10 4 Z" fill="yellow" stroke="black"/><circle cx="13" cy="3" r="2" fill="red"/></svg>
+          </button>
+
+          <!-- Lápiz pixelado -->
+          <button class="tool-button active" id="tool-pencil" onclick="setTool('pencil')" title="Lápiz">
+            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><path d="M2 14 L4 14 L13 5 L11 3 Z" fill="yellow" stroke="black"/><path d="M2 14 L4 12 L2 12 Z" fill="black"/></svg>
+          </button>
+
+          <!-- Pincel fluido -->
+          <button class="tool-button" id="tool-brush" onclick="setTool('brush')" title="Pincel">
+            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><circle cx="5" cy="11" r="3" fill="brown"/><path d="M5 11 L12 4 L14 6 L7 13 Z" fill="orange" stroke="black"/></svg>
+          </button>
+
+          <!-- Línea recta -->
+          <button class="tool-button" id="tool-line" onclick="setTool('line')" title="Línea">
+            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><line x1="2" y1="14" x2="14" y2="2" stroke="black" stroke-width="2"/></svg>
+          </button>
+
+          <!-- Rectángulo -->
+          <button class="tool-button" id="tool-rect" onclick="setTool('rect')" title="Rectángulo">
+            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><rect x="2" y="3" width="12" height="10" fill="none" stroke="black" stroke-width="2"/></svg>
+          </button>
+
+          <!-- Elipse / Círculo -->
+          <button class="tool-button" id="tool-ellipse" onclick="setTool('ellipse')" title="Elipse">
+            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><ellipse cx="8" cy="8" rx="6" ry="5" fill="none" stroke="black" stroke-width="2"/></svg>
+          </button>
+
+        </div>
+
+        <!-- Caja de opciones específica para la herramienta seleccionada (Grosores) -->
+        <div class="w-full mt-4 flex-1 flex flex-col justify-start items-center">
+          <div class="win98-inset w-10 p-1 flex flex-col gap-2 items-center" style="background-color: var(--win98-bg); height: 80px;" id="options-box">
+            <!-- Selector de tamaño/grosor clásico -->
+            <div class="text-[9px] font-bold text-gray-700 select-none mb-1">TAMAÑO</div>
+            <select id="line-width-select" class="win98-inset text-[11px] w-full p-0.5 bg-white cursor-pointer" onchange="updateStrokeSize(this.value)">
+              <option value="1">1 px</option>
+              <option value="3" selected>3 px</option>
+              <option value="6">6 px</option>
+              <option value="10">10 px</option>
+              <option value="20">20 px</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lienzo de Dibujo Central con Barras de Scroll clásicas -->
+      <div class="flex-1 canvas-container win98-inset p-4 relative" id="canvas-container">
+        <canvas id="paintCanvas" width="800" height="600" class="mx-auto"></canvas>
+      </div>
+
+    </div>
+
+    <!-- Paleta de Colores Inferior (Clásica Doble Fila) -->
+    <div class="bg-[#c0c0c0] border-t-2 border-white p-2 flex gap-3 items-center select-none">
+      
+      <!-- Previsualización de Color Seleccionado -->
+      <div class="win98-inset w-10 h-10 relative flex-shrink-0" style="background-color: var(--win98-bg);">
+        <!-- Color Primario -->
+        <div class="w-6 h-6 border border-gray-600 bg-black absolute top-1 left-1 z-20" id="color-primary"></div>
+        <!-- Color Secundario (Fondo / Blanco) -->
+        <div class="w-6 h-6 border border-gray-600 bg-white absolute bottom-1 right-1 z-10"></div>
+      </div>
+
+      <!-- Grilla de Colores Clásicos de Windows 98 -->
+      <div class="grid grid-rows-2 grid-flow-col gap-1 flex-1 overflow-x-auto pr-2" id="palette-grid">
+        <!-- Generados de forma dinámica mediante JS -->
+      </div>
+    </div>
+
+    <!-- Barra de Estado Inferior -->
+    <div class="bg-[#c0c0c0] border-t border-white px-3 py-1 flex justify-between text-xs select-none">
+      <span id="status-text">Para obtener ayuda, haz clic en el Menú superior.</span>
+      <span class="border-l border-white pl-4 font-mono text-gray-700" id="coords-text">0, 0px</span>
+    </div>
+
+  </div>
+
+  <!-- Alerta de Sistema Retro -->
+  <div id="sys-alert" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 win98-outset" style="width: 320px;">
+    <div class="bg-gradient-to-r from-[#000080] to-[#1084d0] text-white font-bold text-sm px-2 py-1 flex justify-between items-center">
+      <span>Paint 98</span>
+      <button class="win98-button w-4 h-4 text-[9px] font-bold text-black" onclick="closeAlert()">X</button>
+    </div>
+    <div class="p-4 flex gap-3 items-center bg-[#c0c0c0]">
+      <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-yellow-400 border-2 border-black rounded-full font-bold text-lg">!</div>
+      <p id="sys-alert-text" class="text-xs font-semibold text-black"></p>
+    </div>
+    <div class="p-2 flex justify-end bg-[#c0c0c0] border-t border-gray-400">
+      <button class="win98-button px-4 py-1 text-xs text-black" onclick="closeAlert()">Aceptar</button>
+    </div>
+  </div>
+
+
+  <!-- ================= LÓGICA DE DIBUJO Y EDICIÓN ================= -->
+  <script>
+    const canvas = document.getElementById('paintCanvas');
+    const ctx = canvas.getContext('2d');
+    const colorPrimaryEl = document.getElementById('color-primary');
+
+    // Estados de Herramientas y Dibujo
+    let currentTool = 'pencil';
+    let currentColor = '#000000';
+    let strokeSize = 3;
+    let isDrawing = false;
+
+    // Coordenadas iniciales
+    let startX = 0;
+    let startY = 0;
+
+    // Historial para Deshacer/Rehacer
+    let undoStack = [];
+    let redoStack = [];
+    const maxHistory = 15;
+
+    // Colores clásicos de Paint de Windows 98 (28 Colores)
+    const classicColors = [
+      '#000000', '#808080', '#800000', '#808000', '#008000', '#008080', '#000080', '#800080', '#808040', '#004040', '#0080ff', '#004080', '#400080', '#804000',
+      '#ffffff', '#c0c0c0', '#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#ff00ff', '#ffff80', '#00ff80', '#80ffff', '#8080ff', '#ff8000', '#ff8080'
+    ];
+
+    // Inicialización del Lienzo
+    function initCanvas() {
+      // Limpiar lienzo a color blanco sólido inicial
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Guardar primer estado limpio en el historial
+      saveState();
+
+      // Generar Grilla de la Paleta de Colores clásica
+      const paletteGrid = document.getElementById('palette-grid');
+      paletteGrid.innerHTML = '';
+      classicColors.forEach(color => {
+        const colorBox = document.createElement('div');
+        colorBox.className = 'w-4 h-4 border border-gray-600 cursor-pointer';
+        colorBox.style.backgroundColor = color;
+        colorBox.onclick = () => selectColor(color);
+        paletteGrid.appendChild(colorBox);
+      });
+    }
+
+    // Guardar el estado actual del lienzo para Deshacer
+    function saveState() {
+      if (undoStack.length >= maxHistory) {
+        undoStack.shift();
+      }
+      undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+      redoStack = []; // Al dibujar algo nuevo, vaciamos la pila de rehacer
+    }
+
+    // Selección de Color
+    function selectColor(color) {
+      currentColor = color;
+      colorPrimaryEl.style.backgroundColor = color;
+    }
+
+    // Actualización de grosores de línea
+    function updateStrokeSize(val) {
+      strokeSize = parseInt(val);
+    }
+
+    // Selección de Herramienta
+    function setTool(tool) {
+      currentTool = tool;
+      
+      // Actualizar estado activo en los botones de herramienta
+      document.querySelectorAll('.tool-button').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`tool-${tool}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      document.getElementById('status-text').textContent = `Herramienta activa: ${tool.toUpperCase()}`;
+    }
+
+    // Deshacer acción (Undo)
+    function undo() {
+      if (undoStack.length > 1) {
+        const currentState = undoStack.pop();
+        redoStack.push(currentState);
+        
+        const prevState = undoStack[undoStack.length - 1];
+        ctx.putImageData(prevState, 0, 0);
+      } else {
+        showSystemAlert("No hay más acciones para deshacer.");
+      }
+    }
+
+    // Rehacer acción (Redo)
+    function redo() {
+      if (redoStack.length > 0) {
+        const nextState = redoStack.pop();
+        undoStack.push(nextState);
+        ctx.putImageData(nextState, 0, 0);
+      } else {
+        showSystemAlert("No hay acciones para rehacer.");
+      }
+    }
+
+    // Escuchar atajos de teclado clásicos (Ctrl+Z / Ctrl+Y)
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'z') {
+        e.preventDefault();
+        undo();
+      }
+      if (e.ctrlKey && e.key === 'y') {
+        e.preventDefault();
+        redo();
+      }
+    });
+
+    // Limpiar Canvas por completo
+    function clearCanvas() {
+      saveState();
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      document.getElementById('status-text').textContent = "Lienzo limpio.";
+    }
+
+    // Descargar dibujo como archivo PNG local
+    function downloadImage() {
+      const link = document.createElement('a');
+      link.download = 'mi-dibujo-paint98.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+
+
+    // ================= CONTROLADORES DE EVENTOS DEL CANVAS =================
+
+    function getMouseCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: Math.round(clientX - rect.left),
+        y: Math.round(clientY - rect.top)
+      };
+    }
+
+    function startDrawing(e) {
+      const coords = getMouseCoords(e);
+      startX = coords.x;
+      startY = coords.y;
+      isDrawing = true;
+
+      if (currentTool === 'fill') {
+        floodFill(startX, startY, currentColor);
+        isDrawing = false;
+        return;
+      }
+
+      if (currentTool === 'picker') {
+        pickColor(startX, startY);
+        isDrawing = false;
+        return;
+      }
+
+      // Al iniciar el trazo libre o formas geométricas
+      if (currentTool === 'pencil' || currentTool === 'brush' || currentTool === 'eraser') {
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        draw(e);
+      }
+    }
+
+    function draw(e) {
+      const coords = getMouseCoords(e);
+      
+      // Actualizar coordenadas en la barra de estado
+      document.getElementById('coords-text').textContent = `${coords.x}, ${coords.y}px`;
+
+      if (!isDrawing) return;
+
+      const currentX = coords.x;
+      const currentY = coords.y;
+
+      // Si usamos herramientas continuas como lápiz, pincel o borrador
+      if (currentTool === 'pencil' || currentTool === 'brush' || currentTool === 'eraser') {
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+
+        if (currentTool === 'pencil') {
+          ctx.strokeStyle = currentColor;
+          ctx.lineWidth = 1; // Lápiz clásico fino y pixelado
+        } else if (currentTool === 'brush') {
+          ctx.strokeStyle = currentColor;
+          ctx.lineWidth = strokeSize;
+        } else if (currentTool === 'eraser') {
+          ctx.strokeStyle = '#ffffff'; // Borra pintando de blanco puro
+          ctx.lineWidth = strokeSize * 1.5;
+        }
+
+        ctx.lineTo(currentX, currentY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(currentX, currentY);
+      } 
+      
+      // Si usamos herramientas de arrastre geométrico (necesitan repintar el estado anterior antes del trazo final)
+      else if (currentTool === 'line' || currentTool === 'rect' || currentTool === 'ellipse') {
+        // Cargar el último estado guardado para evitar "fantasmas" de previsualización
+        const lastSavedState = undoStack[undoStack.length - 1];
+        ctx.putImageData(lastSavedState, 0, 0);
+
+        ctx.beginPath();
+        ctx.strokeStyle = currentColor;
+        ctx.lineWidth = strokeSize;
+
+        if (currentTool === 'line') {
+          ctx.moveTo(startX, startY);
+          ctx.lineTo(currentX, currentY);
+          ctx.stroke();
+        } else if (currentTool === 'rect') {
+          const width = currentX - startX;
+          const height = currentY - startY;
+          ctx.strokeRect(startX, startY, width, height);
+        } else if (currentTool === 'ellipse') {
+          const radiusX = Math.abs(currentX - startX) / 2;
+          const radiusY = Math.abs(currentY - startY) / 2;
+          const centerX = startX + (currentX - startX) / 2;
+          const centerY = startY + (currentY - startY) / 2;
+          ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
+      }
+    }
+
+    function stopDrawing() {
+      if (isDrawing) {
+        isDrawing = false;
+        ctx.beginPath();
+        saveState(); // Guardar el lienzo finalizado en el historial para deshacer
+      }
+    }
+
+    // Agregar Listeners al Canvas (Mouse y Pantalla Táctil)
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', stopDrawing);
+
+    canvas.addEventListener('touchstart', (e) => {
+      startDrawing(e);
+      e.preventDefault();
+    });
+    canvas.addEventListener('touchmove', (e) => {
+      draw(e);
+      e.preventDefault();
+    });
+    window.addEventListener('touchend', stopDrawing);
+
+
+    // ================= ALGORITMO SELECTOR DE COLOR (GOTERO) =================
+    function pickColor(x, y) {
+      const imgData = ctx.getImageData(x, y, 1, 1).data;
+      const r = imgData[0];
+      const g = imgData[1];
+      const b = imgData[2];
+      
+      // Convertir RGB a Hexadecimal para actualizar la interfaz
+      const hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+      selectColor(hex);
+      setTool('pencil'); // Volver a lápiz tras seleccionar el color
+    }
+
+
+    // ================= ALGORITMO FLOOD FILL (BOTE DE PINTURA RETRO) =================
+    // Implementación optimizada basada en pilas para evitar bloqueos del navegador
+    function floodFill(startX, startY, fillColorHex) {
+      const width = canvas.width;
+      const height = canvas.height;
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const data = imageData.data;
+
+      // Obtener el color del píxel inicial
+      const targetColor = getPixelColor(startX, startY, data, width);
+      const fillColor = hexToRgb(fillColorHex);
+
+      // Si el color objetivo es idéntico al color de relleno, salir para evitar bucle infinito
+      if (colorsMatch(targetColor, fillColor)) return;
+
+      const stack = [[startX, startY]];
+
+      while (stack.length > 0) {
+        const [x, y] = stack.pop();
+        const currentColor = getPixelColor(x, y, data, width);
+
+        if (colorsMatch(currentColor, targetColor)) {
+          setPixelColor(x, y, fillColor, data, width);
+
+          // Agregar vecinos a la pila de procesamiento
+          if (x > 0) stack.push([x - 1, y]);
+          if (x < width - 1) stack.push([x + 1, y]);
+          if (y > 0) stack.push([x, y - 1]);
+          if (y < height - 1) stack.push([x, y + 1]);
+        }
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+      saveState();
+    }
+
+    function getPixelColor(x, y, data, width) {
+      const idx = (y * width + x) * 4;
+      return {
+        r: data[idx],
+        g: data[idx + 1],
+        b: data[idx + 2],
+        a: data[idx + 3]
+      };
+    }
+
+    function setPixelColor(x, y, color, data, width) {
+      const idx = (y * width + x) * 4;
+      data[idx] = color.r;
+      data[idx + 1] = color.g;
+      data[idx + 2] = color.b;
+      data[idx + 3] = 255; // Opacidad total sólida
+    }
+
+    function colorsMatch(c1, c2) {
+      return c1.r === c2.r && c1.g === c2.g && c1.b === c2.b;
+    }
+
+    function hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : { r: 0, g: 0, b: 0 };
+    }
+
+
+    // ================= DIÁLOGOS DE ALERTA RETRO =================
+    function showSystemAlert(text) {
+      document.getElementById('sys-alert-text').innerText = text;
+      document.getElementById('sys-alert').classList.remove('hidden');
+    }
+
+    function closeAlert() {
+      document.getElementById('sys-alert').classList.add('hidden');
+    }
+
+
+    // Inicializar al cargar el documento
+    document.addEventListener('DOMContentLoaded', () => {
+      initCanvas();
+    });
+  </script>
+
+</body>
+</html>
