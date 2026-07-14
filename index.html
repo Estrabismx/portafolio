@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wii Portfolio - Menú de Diseño</title>
+  <!-- Tailwind CSS para el diseño responsive y moderno -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons para soportar algunos gráficos limpios -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    /* Estilos personalizados del Tema Wii */
+    body {
+      background-color: #f2f2f2;
+      background-image: radial-gradient(#ffffff 20%, transparent 20%), radial-gradient(#ffffff 20%, transparent 20%);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      overflow-x: hidden;
+      cursor: none; /* Ocultamos el cursor original para usar el puntero de Wii */
+    }
+
+    /* Puntero personalizado de Wii Remote inspirado en la imagen image_635ffc.png */
+    #wii-pointer {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      width: 52px;
+      height: 52px;
+      /* Ajuste fino del hotspot en la punta del dedo índice */
+      transform: translate(-18px, -4px);
+      transition: transform 0.04s cubic-bezier(0.1, 0.8, 0.3, 1);
+      filter: drop-shadow(3px 4px 4px rgba(0,0,0,0.35));
+    }
+
+    /* Estilo premium del canal de Wii */
+    .wii-channel {
+      background: linear-gradient(to bottom, #ffffff 0%, #f7f7f7 50%, #eaeaea 100%);
+      border: 4px solid #dfdfdf;
+      border-radius: 20px;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.95), 
+                  0 4px 6px rgba(0,0,0,0.06),
+                  0 1px 3px rgba(0,0,0,0.08);
+      aspect-ratio: 16 / 10;
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wii-channel:hover {
+      border-color: #3b82f6; /* Azul Wii */
+      transform: scale(1.06);
+      box-shadow: 0 12px 24px rgba(59, 130, 246, 0.3), 
+                  0 8px 10px rgba(59, 130, 246, 0.15);
+      z-index: 10;
+    }
+
+    .wii-channel:active {
+      transform: scale(0.97);
+      border-color: #2563eb;
+    }
+
+    /* Botones de Wii */
+    .wii-btn {
+      background: linear-gradient(to bottom, #ffffff 0%, #eaeaea 100%);
+      border: 3px solid #ccc;
+      border-radius: 50px;
+      box-shadow: 0 3px 5px rgba(0,0,0,0.1), inset 0 1px 2px #fff;
+      transition: all 0.2s ease;
+    }
+    .wii-btn:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.45);
+      transform: translateY(-2px);
+    }
+    .wii-btn:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    /* Estilos del Modal del Canal (Zoom de Canal) */
+    .wii-modal {
+      background: linear-gradient(135deg, #fbfbfb 0%, #ededed 100%);
+      border: 8px solid #eaeaea;
+      border-radius: 36px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+    }
+
+    /* Desactivar cursor personalizado en pantallas táctiles */
+    @media (pointer: coarse) {
+      body { cursor: auto; }
+      #wii-pointer { display: none !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-4 md:p-6 select-none">
+
+  <!-- PUNTERO DE LA WII (Estilizado como la imagen image_635ffc.png) -->
+  <div id="wii-pointer">
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+      <defs>
+        <!-- Degradado de la mano / guante -->
+        <linearGradient id="pointerGloveGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#cccccc"/>
+        </linearGradient>
+        <!-- Resplandor azul del borde característico -->
+        <filter id="pointerNeonGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="0" stdDeviation="2.5" flood-color="#00a3ff" flood-opacity="0.95"/>
+          <feDropShadow dx="0" dy="1.5" stdDeviation="1" flood-color="#0055ff" flood-opacity="0.6"/>
+        </filter>
+      </defs>
+      <!-- Silueta externa con brillo neon y borde azul grueso -->
+      <path d="M 28 4 
+               C 25 4, 24 6, 24 9 
+               L 24 28 
+               C 20 28, 18 30, 18 34 
+               C 18 37, 20 39, 22 39 
+               L 22 46 
+               C 22 52, 28 56, 36 56 
+               C 44 56, 50 51, 50 45 
+               L 50 34 
+               C 50 30, 47 28, 44 28 
+               L 44 27 
+               C 44 24, 41 22, 38 22 
+               C 37 22, 36 22, 35 23
+               C 34 20, 31 18, 28 18 Z" 
+            fill="url(#pointerGloveGrad)" 
+            stroke="#0088ff" 
+            stroke-width="4.5" 
+            stroke-linejoin="round" 
+            filter="url(#pointerNeonGlow)" />
+      
+      <!-- Líneas de los pliegues de los dedos doblados -->
+      <path d="M 23.5 28 C 23.5 32, 20.5 33.5, 20.5 33.5" stroke="#0077ee" stroke-width="2.5" stroke-linecap="round" />
+      <path d="M 35 28.5 L 35 37.5" stroke="#0077ee" stroke-width="2.5" stroke-linecap="round" />
+      <path d="M 40 28.5 L 40 37.5" stroke="#0077ee" stroke-width="2.5" stroke-linecap="round" />
+      <path d="M 45 29.5 L 45 36.5" stroke="#0077ee" stroke-width="2.5" stroke-linecap="round" />
+      
+      <!-- El número "1" icónico del jugador 1 de Wii -->
+      <text x="32.5" y="45.5" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-weight="900" font-size="14" fill="#0066ee" text-anchor="middle">1</text>
+    </svg>
+  </div>
+
+  <!-- PANTALLA DE SALUD Y SEGURIDAD -->
+  <div id="safety-screen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-between p-8 md:p-12 text-gray-700 transition-opacity duration-700">
+    <div></div>
+    
+    <div class="max-w-2xl text-center flex flex-col items-center">
+      <!-- Icono de Advertencia Clásico -->
+      <div class="w-16 h-16 mb-6 flex items-center justify-center bg-orange-500 rounded-2xl text-white font-bold text-4xl shadow-md border-4 border-white outline outline-4 outline-orange-500">
+        !
+      </div>
+      <h1 class="text-xl md:text-2xl font-bold tracking-wider text-gray-900 mb-6 uppercase">ADVERTENCIA - SALUD Y SEGURIDAD</h1>
+      <p class="text-sm md:text-base text-gray-600 leading-relaxed mb-8">
+        Para disfrutar de la experiencia interactiva de este portafolio con efectos de audio sintetizados y el puntero de Wii, por favor haz clic en cualquier parte de la pantalla para comenzar.
+      </p>
+      
+      <div class="animate-pulse bg-gray-100 hover:bg-gray-200 border-2 border-gray-300 rounded-full px-8 py-3 font-semibold text-gray-700 shadow cursor-pointer transition-all duration-300">
+        Haz clic para continuar
+      </div>
+    </div>
+    
+    <div class="text-xs text-gray-400">
+      Desarrollado en honor a la Nintendo Wii &copy; 2006. Todos los derechos reservados.
+    </div>
+  </div>
+
+  <!-- HEADER PRINCIPAL -->
+  <header class="w-full max-w-7xl mx-auto flex justify-between items-center mb-4 z-10">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-white border-2 border-gray-300 rounded-lg shadow flex items-center justify-center font-bold text-blue-500 text-lg">
+        W
+      </div>
+      <div>
+        <h1 class="text-sm font-semibold text-gray-500 tracking-wider">MI PORTAFOLIO CREATIVO</h1>
+        <p class="text-xs text-gray-400">Canales de Trabajo</p>
+      </div>
+    </div>
+
+    <!-- Botón de Silenciado -->
+    <button id="sound-toggle" class="wii-btn px-4 py-2 text-xs font-bold text-gray-600 flex items-center gap-2">
+      <i data-lucide="volume-2" class="w-4 h-4"></i>
+      <span>SONIDO ACTIVADO</span>
+    </button>
+  </header>
+
+  <!-- REJILLA DE CANALES DE LA WII -->
+  <main class="w-full max-w-7xl mx-auto flex-grow flex items-center justify-center my-4 z-10">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 w-full py-4">
+      
+      <!-- CANAL 1: SOBRE MÍ (CANAL DISCO) -->
+      <button class="wii-channel flex flex-col items-center justify-center p-4 group" onclick="openChannel('about')">
+        <div class="relative w-20 h-20 md:w-24 md:h-24 flex items-center justify-center mb-1">
+          <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-gray-200 to-white border-2 border-gray-300 shadow-inner flex items-center justify-center group-hover:rotate-180 transition-transform duration-1000">
+            <div class="w-16 h-16 rounded-full bg-blue-50 border border-gray-200 flex items-center justify-center">
+              <div class="w-6 h-6 rounded-full bg-white border-2 border-gray-300"></div>
+            </div>
+          </div>
+          <span class="absolute text-[10px] font-bold text-blue-500 tracking-widest bottom-2">SOBRE MÍ</span>
+        </div>
+        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Sobre Mí</span>
+      </button>
+
+      <!-- CANAL 2: PROYECTOS (CANAL FOTOS) -->
+      <button class="wii-channel flex flex-col items-center justify-center p-4 group" onclick="openChannel('projects')">
+        <div class="w-20 h-14 md:w-28 md:h-18 bg-white border-2 border-gray-300 rounded shadow-md flex items-center justify-center mb-3 relative overflow-hidden">
+          <div class="absolute inset-1 bg-gradient-to-br from-blue-100 to-cyan-200 rounded flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <i data-lucide="folder-git" class="w-8 h-8 text-blue-500"></i>
+          </div>
+          <div class="absolute bottom-1 right-1 w-3 h-3 bg-green-500 rounded-full"></div>
+        </div>
+        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Proyectos</span>
+      </button>
+
+      <!-- CANAL 3: EXPERIENCIA (CANAL NOTICIAS) -->
+      <button class="wii-channel flex flex-col items-center justify-center p-4 group" onclick="openChannel('experience')">
+        <div class="w-20 h-14 md:w-28 md:h-18 bg-gray-50 border-2 border-gray-300 rounded p-1 mb-3 overflow-hidden text-left relative">
+          <div class="text-[7px] bg-blue-600 text-white px-1 py-0.5 rounded inline-block font-bold mb-1">HISTORIAL</div>
+          <p class="text-[8px] text-gray-500 font-bold leading-none">Mi Trayectoria</p>
+          <div class="absolute bottom-1 right-1 flex gap-0.5">
+            <div class="w-1.5 h-1.5 bg-gray-300 rounded-full"></div>
+            <div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+          </div>
+        </div>
+        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Experiencia</span>
+      </button>
+
+      <!-- CANAL 4: AVATAR MII -->
+      <button class="wii-channel flex flex-col items-center justify-center p-4 group" onclick="openChannel('mii')">
+        <div class="w-20 h-20 md:w-24 md:h-24 bg-orange-50 rounded-full border-2 border-orange-200 flex items-center justify-center mb-1 relative overflow-hidden group-hover:bg-orange-100 transition-colors">
+          <svg viewBox="0 0 64 64" class="w-16 h-16 text-gray-700 translate-y-1.5">
+            <circle cx="32" cy="22" r="14" fill="#ffdbac" />
+            <path d="M14 54 C14 38, 50 38, 50 54" fill="#f97316" />
+            <path d="M18 16 C22 8, 42 8, 46 16 C48 20, 48 26, 44 26 C42 18, 22 18, 20 26 C16 26, 16 20, 18 16 Z" fill="#4a3728" />
+            <circle cx="27" cy="22" r="2" fill="#000" />
+            <circle cx="37" cy="22" r="2" fill="#000" />
+            <path d="M28 28 Q32 31 36 28" stroke="#000" stroke-width="2" fill="none" />
+          </svg>
+        </div>
+        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Canal Mii</span>
+      </button>
+
+      <!-- CANAL 5: HABILIDADES (CANAL TIEMPO) -->
+      <button class="wii-channel flex flex-col items-center justify-center p-4 group" onclick="openChannel('tech')">
+        <div class="w-20 h-20 md:w-24 md:h-24 flex flex-col items-center justify-center mb-1 relative">
+          <div class="w-14 h-14 rounded-full bg-gradient-to-b from-blue-300 to-indigo-500 flex items-center justify-center text-white relative shadow-inner group-hover:scale-105 transition-transform">
+            <i data-lucide="cloud-sun" class="w-8 h-8"></i>
+          </div>
+          <span class="text-[9px] font-bold text-indigo-500 mt-1">Nivel: Senior</span>
+        </div>
+        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Habilidades</span>
+      </button>
+
+      <!-- CANAL 6: PROPUESTAS/SERVICIOS (TIENDA WII) -->
+      <button class="wii-channel flex flex-col items-center justify-center p-4 group" onclick="openChannel('shop')">
+        <div class="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center mb-1">
+          <div class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-cyan-500 rounded-2xl flex items-center justify-center text-white relative group-hover:scale-110 transition-transform shadow-md">
+            <i data-lucide="shopping-bag" class="w-8 h-8"></i>
+            <div class="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 rounded-full border border-white"></div>
+          </div>
+        </div>
+        <span class="text-xs md:text-sm font-bold text-gray-600 group-hover:text-blue-500 transition-colors">Tienda Wii</span>
+      </button>
+
+      <!-- CANALES VACÍOS DE SOPORTE ESTÉTICO -->
+      <div class="wii-channel opacity-50 flex items-center justify-center p-4">
+        <span class="text-xs font-bold text-gray-300">Vacío</span>
+      </div>
+      <div class="wii-channel opacity-50 flex items-center justify-center p-4">
+        <span class="text-xs font-bold text-gray-300">Vacío</span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- BARRA DE MENÚ INFERIOR ESTILO WII -->
+  <footer class="w-full max-w-7xl mx-auto flex items-center justify-between mt-4 border-t-2 border-gray-200 pt-4 z-10">
+    <!-- Opciones de Wii (CV) -->
+    <button class="wii-btn w-20 h-12 md:w-24 md:h-14 flex items-center justify-center text-gray-500 hover:text-blue-500" onclick="openChannel('options')">
+      <div class="text-center">
+        <span class="block text-[10px] font-bold tracking-widest leading-none">Descargar</span>
+        <span class="text-xs font-black tracking-widest">CV</span>
+      </div>
+    </button>
+
+    <!-- Reloj Digital -->
+    <div class="bg-white border-2 border-gray-200 rounded-2xl px-6 py-2 shadow-inner text-center min-w-[150px]">
+      <span id="wii-time" class="text-xl md:text-2xl font-semibold text-gray-600 tracking-wider">00:00</span>
+      <span id="wii-date" class="block text-[10px] text-gray-400 uppercase tracking-widest mt-0.5">00 / 00</span>
+    </div>
+
+    <!-- Tablón de Mensajes (Contacto) -->
+    <button class="wii-btn w-20 h-12 md:w-24 md:h-14 flex items-center justify-center text-gray-500 hover:text-blue-500 relative" onclick="openChannel('messages')">
+      <i data-lucide="mail" class="w-6 h-6"></i>
+      <div class="absolute top-1 right-2 w-3 h-3 bg-blue-400 rounded-full animate-ping"></div>
+      <div class="absolute top-1 right-2 w-3 h-3 bg-blue-500 rounded-full border border-white"></div>
+    </button>
+  </footer>
+
+  <!-- MODAL DE CANAL DETALLADO (ZOOM DE CANAL) -->
+  <div id="channel-overlay" class="fixed inset-0 bg-black/40 z-40 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="wii-modal w-full max-w-2xl p-6 md:p-8 flex flex-col justify-between items-center text-center relative">
+      <!-- Contenido dinámico del Modal -->
+      <div id="modal-content" class="w-full flex-grow flex flex-col items-center justify-center mb-8">
+        <!-- Render dinámico -->
+      </div>
+
+      <!-- Acciones Clásicas de la Wii -->
+      <div class="flex gap-6 w-full justify-center">
+        <button onclick="closeChannel()" class="wii-btn px-8 py-3 text-xs md:text-sm font-bold text-gray-500 min-w-[120px]">
+          Volver
+        </button>
+        <button id="modal-start-btn" onclick="executeChannelAction()" class="wii-btn border-blue-400 text-blue-600 font-bold px-12 py-3 text-xs md:text-sm min-w-[150px]">
+          Comenzar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Inicializar Iconos
+    lucide.createIcons();
+
+    // Variables de Estado de Audio
+    let audioCtx = null;
+    let bgmInterval = null;
+    let isMuted = false;
+    let currentOpenChannel = null;
+
+    // Inicializar Audio Context con interacción del usuario
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        playAmbientLoop();
+      }
+    }
+
+    // SINTETIZADOR Retro de efectos de Wii
+    function playSound(type) {
+      if (!audioCtx || isMuted) return;
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      const now = audioCtx.currentTime;
+
+      if (type === 'hover') {
+        // Típico sonido rápido "tack" de selección al pasar por los botones
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(580, now);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+        osc.start(now);
+        osc.stop(now + 0.08);
+
+      } else if (type === 'click') {
+        // Sonido de confirmación brillante "ding-whoosh"
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(523.25, now); // Do 5
+        osc1.frequency.exponentialRampToValueAtTime(1046.50, now + 0.35); // Do 6
+
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(659.25, now); // Mi 5
+        osc2.frequency.exponentialRampToValueAtTime(1318.51, now + 0.35); // Mi 6
+
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.45);
+        osc2.stop(now + 0.45);
+      }
+    }
+
+    // Música de fondo generativa retro-ambient de Wii
+    function playAmbientLoop() {
+      if (!audioCtx || isMuted) return;
+
+      const playChord = () => {
+        if (isMuted) return;
+        const now = audioCtx.currentTime;
+        
+        // Progresión de acordes dulces estilo Nintendo
+        const chords = [
+          [261.63, 329.63, 392.00, 493.88], // Cmaj7
+          [293.66, 349.23, 440.00, 523.25], // Dmin7
+          [349.23, 440.00, 523.25, 659.25], // Fmaj7
+          [293.66, 392.00, 493.88, 587.33]  // G7
+        ];
+
+        const chord = chords[Math.floor(Math.random() * chords.length)];
+
+        chord.forEach((freq, index) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + (index * 0.12));
+          
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(0.015, now + 0.6 + (index * 0.12));
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 3.8);
+          
+          osc.start(now);
+          osc.stop(now + 4.0);
+        });
+      };
+
+      playChord();
+      bgmInterval = setInterval(playChord, 4000);
+    }
+
+    // Control del sonido global
+    const soundToggleBtn = document.getElementById('sound-toggle');
+    soundToggleBtn.addEventListener('click', (e) => {
+      isMuted = !isMuted;
+      if (isMuted) {
+        clearInterval(bgmInterval);
+        soundToggleBtn.innerHTML = `<i data-lucide="volume-x" class="w-4 h-4"></i><span>SILENCIADO</span>`;
+      } else {
+        initAudio();
+        soundToggleBtn.innerHTML = `<i data-lucide="volume-2" class="w-4 h-4"></i><span>SONIDO ACTIVADO</span>`;
+      }
+      lucide.createIcons();
+      e.stopPropagation();
+    });
+
+    // --- STREAMING_CHUNK: Sincronización del puntero y eventos de mouse ---
+    // MANEJO DEL PUNTERO ESTILO WII
+    const pointer = document.getElementById('wii-pointer');
+    document.addEventListener('mousemove', (e) => {
+      pointer.style.left = `${e.clientX}px`;
+      pointer.style.top = `${e.clientY}px`;
+    });
+
+    // Agregar sonidos Hover
+    function assignSoundEvents() {
+      const interactiveElements = document.querySelectorAll('button, .wii-channel, .wii-btn, #safety-screen div, input, textarea');
+      interactiveElements.forEach(el => {
+        el.removeEventListener('mouseenter', hoverSoundTrigger);
+        el.addEventListener('mouseenter', hoverSoundTrigger);
+      });
+    }
+    
+    function hoverSoundTrigger() {
+      playSound('hover');
+    }
+
+    // Pantalla de salud y seguridad
+    const safetyScreen = document.getElementById('safety-screen');
+    safetyScreen.addEventListener('click', () => {
+      safetyScreen.classList.add('opacity-0');
+      setTimeout(() => {
+        safetyScreen.style.display = 'none';
+        initAudio();
+        assignSoundEvents();
+      }, 700);
+    });
+
+    // Reloj de la barra inferior
+    function updateWiiClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+
+      document.getElementById('wii-time').textContent = `${hours}:${minutes} ${ampm}`;
+
+      const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+      const dayName = days[now.getDay()];
+      const day = now.getDate();
+      const month = now.getMonth() + 1;
+      document.getElementById('wii-date').textContent = `${dayName}. ${day} / ${month}`;
+    }
+    setInterval(updateWiiClock, 1000);
+    updateWiiClock();
+
+    // --- STREAMING_CHUNK: Definición de datos de canales interactivos ---
+    // BASE DE DATOS DE CONTENIDOS (Canales de Portafolio actualizados)
+    const channelsData = {
+      about: {
+        title: "Sobre Mí - Canal Biografía",
+        description: "Una pequeña descripción sobre mi personalidad, enfoque creativo y filosofía de trabajo.",
+        html: `
+          <div class="flex flex-col items-center">
+            <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4 border-2 border-blue-200">
+              <i data-lucide="user" class="w-10 h-10 text-blue-500"></i>
+            </div>
+            <h2 class="text-xl font-black text-gray-700 mb-2">¡Hola, soy Diseñador & Frontend!</h2>
+            <p class="text-sm text-gray-600 max-w-md leading-relaxed text-center">
+              Me encanta tender puentes entre la estética visual y la tecnología interactiva. Combino la rigurosidad técnica de la programación moderna con la nostalgia y la diversión de interfaces del pasado.
+            </p>
+          </div>
+        `,
+        action: () => alert("Redireccionando a tu biografía externa...")
+      },
+      projects: {
+        title: "Proyectos - Colección de Trabajos",
+        description: "Una vitrina de mis mejores proyectos interactivos y diseños profesionales.",
+        html: `
+          <div class="w-full max-h-64 overflow-y-auto pr-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div class="bg-white p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 transition-colors text-left">
+                <span class="text-[9px] font-bold text-blue-500 uppercase tracking-widest">UI/UX & Frontend</span>
+                <h4 class="text-xs font-black text-gray-700 mb-1">E-Commerce Gaming</h4>
+                <p class="text-[10px] text-gray-500 mb-2">Diseño y desarrollo completo de una plataforma de videojuegos con pasarela de pago.</p>
+                <div class="flex gap-1">
+                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">Tailwind</span>
+                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">React</span>
+                </div>
+              </div>
+              <div class="bg-white p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 transition-colors text-left">
+                <span class="text-[9px] font-bold text-green-500 uppercase tracking-widest">Identidad Visual</span>
+                <h4 class="text-xs font-black text-gray-700 mb-1">Branding Studio</h4>
+                <p class="text-[10px] text-gray-500 mb-2">Creación de logotipo, tipografía, paleta de colores y sitio web para agencia creativa.</p>
+                <div class="flex gap-1">
+                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">Figma</span>
+                  <span class="bg-gray-100 px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-600">Illustrator</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        action: () => window.open('https://github.com', '_blank')
+      },
+      experience: {
+        title: "Experiencia - Historial Profesional",
+        description: "Lugares y empresas donde he tenido el placer de aportar mi creatividad y desarrollo.",
+        html: `
+          <div class="w-full max-h-64 overflow-y-auto text-left pl-2">
+            <div class="border-l-2 border-blue-300 pl-4 space-y-4">
+              <div class="relative">
+                <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white"></div>
+                <span class="text-[9px] font-bold text-gray-400">2024 - Presente</span>
+                <h4 class="text-xs font-black text-gray-700">Diseñador UI Senior</h4>
+                <p class="text-[10px] text-blue-500 font-semibold mb-1">Estudio Creativo Alpha</p>
+                <p class="text-[10px] text-gray-500">Diseño de sistemas de diseño escalables y creación de aplicaciones Web interactivas.</p>
+              </div>
+              <div class="relative">
+                <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white"></div>
+                <span class="text-[9px] font-bold text-gray-400">2022 - 2024</span>
+                <h4 class="text-xs font-black text-gray-700">Desarrollador Frontend Jr.</h4>
+                <p class="text-[10px] text-blue-500 font-semibold mb-1">Agencia Digital Pixel</p>
+                <p class="text-[10px] text-gray-500">Maquetación de landing pages responsivas, optimización de velocidad de carga y SEO.</p>
+              </div>
+            </div>
+          </div>
+        `,
+        action: () => console.log("Experiencia desplegada")
+      },
+      mii: {
+        title: "Canal Mii - Avatar & Personalidad",
+        description: "Detalles curiosos sobre mí representados en un formato divertido estilo consola de videojuegos.",
+        html: `
+          <div class="flex flex-col items-center">
+            <div class="flex gap-4 items-center mb-2">
+              <div class="w-16 h-16 bg-orange-100 rounded-full border-2 border-orange-300 flex items-center justify-center">
+                <svg viewBox="0 0 64 64" class="w-12 h-12 text-gray-700 translate-y-1">
+                  <circle cx="32" cy="22" r="14" fill="#ffdbac" />
+                  <path d="M14 54 C14 38, 50 38, 50 54" fill="#f97316" />
+                  <circle cx="27" cy="22" r="2" fill="#000" />
+                  <circle cx="37" cy="22" r="2" fill="#000" />
+                  <path d="M28 28 Q32 31 36 28" stroke="#000" stroke-width="2" fill="none" />
+                </svg>
+              </div>
+              <div class="text-left">
+                <h4 class="text-sm font-black text-gray-700">Jugador Creativo 1</h4>
+                <p class="text-xs text-gray-400">Atributos del Mii:</p>
+                <div class="flex flex-wrap gap-1 mt-1">
+                  <span class="bg-orange-100 text-orange-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">Proactivo</span>
+                  <span class="bg-blue-100 text-blue-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">Innovador</span>
+                  <span class="bg-green-100 text-green-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">Detallista</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        action: () => alert("¡Creando un nuevo Mii virtual!")
+      },
+      tech: {
+        title: "Canal de Habilidades - Nivel de Stats",
+        description: "Mis principales habilidades técnicas representadas como estadísticas de nivel de mi sistema de diseño.",
+        html: `
+          <div class="w-full max-w-md">
+            <div class="space-y-3">
+              <div>
+                <div class="flex justify-between text-xs font-bold text-gray-500 mb-1">
+                  <span>DISEÑO DE INTERFACES (Figma/UI)</span>
+                  <span class="text-blue-500">95%</span>
+                </div>
+                <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                  <div class="bg-blue-500 h-full rounded-full" style="width: 95%;"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs font-bold text-gray-500 mb-1">
+                  <span>DESARROLLO FRONTEND (HTML/CSS/Tailwind)</span>
+                  <span class="text-blue-500">90%</span>
+                </div>
+                <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                  <div class="bg-blue-500 h-full rounded-full" style="width: 90%;"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs font-bold text-gray-500 mb-1">
+                  <span>PROGRAMACIÓN (JavaScript/React)</span>
+                  <span class="text-blue-500">85%</span>
+                </div>
+                <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                  <div class="bg-blue-500 h-full rounded-full" style="width: 85%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        action: () => console.log("Habilidades desplegadas.")
+      },
+      shop: {
+        title: "Tienda de Servicios - Contrataciones",
+        description: "Echa un vistazo a mi catálogo de servicios freelance para materializar tus ideas más brillantes.",
+        html: `
+          <div class="flex flex-col items-center">
+            <h2 class="text-xl font-black text-gray-700 mb-2">Servicios Disponibles</h2>
+            <div class="grid grid-cols-2 gap-3 max-w-sm">
+              <div class="bg-white p-2 rounded-xl border border-gray-200 text-center">
+                <i data-lucide="monitor" class="w-6 h-6 text-cyan-500 mx-auto mb-1"></i>
+                <h4 class="text-[10px] font-bold text-gray-700">Desarrollo Web</h4>
+                <p class="text-[8px] text-gray-400">Portafolios, Landings, Sitios Corporativos.</p>
+              </div>
+              <div class="bg-white p-2 rounded-xl border border-gray-200 text-center">
+                <i data-lucide="layers" class="w-6 h-6 text-cyan-500 mx-auto mb-1"></i>
+                <h4 class="text-[10px] font-bold text-gray-700">Diseño UI/UX</h4>
+                <p class="text-[8px] text-gray-400">Estructura interactiva, wireframes, Figma.</p>
+              </div>
+            </div>
+          </div>
+        `,
+        action: () => openChannel('messages')
+      },
+      options: {
+        title: "Opciones de Wii - Descarga de CV",
+        description: "Obtén mi Curriculum Vitae oficial en formato PDF para conocer mi trasfondo detallado.",
+        html: `
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 bg-gray-100 rounded-2xl border-2 border-gray-300 flex items-center justify-center mb-4">
+              <i data-lucide="file-down" class="w-8 h-8 text-gray-600"></i>
+            </div>
+            <h2 class="text-lg font-black text-gray-700 mb-1">Descargar Mi CV</h2>
+            <p class="text-xs text-gray-500 max-w-xs mb-2">Historial laboral formateado y optimizado listo para imprimir.</p>
+          </div>
+        `,
+        action: () => alert("Descarga del archivo CV PDF simulada de forma exitosa.")
+      },
+      messages: {
+        title: "Tablón de Mensajes - Contacto Directo",
+        description: "¡Envíame un mensaje rápido! Me pondré en contacto contigo lo antes posible para tus ideas.",
+        html: `
+          <div class="w-full max-w-md mx-auto">
+            <h2 class="text-xl font-black text-gray-700 mb-2">Enviar Mensaje</h2>
+            <form class="space-y-2 text-left" onsubmit="event.preventDefault(); alert('¡Tu mensaje ha sido enviado! Me contactaré pronto.');">
+              <input type="text" placeholder="Tu Nombre" class="w-full p-2 text-xs border border-gray-300 rounded-lg outline-none focus:border-blue-500">
+              <input type="email" placeholder="Tu Correo Electrónico" class="w-full p-2 text-xs border border-gray-300 rounded-lg outline-none focus:border-blue-500">
+              <textarea placeholder="Hola, me gustaría platicar sobre un proyecto contigo..." class="w-full p-2 text-xs border border-gray-300 rounded-lg h-20 outline-none resize-none focus:border-blue-500"></textarea>
+            </form>
+          </div>
+        `,
+        action: () => alert("¡Mensaje enviado exitosamente!")
+      }
+    };
+
+    // --- ACCIONES DE LOS POPUPS (CANAL ZOOM) ---
+    function openChannel(channelKey) {
+      currentOpenChannel = channelKey;
+      const channel = channelsData[channelKey];
+      playSound('click');
+
+      const modalContent = document.getElementById('modal-content');
+      modalContent.innerHTML = `
+        <div class="w-full flex flex-col items-center">
+          <span class="text-xs font-black text-blue-500 tracking-wider uppercase mb-2">Canal Seleccionado</span>
+          <h3 class="text-2xl font-black text-gray-800 mb-4">${channel.title}</h3>
+          <div class="w-full py-4 min-h-[140px] flex items-center justify-center">
+            ${channel.html}
+          </div>
+          <p class="text-xs text-gray-400 max-w-md leading-relaxed mt-4">${channel.description}</p>
+        </div>
+      `;
+
+      lucide.createIcons();
+      assignSoundEvents();
+
+      // Configurar el botón de inicio según el tipo de acción
+      const startBtn = document.getElementById('modal-start-btn');
+      if (channelKey === 'messages') {
+        startBtn.textContent = "Enviar Correo";
+      } else if (channelKey === 'options') {
+        startBtn.textContent = "Descargar CV";
+      } else {
+        startBtn.textContent = "Comenzar";
+      }
+
+      document.getElementById('channel-overlay').classList.remove('hidden');
+    }
+
+    function closeChannel() {
+      playSound('hover');
+      document.getElementById('channel-overlay').classList.add('hidden');
+      currentOpenChannel = null;
+    }
+
+    function executeChannelAction() {
+      if (currentOpenChannel && channelsData[currentOpenChannel]) {
+        playSound('click');
+        channelsData[currentOpenChannel].action();
+      }
+    }
+  </script>
+</body>
+</html>
