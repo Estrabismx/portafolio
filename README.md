@@ -6,11 +6,11 @@ Hola soy Camila Ramírez, aka EstrabismX
 
 <br>
 
->[NOTE]
+>[!NOTE]
 > CHECKLIST 
 
 
-- [] Cambiar a iconos propios o con libre uso
+- [ ] Cambiar a iconos propios o con libre uso
 
 - [ ] Ver la adaptabilidad a celulares
 
