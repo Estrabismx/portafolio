@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visor de Proyectos - 02 </title>
+  
+  <!-- Tailwind CSS para utilidades de diseño modernas -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Fuente pixelada clásica para detalles y Tahoma para la autenticidad del sistema operativo MS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --win98-bg: #c0c0c0;
+      --win98-fg: #000000;
+      --win98-white: #ffffff;
+      --win98-gray: #808080;
+      --win98-dark-gray: #404040;
+      --win98-blue: #000080;
+      --win98-blue-light: #1084d0;
+    }
+
+    body {
+      font-family: 'Tahoma', 'Geneva', sans-serif;
+      background-color: var(--win98-bg);
+      color: var(--win98-fg);
+      overflow: hidden;
+      user-select: none;
+      image-rendering: pixelated;
+    }
+
+    /* Bordes clásicos de Windows 98 en 3D Outset (hacia afuera) */
+    .win98-outset {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+    }
+
+    /* Bordes de botones al presionarse o áreas de entrada 3D Inset (hacia adentro) */
+    .win98-inset {
+      background-color: var(--win98-white);
+      border: 2px solid;
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+      box-shadow: inset 1px 1px 0px var(--win98-fg), inset -1px -1px 0px #dfdfdf;
+    }
+
+    .win98-button {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+      padding: 3px 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    .win98-button:active {
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+      box-shadow: inset 1px 1px 0px var(--win98-fg);
+      padding: 4px 9px 2px 11px;
+    }
+
+    /* Barra de títulos clásica con gradiente azul */
+    .win98-titlebar {
+      background: linear-gradient(90deg, var(--win98-blue), var(--win98-blue-light));
+      color: var(--win98-white);
+      font-weight: bold;
+      font-size: 13px;
+      padding: 3px 5px 3px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .win98-titlebar.inactive {
+      background: linear-gradient(90deg, var(--win98-gray), #b0b0b0);
+    }
+
+    /* Controles pequeños de la ventana */
+    .win98-window-btn {
+      width: 16px;
+      height: 14px;
+      background-color: var(--win98-bg);
+      border: 1px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      font-size: 9px;
+      font-weight: bold;
+      color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .win98-window-btn:active {
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+    }
+
+    /* Pestañas de Propiedades de Windows (Tab Control) */
+    .win98-tab {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-white) var(--win98-white);
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+      padding: 3px 12px;
+      font-size: 12px;
+      margin-right: 2px;
+      position: relative;
+      top: 2px;
+      z-index: 10;
+    }
+
+    .win98-tab.active {
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-white) var(--win98-white);
+      padding-top: 5px;
+      top: 0px;
+      font-weight: bold;
+      z-index: 30;
+    }
+
+    /* Scrollbars retro */
+    ::-webkit-scrollbar {
+      width: 16px;
+      height: 16px;
+    }
+    ::-webkit-scrollbar-track {
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"><rect width="1" height="1" fill="%23ffffff"/><rect x="1" y="1" width="1" height="1" fill="%23ffffff"/><rect x="1" width="1" height="1" fill="%23e0e0e0"/><rect y="1" width="1" height="1" fill="%23e0e0e0"/></svg>');
+      background-color: #dfdfdf;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white);
+    }
+
+    .retro-cursor, body {
+      cursor: url('assets/svg/cursor-estandar.svg'), default, auto;
+    }
+
+    a, button, select, option, input, textarea,
+    .win98-button, .win98-window-btn, .desktop-icon, .start-menu-item, .win98-tab,
+    .cursor-pointer, .hover\:underline {
+      cursor: url('assets/svg/cursor-accion.svg'), pointer !important;
+    }
+
+    /* Contenedor de la ventana completa */
+    .project-window {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body class="retro-cursor h-screen w-screen overflow-hidden flex flex-col justify-between">
+
+  <!-- ================= CONTAINER PRINCIPAL DE PROYECTO (VENTANA COMPLETA) ================= -->
+  <div class="project-window win98-outset flex-1 flex flex-col overflow-hidden">
+    
+    <!-- Barra de títulos -->
+    <div class="win98-titlebar select-none">
+      <div class="flex items-center gap-1.5">
+        <svg class="w-4 h-4" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="4" width="24" height="24" fill="#ffffff" stroke="black" stroke-width="2"/>
+          <path d="M4 10 H28" stroke="black" stroke-width="2"/>
+          <circle cx="10" cy="7" r="1" fill="red"/>
+          <circle cx="14" cy="7" r="1" fill="yellow"/>
+          <circle cx="18" cy="7" r="1" fill="green"/>
+        </svg>
+        <span>Propiedades: Lampel </span>
+      </div>
+      <div class="flex gap-1">
+        <button class="win98-window-btn" onclick="navigateTo('proyectos.html')">_</button>
+        <button class="win98-window-btn" onclick="navigateTo('proyectos.html')">⬛</button>
+        <button class="win98-window-btn" onclick="navigateTo('proyectos.html')">X</button>
+      </div>
+    </div>
+
+    <!-- Barra de menú decorativa (Texto estático sin cursor de acción) -->
+    <div class="flex gap-3 px-2 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-[#000000] select-none">
+      <span><u>A</u>rchivo</span>
+      <span><u>E</u>dición</span>
+      <span><u>V</u>er</span>
+      <span>A<u>y</u>uda</span>
+    </div>
+
+    <!-- CONTENEDOR DE PESTAÑAS (Tab Control) -->
+    <div class="px-2 pt-2 bg-[#c0c0c0] flex select-none">
+      <button class="win98-tab active" id="tab-desc" onclick="switchTab('desc')">General</button>
+      <button class="win98-tab" id="tab-specs" onclick="switchTab('specs')">Especificaciones</button>
+      <button class="win98-tab" id="tab-capturas" onclick="switchTab('capturas')">Galeria</button>
+    </div>
+
+    <!-- PANEL INTERNO DE PROPIEDADES (Inset Blanco) -->
+    <div class="flex-1 bg-[#c0c0c0] p-3 border-t-2 border-[#ffffff] overflow-hidden flex flex-col">
+      <div class="flex-1 bg-white win98-inset p-4 flex flex-col md:flex-row gap-6 overflow-y-auto">
+        
+        <!-- Lateral izquierdo: Previsualización de Imagen / Mockup Principal -->
+        <div class="w-full md:w-1/2 flex flex-col justify-between h-full">
+          <!-- Caja contenedora de proporción fija con fondo negro para adaptarse perfectamente -->
+          <div class="border-2 border-inset bg-black p-1 relative cursor-pointer flex-1 flex items-center justify-center min-h-[250px] max-h-[380px] overflow-hidden" onclick="openImageViewer()">
+            <!-- Imagen Principal del Proyecto (Ajustada con object-contain para mostrarla completa) -->
+            <img id="main-preview-img" src="assets/proyecto-02/proyecto_02a.jpg" alt="Mockup de Diseño" class="max-w-full max-h-full object-contain" onerror="this.src='https://placehold.co/600x400/000000/00ff00?text=Mockup+Proyecto'">
+            <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white font-mono text-[9px] px-1.5 py-0.5 pointer-events-none rounded border border-gray-400">
+              🔍 CLIC PARA AMPLIAR
+            </div>
+          </div>
+          <div class="mt-4 border border-dashed border-gray-400 p-2 bg-gray-100 text-[11px] font-mono select-none flex-shrink-0">
+            <span class="block text-gray-500" id="info-format">• TIPO: Fabricación Manual</span>
+            <span class="block text-gray-500" id="info-resolution">• OBJETIVO: Crear una luminaria que influya en el ambiente de un espacio  </span>
+            <span class="block text-gray-500">• DESAFIO: Generar un sistema movil </span>
+          </div>
+        </div>
+
+        <!-- Lateral Derecho: Información que cambia según la pestaña seleccionada -->
+        <div class="flex-1 flex flex-col h-full overflow-hidden">
+          
+          <!-- CONTENIDO: PESTAÑA GENERAL (DESCRIPCIÓN) -->
+          <div id="content-desc" class="tab-content flex-1 flex flex-col">
+            <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">Ejercicio Conceptual - Lampel</h1>
+            <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
+            Lampel nació como un ejercicio conceptual de diseño, donde se buscó generar una experiencia que influya en el ambiente. En el caso de Lampel se enfocá en el dinamismo de un espacio, generando una apertura a espacios más sociales al aumentar la intensidad luminica subiendo su pantalla, pero también generando un espacio más íntimo al bajar su pantalla y disminuir la intensidad luminica.
+            </p>
+            <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
+              Trabajo realizado en conjunto de: Isidora Alvarez - Jiamin Huang - Dayana Pañitrur 
+            </p>
+            <div class="mt-auto">
+              <span class="font-bold text-xs block mb-1">Paletas de Colores Utilizadas:</span>
+              <div class="flex gap-2">
+                <div class="w-6 h-6 border bg-[#FCF5F3]" title="Blanco"></div>
+                <div class="w-6 h-6 border bg-[#cc9966]" title="Café02"></div>
+                <div class="w-6 h-6 border bg-[#aa672b]" title="Café03"></div>
+                <div class="w-6 h-6 border bg-[#cc9966]" title="Café04"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTENIDO: PESTAÑA ESPECIFICACIONES (FICHA TÉCNICA) -->
+          <div id="content-specs" class="tab-content hidden flex-1 flex flex-col">
+            <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">FICHA TÉCNICA DEL DESARROLLO</h1>
+            <table class="w-full text-xs font-mono text-left border-collapse">
+              <tbody>
+                <tr class="border-b border-gray-200">
+                  <td class="py-2 font-bold text-gray-600">Herramientas:</td>
+                  <td class="py-2">Autocad, Rhino 8</td>
+                </tr>
+                <tr class="border-b border-gray-200">
+                  <td class="py-2 font-bold text-gray-600">Tiempo de Desarrollo:</td>
+                  <td class="py-2">3 Semanas</td>
+                </tr>
+                <tr class="border-b border-gray-200">
+                  <td class="py-2 font-bold text-gray-600">Materiales:</td>
+                  <td class="py-2">Madera de pino 2x4", Tornillos 1 1/2", Tornillos 2 1/4", Cola Fría</td>
+                </tr>
+                <tr>
+                  <td class="py-2 font-bold text-gray-600">Origen:</td>
+                  <td class="py-2">Taller Colectivo 2025-2.</td>
+                </tr>
+              </tbody>
+            </table>
+            
+            <!-- Barra de esfuerzo / Recursos del sistema -->
+            <div class="mt-6">
+              <span class="font-bold text-xs block mb-1 text-gray-700">Dificultad:</span>
+              <div class="h-5 bg-gray-200 border border-[#808080] relative">
+                <div class="h-full bg-blue-800" style="width: 67%;"></div>
+                <span class="absolute inset-0 flex items-center justify-center text-[10px] text-white font-bold">Complejidad media alta</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTENIDO: PESTAÑA CAPTURAS (GALERÍA UNIFORME - 8 MINIATURAS DEL MISMO TAMAÑO) -->
+          <div id="content-capturas" class="tab-content hidden flex-1 flex flex-col overflow-hidden">
+            <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">GALERÍA</h1>
+            <p class="text-xs text-gray-600 font-mono mb-2">Haz clic en una miniatura para visualizarla a gran escala a la izquierda.</p>
+            
+            <!-- Grilla con scroll de Windows donde todos los elementos miden exactamente el mismo tamaño (h-28) -->
+            <div class="grid grid-cols-2 gap-2 flex-1 overflow-y-auto pr-1 select-none">
+              
+              <!-- Miniatura 1 -->
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02a.jpg', 'Entrega Encargo', '800 x 600 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+                  <img src="assets/proyecto-02/proyecto_02a.jpg" alt="Captura 1" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02a'">
+                </div>
+                <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02a.jpg</div>
+              </div>
+              
+              <!-- Miniatura 2 -->
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02b.jpg', 'Posición 1', '1024 x 768 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+                  <img src="assets/proyecto-02/proyecto_02b.jpg" alt="Captura 2" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02b'">
+                </div>
+                <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02b.jpg</div>
+              </div>
+              
+              <!-- Miniatura 3 -->
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02c.jpg', 'Posición 2', '1280 x 960 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+                  <img src="assets/proyecto-02/proyecto_02c.jpg" alt="Captura 3" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02c'">
+                </div>
+                <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02c.jpg</div>
+              </div>
+              
+              <!-- Miniatura 4 -->
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02d.gif', 'Movimiento', '800 x 600 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+                  <img src="assets/proyecto-02/proyecto_02d.gif" alt="Captura 4" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02d'">
+                </div>
+                <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02d.gif</div>
+              </div>
+
+              <!-- Miniatura 5 -->
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02e.jpg', 'Planimetría Explosionado', '1280 x 1024 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+                  <img src="assets/proyecto-02/proyecto_02e.jpg" alt="Captura 5" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02e'">
+                </div>
+                <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02e.jpg</div>
+              </div>
+
+              <!-- Miniatura 6 -->
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02f.jpg', 'Planimetría Isometrica', '1024 x 768 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+                  <img src="assets/proyecto-02/proyecto_02f.jpg" alt="Captura 6" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02f'">
+                </div>
+                <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02f.jpg</div>
+              </div>
+
+              <!-- Miniatura 7 -->
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02g.png', 'Proceso', '1600 x 1200 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+                  <img src="assets/proyecto-02/proyecto_02g.png" alt="Captura 7" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02g'">
+                </div>
+                <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02g.png</div>
+              </div>
+
+              <!-- Miniatura 8 -->
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02h.png', 'Lamina Fuerzas', '1024 x 1024 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+                  <img src="assets/proyecto-02/proyecto_02h.png" alt="Captura 8" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02h'">
+                </div>
+                <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02h.png</div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Botones de Acción inferior -->
+      <div class="flex justify-between items-center mt-3 select-none flex-shrink-0">
+        <span class="text-xs text-gray-600 font-mono">Archivo: C:\Mis Documentos\Proyectos\Proyecto_02.3dm</span>
+        <div class="flex gap-2">
+          <!-- El botón Aceptar te devuelve a proyectos.html de forma interactiva en la misma pestaña -->
+          <button class="win98-button font-bold text-xs" onclick="navigateTo('proyectos.html')">Aceptar (Volver)</button>
+          <button class="win98-button text-xs" onclick="navigateTo('proyectos.html')">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- ================= VISOR DE IMÁGENES DE WINDOWS 98 (MODAL RETRO EN GRANDE) ================= -->
+  <div id="image-viewer-window" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+    <div class="win98-outset w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+      <!-- Barra de título del Visor -->
+      <div class="win98-titlebar select-none">
+        <div class="flex items-center gap-1.5">
+          <span> Visor de Imágenes - [proyecto_02a.jpg]</span>
+        </div>
+        <button class="win98-window-btn" onclick="closeImageViewer()">X</button>
+      </div>
+      <!-- Barra de menú decorativa del Visor -->
+      <div class="flex gap-3 px-2 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-[#000000] select-none">
+        <span><u>A</u>rchivo</span>
+        <span><u>V</u>er</span>
+        <span><u>I</u>magen</span>
+        <span><u>H</u>erramientas</span>
+      </div>
+      <!-- Área principal de la imagen expandida -->
+      <div class="flex-1 bg-gray-900 flex items-center justify-center p-4 overflow-hidden min-h-[350px]">
+        <img id="viewer-expanded-img" src="assets/proyecto-02/proyecto_02a.jpg" alt="Vista Ampliada" class="max-w-full max-h-[70vh] object-contain border border-gray-700" onerror="this.src='https://placehold.co/1200x900/000000/00ff00?text=proyecto_02a'">
+      </div>
+      <!-- Controles inferiores del Visor -->
+      <div class="bg-[#c0c0c0] p-2 flex justify-between items-center border-t border-white select-none">
+        <span class="text-xs font-mono" id="viewer-dimensions">Dimensiones: 1200 x 900 PX</span>
+        <!-- Botones con lógica clásica para avanzar en las fotografías anteriores y posteriores -->
+        <div class="flex gap-2">
+          <button class="win98-button text-xs font-bold" onclick="navigateViewer(-1)">◀ Anterior</button>
+          <button class="win98-button text-xs font-bold" onclick="navigateViewer(1)">Siguiente ▶</button>
+          <button class="win98-button text-xs font-bold" onclick="closeImageViewer()">Cerrar Visor</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= DIÁLOGOS DE ALERTA DE SISTEMA (MOCK ALERTS) ================= -->
+  <div id="sys-alert" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 win98-outset" style="width: 320px;">
+    <div class="win98-titlebar flex justify-between items-center select-none">
+      <span>Mensaje del Sistema</span>
+      <button class="win98-window-btn cursor-pointer" onclick="closeAlert()">X</button>
+    </div>
+    <div class="p-4 flex gap-3 items-center bg-[#c0c0c0]">
+      <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-blue-600 border-2 border-black rounded-full font-bold text-white text-lg">i</div>
+      <p id="sys-alert-text" class="text-xs font-semibold"></p>
+    </div>
+    <div class="p-2 flex justify-end bg-[#c0c0c0] border-t border-gray-400">
+      <button class="win98-button font-sans" onclick="closeAlert()">Aceptar</button>
+    </div>
+  </div>
+
+
+  <!-- ================= CODIGO JAVASCRIPT ================= -->
+  <script>
+    // Registro de los archivos de la galería del proyecto para la navegación secuencial
+    const galeriaImagenes = [
+      { url: 'assets/proyecto-02/proyecto_02a.jpg', caption: 'CONCEPTO PRINCIPAL BRANDING', resolution: '800 x 600 PX' },
+      { url: 'assets/proyecto-02/proyecto_02b.jpg', caption: 'DISEÑO DE PAPELERÍA CORPORATIVA', resolution: '1024 x 768 PX' },
+      { url: 'assets/proyecto-02/proyecto_02c.jpg', caption: 'PROTOTIPO DE EMPAQUE (BOX)', resolution: '1280 x 960 PX' },
+      { url: 'assets/proyecto-02/proyecto_02d.gif', caption: 'ESTUDIO DE RETÍCULA Y FUENTES', resolution: '800 x 600 PX' },
+      { url: 'assets/proyecto-02/proyecto_02e.jpg', caption: 'MOCKUP DE INTERFAZ WEB RESPONSIVA', resolution: '1280 x 1024 PX' },
+      { url: 'assets/proyecto-02/proyecto_02f.jpg', caption: 'ESTILO EDITORIAL Y SEÑALIZACIÓN', resolution: '1024 x 768 PX' },
+      { url: 'assets/proyecto-02/proyecto_02g.png', caption: 'PRUEBAS DE IMPRESIÓN Y TEXTURAS', resolution: '1600 x 1200 PX' },
+      { url: 'assets/proyecto-02/proyecto_02h.png', caption: 'ANÁLISIS DE HARDWARE Y RENDER', resolution: '1024 x 1024 PX' }
+    ];
+
+    let currentViewerIndex = 0;
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.win98-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+      });
+
+      document.getElementById('tab-' + tabId).classList.add('active');
+      document.getElementById('content-' + tabId).classList.remove('hidden');
+    }
+
+    // Cambiar la vista previa interactiva a la izquierda al hacer clic en las miniaturas
+    function updatePreview(imgUrl, caption, resolution) {
+      const mainPreview = document.getElementById('main-preview-img');
+      const infoResolution = document.getElementById('info-resolution');
+      const infoFormat = document.getElementById('info-format');
+      
+      mainPreview.src = imgUrl;
+      infoResolution.innerText = `• RESOLUCIÓN: ${resolution} (OPTIMIZADO)`;
+      infoFormat.innerText = `• NOMBRE: ${caption}`;
+
+      // Sincronizar el visor expandido
+      document.getElementById('viewer-expanded-img').src = imgUrl;
+      document.getElementById('viewer-dimensions').innerText = `Dimensiones: ${resolution}`;
+
+      // Actualizar el título de la barra de título del visor modal
+      const visorTitle = document.querySelector('#image-viewer-window .win98-titlebar span');
+      if (visorTitle) {
+        visorTitle.innerText = ` Visor de Imágenes - [${imgUrl.split('/').pop()}]`;
+      }
+
+      // Sincronizar el índice de la imagen actual
+      const index = galeriaImagenes.findIndex(item => item.url === imgUrl);
+      if (index !== -1) {
+        currentViewerIndex = index;
+      }
+    }
+
+    // Navegación secuencial por la galería desde los botones del visor de imágenes
+    function navigateViewer(direction) {
+      currentViewerIndex += direction;
+      
+      // Bucle de Wrap-around (al llegar al final vuelve al inicio, y viceversa)
+      if (currentViewerIndex < 0) {
+        currentViewerIndex = galeriaImagenes.length - 1;
+      } else if (currentViewerIndex >= galeriaImagenes.length) {
+        currentViewerIndex = 0;
+      }
+
+      const imagenActual = galeriaImagenes[currentViewerIndex];
+
+      // Actualizar la interfaz de previsualización general de fondo
+      updatePreview(imagenActual.url, imagenActual.caption, imagenActual.resolution);
+    }
+
+    function openImageViewer() {
+      document.getElementById('image-viewer-window').classList.remove('hidden');
+    }
+
+    function closeImageViewer() {
+      document.getElementById('image-viewer-window').classList.add('hidden');
+    }
+
+    // Redirección
+    function navigateTo(url) {
+      window.location.href = url;
+    }
+
+    // Alertas retro personalizadas
+    function showAlert(text) {
+      document.getElementById('sys-alert-text').innerText = text;
+      document.getElementById('sys-alert').classList.remove('hidden');
+    }
+
+    function closeAlert() {
+      document.getElementById('sys-alert').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
