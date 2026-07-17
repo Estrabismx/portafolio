@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 372.63 366.13">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-1, .cls-2 {
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 6px;
+      }
+
+      .cls-2 {
+        fill: #666;
+      }
+    </style>
+  </defs>
+  <g id="Ilustración_de_conjunto_de_iconos" data-name="Ilustración de conjunto de iconos">
+    <g>
+      <rect class="cls-1" x="99.93" y="93.44" width="269.7" height="269.7" rx="12" ry="12"/>
+      <rect class="cls-2" x="3" y="3" width="269.7" height="269.7" rx="12" ry="12"/>
+    </g>
+  </g>
+</svg>

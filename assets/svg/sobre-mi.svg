@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 314.89 442.82">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #999;
+      }
+
+      .cls-2 {
+        fill: #009;
+      }
+
+      .cls-3 {
+        fill: #fff;
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 6px;
+      }
+    </style>
+  </defs>
+  <g id="Ilustración_de_conjunto_de_iconos" data-name="Ilustración de conjunto de iconos">
+    <g>
+      <rect class="cls-3" x="-60.96" y="66.96" width="436.82" height="308.89" rx="12" ry="12" transform="translate(-63.96 378.85) rotate(-90)"/>
+      <rect class="cls-2" x="29.46" y="46.92" width="255.98" height="29.62" rx="6" ry="6"/>
+      <rect class="cls-1" x="29.46" y="117.58" width="205.84" height="18.45" rx="3.75" ry="3.75"/>
+      <rect class="cls-1" x="29.46" y="193.22" width="127.99" height="14.81" rx="2.65" ry="2.65"/>
+      <rect class="cls-1" x="29.46" y="313.22" width="114.26" height="14.81" rx="2.5" ry="2.5"/>
+      <rect class="cls-1" x="29.46" y="253.22" width="102.92" height="14.81" rx="2.37" ry="2.37"/>
+      <rect class="cls-1" x="29.46" y="223.22" width="169.58" height="14.81" rx="3.05" ry="3.05"/>
+      <rect class="cls-1" x="29.46" y="283.22" width="196.82" height="14.81" rx="3.28" ry="3.28"/>
+    </g>
+  </g>
+</svg>
