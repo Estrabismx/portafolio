@@ -14,7 +14,6 @@
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
   <style>
-    /* Estilos base inspirados en la interfaz clásica de Windows 95/98 */
     :root {
       --win98-bg: #c0c0c0;
       --win98-fg: #000000;
@@ -102,11 +101,11 @@
     }
 
     /* CURSORES PERSONALIZADOS (Enlace a la carpeta local de assets) */
- html, body, .retro-cursor {
-      cursor: url('assets/svg/cursor-estandar.svg') 0 0, default !important;
+    .retro-cursor, body {
+      cursor: url('assets/svg/cursor-estandar.svg'), default, auto;
     }
 
-    /* Aplicación precisa del cursor de acción a todos los elementos verdaderamente interactivos */
+    /* Aplicación precisa del cursor de acción a todos los elementos interactivos */
     a, button, select, option, input, textarea,
     .win98-button, .win98-window-btn, .file-icon,
     .cursor-pointer, .hover\:underline {
@@ -225,8 +224,8 @@
       
       <!-- Panel de Vista Web de Windows 98 (Lateral Izquierdo) -->
       <div class="w-full md:w-80 bg-[#f0f0f0] border-r border-gray-400 p-4 flex flex-col justify-between overflow-y-auto select-none" id="preview-panel">
-        <!-- Cargado dinámicamente mediante JS cuando se selecciona un archivo -->
-        <div class="flex flex-col h-full justify-between">
+        <!-- El ID 'preview-dynamic-content' es crítico para actualizar el visor sin corromper el panel -->
+        <div id="preview-dynamic-content" class="flex flex-col h-full justify-between">
           <div>
             <h2 class="text-lg font-bold text-[#000080] border-b-2 border-[#000080] pb-1 uppercase font-mono">Proyectos</h2>
             <p class="text-xs text-gray-600 mt-2 font-mono">Selecciona un archivo del directorio de la derecha para visualizar la información de diseño y ejecutar el ejecutable.</p>
@@ -283,7 +282,7 @@
         <!-- Proyecto 4 -->
         <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p4')" ondblclick="runDemo('p4')">
           <svg class="w-12 h-12 mb-1" viewBox="0 0 32 32" fill="none">
-            <!-- Icono ejecutable / engranaje -->
+            <!-- Icono de engranaje para aplicación ejecutable -->
             <rect x="4" y="4" width="24" height="24" fill="#c0c0c0" stroke="black" stroke-width="2"/>
             <circle cx="16" cy="16" r="6" fill="#808080" stroke="black" stroke-width="1.5"/>
             <rect x="14" y="6" width="4" height="20" fill="black"/>
@@ -341,13 +340,13 @@
       <p id="sys-alert-text" class="text-xs font-semibold"></p>
     </div>
     <div class="p-2 flex justify-end bg-[#c0c0c0] border-t border-gray-400">
-      <button class="win98-button font-sans" onclick="closeAlert()">Aceptar</button>
+      <button class="win98-button font-sans" id="alert-confirm-btn" onclick="closeAlert()">Aceptar</button>
     </div>
   </div>
 
   <!-- ================= CODIGO JAVASCRIPT ================= -->
   <script>
-    // Base de datos de los 6 proyectos configurables
+    // Base de datos de los 6 proyectos configurables con su respectiva URL de destino
     const proyectos = {
       p1: {
         title: "branding_st.lnk",
@@ -357,7 +356,8 @@
         size: "142 KB",
         image: "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=400&q=80",
         desc: "Rediseño de manual de marca retro-futurista basado en retículas ortogonales y tipografía pixelada para un estudio de arte digital.",
-        tags: ["Branding", "Identidad", "Illustrator"]
+        tags: ["Branding", "Identidad", "Illustrator"],
+        url: "proyecto_01.html"
       },
       p2: {
         title: "web_retro.html",
@@ -367,7 +367,8 @@
         size: "34 KB",
         image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=400&q=80",
         desc: "Maquetación nostálgica con tablas y marcos simulando el internet de los noventa. Optimizado para Netscape Navigator.",
-        tags: ["HTML", "CSS", "UI Retro"]
+        tags: ["HTML", "CSS", "UI Retro"],
+        url: "proyecto_02.html"
       },
       p3: {
         title: "isomet_icons.bmp",
@@ -377,7 +378,8 @@
         size: "920 KB",
         image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80",
         desc: "Galería de ilustraciones y assets pixelados representando consolas, disquetes de 3.5 pulgadas y hardware del siglo pasado.",
-        tags: ["Isometric", "Pixel-Art", "Blender"]
+        tags: ["Isometric", "Pixel-Art", "Blender"],
+        url: "proyecto_03.html"
       },
       p4: {
         title: "vintage_play.exe",
@@ -387,7 +389,8 @@
         size: "2.1 MB",
         image: "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&q=80",
         desc: "Concepto de UI táctil para reproductor de audio, incorporando físicas analógicas basadas en reproductores de casete clásicos.",
-        tags: ["Mobile UX", "Concept", "Figma"]
+        tags: ["Mobile UX", "Concept", "Figma"],
+        url: "proyecto_04.html"
       },
       p5: {
         title: "poster_90s.jpg",
@@ -397,7 +400,8 @@
         size: "340 KB",
         image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80",
         desc: "Diseño de afiche estético utilizando paletas cromáticas encendidas (cian y magenta) y patrones de cuadrícula abstracta.",
-        tags: ["Editorial", "Vaporwave", "Posters"]
+        tags: ["Editorial", "Vaporwave", "Posters"],
+        url: "proyecto_05.html"
       },
       p6: {
         title: "typ_catalog.doc",
@@ -407,7 +411,8 @@
         size: "72 KB",
         image: "https://images.unsplash.com/photo-1516962215378-7fa2e137ae93?w=400&q=80",
         desc: "Estudio tipográfico comparativo entre fuentes monoespaciadas clásicas para legibilidad óptima en terminales CRT.",
-        tags: ["Tipografía", "Análisis", "Layout"]
+        tags: ["Tipografía", "Análisis", "Layout"],
+        url: "proyecto_06.html"
       }
     };
 
@@ -427,17 +432,17 @@
       document.getElementById('sys-alert').classList.add('hidden');
     }
 
-    // Seleccionar y visualizar proyecto (Win98 Web View)
+    // Seleccionar y visualizar proyecto sin romper la estructura del panel lateral
     function selectProject(id) {
       const p = proyectos[id];
       if (!p) return;
 
-      // Actualizar Barra de Estado
+      // Actualizar Barra de Estado inferior
       document.getElementById('status-left').innerText = `Seleccionado: ${p.title} (${p.size})`;
 
-      // Actualizar Panel Izquierdo
-      const panel = document.getElementById('preview-panel');
-      panel.innerHTML = `
+      // Actualizar el área dinámica dentro del panel izquierdo sin sobreescribir la estructura raíz
+      const dynamicArea = document.getElementById('preview-dynamic-content');
+      dynamicArea.innerHTML = `
         <div class="flex flex-col h-full justify-between font-mono text-xs">
           <div>
             <h2 class="text-base font-bold text-[#000080] border-b-2 border-[#000080] pb-1 uppercase truncate">${p.title}</h2>
@@ -455,7 +460,7 @@
           </div>
           
           <div class="flex flex-col gap-2">
-            <button class="win98-button w-full text-xs font-bold font-sans" onclick="runDemo('${id}')">Ejecutar demo.exe</button>
+            <button class="win98-button w-full text-xs font-bold font-sans" onclick="runDemo('${id}')">Visualizar</button>
             <div class="border border-dashed border-gray-400 p-2 bg-gray-200">
               <span class="text-[10px] block text-gray-500">Año: ${p.year}</span>
               <span class="text-[10px] block text-gray-500">Tipo: ${p.type}</span>
@@ -466,11 +471,11 @@
       `;
     }
 
-    // Lanzar animación simulando cargar
+    // Redirige de inmediato en la pestaña actual sin abrir cuadros de diálogo intermedios
     function runDemo(id) {
       const p = proyectos[id];
-      if (p) {
-        alertSystem(`Iniciando simulación del sistema...\n\nArchivo: ${p.title}\nEstado: Ejecutando en entorno sandbox.\n\n¡La simulación está en línea!`);
+      if (p && p.url) {
+        window.location.href = p.url;
       }
     }
   </script>

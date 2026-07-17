@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visor de Proyectos - Windows 98</title>
+  
+  <!-- Tailwind CSS para utilidades de diseño modernas -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Fuente pixelada clásica para detalles y Tahoma para la autenticidad del sistema operativo MS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --win98-bg: #c0c0c0;
+      --win98-fg: #000000;
+      --win98-white: #ffffff;
+      --win98-gray: #808080;
+      --win98-dark-gray: #404040;
+      --win98-blue: #000080;
+      --win98-blue-light: #1084d0;
+    }
+
+    body {
+      font-family: 'Tahoma', 'Geneva', sans-serif;
+      background-color: var(--win98-bg);
+      color: var(--win98-fg);
+      overflow: hidden;
+      user-select: none;
+      image-rendering: pixelated;
+    }
+
+    /* Bordes clásicos de Windows 98 en 3D Outset (hacia afuera) */
+    .win98-outset {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+    }
+
+    /* Bordes de botones al presionarse o áreas de entrada 3D Inset (hacia adentro) */
+    .win98-inset {
+      background-color: var(--win98-white);
+      border: 2px solid;
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+      box-shadow: inset 1px 1px 0px var(--win98-fg), inset -1px -1px 0px #dfdfdf;
+    }
+
+    .win98-button {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+      padding: 3px 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    .win98-button:active {
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+      box-shadow: inset 1px 1px 0px var(--win98-fg);
+      padding: 4px 9px 2px 11px;
+    }
+
+    /* Barra de títulos clásica con gradiente azul */
+    .win98-titlebar {
+      background: linear-gradient(90deg, var(--win98-blue), var(--win98-blue-light));
+      color: var(--win98-white);
+      font-weight: bold;
+      font-size: 13px;
+      padding: 3px 5px 3px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .win98-titlebar.inactive {
+      background: linear-gradient(90deg, var(--win98-gray), #b0b0b0);
+    }
+
+    /* Controles pequeños de la ventana */
+    .win98-window-btn {
+      width: 16px;
+      height: 14px;
+      background-color: var(--win98-bg);
+      border: 1px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      font-size: 9px;
+      font-weight: bold;
+      color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .win98-window-btn:active {
+      border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+    }
+
+    /* Pestañas de Propiedades de Windows (Tab Control) */
+    .win98-tab {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-white) var(--win98-white);
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+      padding: 3px 12px;
+      font-size: 12px;
+      margin-right: 2px;
+      position: relative;
+      top: 2px;
+      z-index: 10;
+    }
+
+    .win98-tab.active {
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-white) var(--win98-white);
+      padding-top: 5px;
+      top: 0px;
+      font-weight: bold;
+      z-index: 30;
+    }
+
+    /* Scrollbars retro */
+    ::-webkit-scrollbar {
+      width: 16px;
+      height: 16px;
+    }
+    ::-webkit-scrollbar-track {
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"><rect width="1" height="1" fill="%23ffffff"/><rect x="1" y="1" width="1" height="1" fill="%23ffffff"/><rect x="1" width="1" height="1" fill="%23e0e0e0"/><rect y="1" width="1" height="1" fill="%23e0e0e0"/></svg>');
+      background-color: #dfdfdf;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--win98-bg);
+      border: 2px solid;
+      border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+      box-shadow: inset 1px 1px 0px var(--win98-white);
+    }
+
+    .retro-cursor, body {
+      cursor: url('assets/svg/cursor-estandar.svg'), default, auto;
+    }
+
+    a, button, select, option, input, textarea,
+    .win98-button, .win98-window-btn, .desktop-icon, .start-menu-item, .win98-tab,
+    .cursor-pointer, .hover\:underline {
+      cursor: url('assets/svg/cursor-accion.svg'), pointer !important;
+    }
+
+    /* Contenedor de la ventana completa */
+    .project-window {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body class="retro-cursor h-screen w-screen overflow-hidden flex flex-col justify-between">
+
+  <!-- ================= CONTAINER PRINCIPAL DE PROYECTO (VENTANA COMPLETA) ================= -->
+  <div class="project-window win98-outset flex-1 flex flex-col overflow-hidden">
+    
+    <!-- Barra de títulos -->
+    <div class="win98-titlebar select-none">
+      <div class="flex items-center gap-1.5">
+        <svg class="w-4 h-4" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="4" width="24" height="24" fill="#ffffff" stroke="black" stroke-width="2"/>
+          <path d="M4 10 H28" stroke="black" stroke-width="2"/>
+          <circle cx="10" cy="7" r="1" fill="red"/>
+          <circle cx="14" cy="7" r="1" fill="yellow"/>
+          <circle cx="18" cy="7" r="1" fill="green"/>
+        </svg>
+        <span>Propiedades de: branding_st.lnk (Proyecto 1)</span>
+      </div>
+      <div class="flex gap-1">
+        <button class="win98-window-btn" onclick="navigateTo('proyectos.html')">_</button>
+        <button class="win98-window-btn" onclick="navigateTo('proyectos.html')">⬜</button>
+        <button class="win98-window-btn" onclick="navigateTo('proyectos.html')">X</button>
+      </div>
+    </div>
+
+    <!-- Barra de menú decorativa (Texto estático sin cursor de acción) -->
+    <div class="flex gap-3 px-2 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-[#000000] select-none">
+      <span><u>A</u>rchivo</span>
+      <span><u>E</u>dición</span>
+      <span><u>V</u>er</span>
+      <span>A<u>y</u>uda</span>
+    </div>
+
+    <!-- CONTENEDOR DE PESTAÑAS (Tab Control) -->
+    <div class="px-2 pt-2 bg-[#c0c0c0] flex select-none">
+      <button class="win98-tab active" id="tab-desc" onclick="switchTab('desc')">General</button>
+      <button class="win98-tab" id="tab-specs" onclick="switchTab('specs')">Especificaciones</button>
+      <button class="win98-tab" id="tab-capturas" onclick="switchTab('capturas')">Capturas de Pantalla</button>
+    </div>
+
+    <!-- PANEL INTERNO DE PROPIEDADES (Inset Blanco) -->
+    <div class="flex-1 bg-[#c0c0c0] p-3 border-t-2 border-[#ffffff] overflow-hidden flex flex-col">
+      <div class="flex-1 bg-white win98-inset p-4 flex flex-col md:flex-row gap-6 overflow-y-auto">
+        
+        <!-- Lateral izquierdo: Previsualización de Imagen / Mockup Principal -->
+        <div class="w-full md:w-1/2 flex flex-col justify-between">
+          <div class="border-2 border-inset bg-black p-1 relative group cursor-pointer" onclick="openImageViewer()">
+            <!-- Imagen Principal del Proyecto (Interactiva para visualización en grande) -->
+            <img id="main-preview-img" src="https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=800&q=80" alt="Mockup de Diseño" class="w-full h-auto object-cover max-h-80" onerror="this.src='https://placehold.co/600x400/000000/00ff00?text=Mockup+Proyecto'">
+            <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white font-mono text-[9px] px-1.5 py-0.5 pointer-events-none rounded border border-gray-400">
+              🔍 CLIC PARA AMPLIAR
+            </div>
+          </div>
+          <div class="mt-4 border border-dashed border-gray-400 p-2 bg-gray-100 text-[11px] font-mono select-none">
+            <span class="block text-gray-500" id="info-format">• FORMATO EN DISCO: LINK_SHORTCUT (.LNK)</span>
+            <span class="block text-gray-500" id="info-resolution">• RESOLUCIÓN: 800 x 600 PX (OPTIMIZADO)</span>
+            <span class="block text-gray-500">• COMPRESIÓN: NINGUNA (BITMAP)</span>
+          </div>
+        </div>
+
+        <!-- Lateral Derecho: Información que cambia según la pestaña seleccionada -->
+        <div class="flex-1 flex flex-col h-full overflow-hidden">
+          
+          <!-- CONTENIDO: PESTAÑA GENERAL (DESCRIPCIÓN) -->
+          <div id="content-desc" class="tab-content flex-1 flex flex-col">
+            <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">IDENTIDAD VISUAL - STUDIO PIXEL</h1>
+            <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
+              Este proyecto consistió en el desarrollo y rediseño completo del manual de marca de un estudio de artes digitales y desarrollo de software web. 
+            </p>
+            <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
+              Buscando reflejar los valores del arte computacional primitivo y el minimalismo geométrico, la propuesta incorporó patrones de cuadrículas puras, colores de alto contraste y un sistema modular adaptable.
+            </p>
+            <div class="mt-auto">
+              <span class="font-bold text-xs block mb-1">Paletas de Colores Utilizadas:</span>
+              <div class="flex gap-2">
+                <div class="w-6 h-6 border bg-[#000080]" title="Azul Clásico"></div>
+                <div class="w-6 h-6 border bg-[#1084d0]" title="Cian Eléctrico"></div>
+                <div class="w-6 h-6 border bg-[#ffff00]" title="Amarillo Fluorescente"></div>
+                <div class="w-6 h-6 border bg-[#000000]" title="Negro"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTENIDO: PESTAÑA ESPECIFICACIONES (FICHA TÉCNICA) -->
+          <div id="content-specs" class="tab-content hidden flex-1 flex flex-col">
+            <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">FICHA TÉCNICA DEL DESARROLLO</h1>
+            <table class="w-full text-xs font-mono text-left border-collapse">
+              <tbody>
+                <tr class="border-b border-gray-200">
+                  <td class="py-2 font-bold text-gray-600">Herramientas:</td>
+                  <td class="py-2">Adobe Illustrator 98, Photoshop 5.0, QuarkXPress</td>
+                </tr>
+                <tr class="border-b border-gray-200">
+                  <td class="py-2 font-bold text-gray-600">Tiempo de Entrega:</td>
+                  <td class="py-2">3 Semanas (Simulado)</td>
+                </tr>
+                <tr class="border-b border-gray-200">
+                  <td class="py-2 font-bold text-gray-600">Tipografía:</td>
+                  <td class="py-2">VT323, Tahoma, MS Sans Serif</td>
+                </tr>
+                <tr>
+                  <td class="py-2 font-bold text-gray-600">Cliente:</td>
+                  <td class="py-2">Studio Pixel Corp.</td>
+                </tr>
+              </tbody>
+            </table>
+            
+            <!-- Barra de esfuerzo / Recursos del sistema -->
+            <div class="mt-6">
+              <span class="font-bold text-xs block mb-1 text-gray-700">USO DE RECURSOS DE MEMORIA EN RENDERIZADO:</span>
+              <div class="h-5 bg-gray-200 border border-[#808080] relative">
+                <div class="h-full bg-blue-800" style="width: 78%;"></div>
+                <span class="absolute inset-0 flex items-center justify-center text-[10px] text-white font-bold">78% DE CARGA DE CPU</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTENIDO: PESTAÑA CAPTURAS (GALERÍA EXPANDIDA - 8 OPCIONES) -->
+          <div id="content-capturas" class="tab-content hidden flex-1 flex flex-col overflow-hidden">
+            <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">GALERÍA DE CONCEPTOS</h1>
+            <p class="text-xs text-gray-600 font-mono mb-2">Haz clic en una miniatura para visualizarla a gran escala a la izquierda, o haz doble clic para abrirla en pantalla completa:</p>
+            
+            <!-- Grilla con scroll retro para 8 imágenes -->
+            <div class="grid grid-cols-2 gap-2 flex-1 overflow-y-auto pr-1 select-none">
+              
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer" onclick="updatePreview('https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=800&q=80', 'CONCEPTO PRINCIPAL BRANDING', '800 x 600 PX')" ondblclick="openImageViewer()">
+                <img src="https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=150&q=80" alt="Captura 1" class="w-full h-16 object-cover pointer-events-none">
+                <div class="text-[9px] font-mono text-center mt-0.5 text-gray-600">Main_Brand.bmp</div>
+              </div>
+              
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer" onclick="updatePreview('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=800&q=80', 'DISEÑO DE PAPELERÍA CORPORATIVA', '1024 x 768 PX')" ondblclick="openImageViewer()">
+                <img src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=150&q=80" alt="Captura 2" class="w-full h-16 object-cover pointer-events-none">
+                <div class="text-[9px] font-mono text-center mt-0.5 text-gray-600">Stationery.bmp</div>
+              </div>
+              
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer" onclick="updatePreview('https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=800&q=80', 'PROTOTIPO DE EMPAQUE (BOX)', '1280 x 960 PX')" ondblclick="openImageViewer()">
+                <img src="https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=150&q=80" alt="Captura 3" class="w-full h-16 object-cover pointer-events-none">
+                <div class="text-[9px] font-mono text-center mt-0.5 text-gray-600">Packaging.bmp</div>
+              </div>
+              
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer" onclick="updatePreview('https://images.unsplash.com/photo-1561070791-26c113006238?w=800&q=80', 'ESTUDIO DE RETÍCULA Y FUENTES', '800 x 600 PX')" ondblclick="openImageViewer()">
+                <img src="https://images.unsplash.com/photo-1561070791-26c113006238?w=150&q=80" alt="Captura 4" class="w-full h-16 object-cover pointer-events-none">
+                <div class="text-[9px] font-mono text-center mt-0.5 text-gray-600">Grid_Fonts.bmp</div>
+              </div>
+
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer" onclick="updatePreview('https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=800&q=80', 'MOCKUP DE INTERFAZ WEB RESPONSIVA', '1280 x 1024 PX')" ondblclick="openImageViewer()">
+                <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=150&q=80" alt="Captura 5" class="w-full h-16 object-cover pointer-events-none">
+                <div class="text-[9px] font-mono text-center mt-0.5 text-gray-600">Web_Concept.bmp</div>
+              </div>
+
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer" onclick="updatePreview('https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80', 'ESTILO EDITORIAL Y SEÑALIZACIÓN', '1024 x 768 PX')" ondblclick="openImageViewer()">
+                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=150&q=80" alt="Captura 6" class="w-full h-16 object-cover pointer-events-none">
+                <div class="text-[9px] font-mono text-center mt-0.5 text-gray-600">Editorial.bmp</div>
+              </div>
+
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer" onclick="updatePreview('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&q=80', 'PRUEBAS DE IMPRESIÓN Y TEXTURAS', '1600 x 1200 PX')" ondblclick="openImageViewer()">
+                <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=150&q=80" alt="Captura 7" class="w-full h-16 object-cover pointer-events-none">
+                <div class="text-[9px] font-mono text-center mt-0.5 text-gray-600">Print_Test.bmp</div>
+              </div>
+
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer" onclick="updatePreview('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80', 'ANÁLISIS DE HARDWARE Y RENDER', '1024 x 1024 PX')" ondblclick="openImageViewer()">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=150&q=80" alt="Captura 8" class="w-full h-16 object-cover pointer-events-none">
+                <div class="text-[9px] font-mono text-center mt-0.5 text-gray-600">Hardware_Ui.bmp</div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Botones de Acción inferior -->
+      <div class="flex justify-between items-center mt-3 select-none flex-shrink-0">
+        <span class="text-xs text-gray-600 font-mono">Archivo: C:\Mis Documentos\Proyectos\Proyecto_01.lnk</span>
+        <div class="flex gap-2">
+          <!-- El botón Aceptar te devuelve a proyectos.html de forma interactiva en la misma pestaña -->
+          <button class="win98-button font-bold text-xs" onclick="navigateTo('proyectos.html')">Aceptar (Volver)</button>
+          <button class="win98-button text-xs" onclick="navigateTo('proyectos.html')">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- ================= VISOR DE IMÁGENES DE WINDOWS 98 (MODAL RETRO EN GRANDE) ================= -->
+  <div id="image-viewer-window" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+    <div class="win98-outset w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+      <!-- Barra de título del Visor -->
+      <div class="win98-titlebar select-none">
+        <div class="flex items-center gap-1.5">
+          <span>🖼️ Visor de Imágenes de Windows - [BrandPreview.bmp]</span>
+        </div>
+        <button class="win98-window-btn" onclick="closeImageViewer()">X</button>
+      </div>
+      <!-- Barra de menú decorativa del Visor -->
+      <div class="flex gap-3 px-2 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-[#000000] select-none">
+        <span><u>A</u>rchivo</span>
+        <span><u>V</u>er</span>
+        <span><u>I</u>magen</span>
+        <span><u>H</u>erramientas</span>
+      </div>
+      <!-- Área principal de la imagen expandida -->
+      <div class="flex-1 bg-gray-900 flex items-center justify-center p-4 overflow-hidden min-h-[350px]">
+        <img id="viewer-expanded-img" src="https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=1200&q=90" alt="Vista Ampliada" class="max-w-full max-h-[70vh] object-contain border border-gray-700">
+      </div>
+      <!-- Controles inferiores del Visor -->
+      <div class="bg-[#c0c0c0] p-2 flex justify-between items-center border-t border-white select-none">
+        <span class="text-xs font-mono" id="viewer-dimensions">Dimensiones: 1200 x 900 PX</span>
+        <div class="flex gap-2">
+          <button class="win98-button text-xs font-bold" onclick="closeImageViewer()">Cerrar Visor</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= DIÁLOGOS DE ALERTA DE SISTEMA (MOCK ALERTS) ================= -->
+  <div id="sys-alert" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 win98-outset" style="width: 320px;">
+    <div class="win98-titlebar flex justify-between items-center select-none">
+      <span>Mensaje del Sistema</span>
+      <button class="win98-window-btn cursor-pointer" onclick="closeAlert()">X</button>
+    </div>
+    <div class="p-4 flex gap-3 items-center bg-[#c0c0c0]">
+      <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-blue-600 border-2 border-black rounded-full font-bold text-white text-lg">i</div>
+      <p id="sys-alert-text" class="text-xs font-semibold"></p>
+    </div>
+    <div class="p-2 flex justify-end bg-[#c0c0c0] border-t border-gray-400">
+      <button class="win98-button font-sans" onclick="closeAlert()">Aceptar</button>
+    </div>
+  </div>
+
+
+  <!-- ================= CODIGO JAVASCRIPT ================= -->
+  <script>
+    function switchTab(tabId) {
+      // 1. Quitar la clase activa de todos los botones de pestañas
+      document.querySelectorAll('.win98-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+      // 2. Ocultar todos los contenedores de información
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+      });
+
+      // 3. Activar el botón de la pestaña seleccionada
+      document.getElementById('tab-' + tabId).classList.add('active');
+
+      // 4. Mostrar el contenedor correspondiente
+      document.getElementById('content-' + tabId).classList.remove('hidden');
+    }
+
+    // Cambiar la vista previa interactiva a la izquierda al hacer clic en las miniaturas
+    function updatePreview(imgUrl, caption, resolution) {
+      const mainPreview = document.getElementById('main-preview-img');
+      const infoResolution = document.getElementById('info-resolution');
+      const infoFormat = document.getElementById('info-format');
+      
+      // Actualizamos imagen principal
+      mainPreview.src = imgUrl;
+      infoResolution.innerText = `• RESOLUCIÓN: ${resolution} (OPTIMIZADO)`;
+      infoFormat.innerText = `• NOMBRE: ${caption}`;
+
+      // Sincronizamos también el visor ampliado
+      document.getElementById('viewer-expanded-img').src = imgUrl;
+      document.getElementById('viewer-dimensions').innerText = `Dimensiones: ${resolution}`;
+    }
+
+    // Funciones para abrir y cerrar el Visor de Imágenes Retro
+    function openImageViewer() {
+      document.getElementById('image-viewer-window').classList.remove('hidden');
+    }
+
+    function closeImageViewer() {
+      document.getElementById('image-viewer-window').classList.add('hidden');
+    }
+
+    // Redirección
+    function navigateTo(url) {
+      window.location.href = url;
+    }
+
+    // Alertas retro personalizadas
+    function showAlert(text) {
+      document.getElementById('sys-alert-text').innerText = text;
+      document.getElementById('sys-alert').classList.remove('hidden');
+    }
+
+    function closeAlert() {
+      document.getElementById('sys-alert').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

@@ -242,16 +242,12 @@
   <div id="window-pc" class="window win98-outset z-20" style="width: 440px; top: 15%; left: calc(50vw - 220px);" onclick="focusWindow('window-pc')">
     <div class="win98-titlebar" id="window-pc-handle">
       <div class="flex items-center gap-1.5">
-        <svg class="w-4 h-4" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="2" width="28" height="20" fill="#c0c0c0" stroke="black" stroke-width="2"/>
-          <rect x="5" y="5" width="22" height="14" fill="#000"/>
-          <path d="M10 22 L22 22 L24 28 L8 28 Z" fill="#808080" stroke="black" stroke-width="2"/>
-        </svg>
+        <img src="assets/svg/mipc.svg" alt="Mi PC" class="w-4 h-4 pointer-events-none">
         <span>Mi PC - Menú de Navegación</span>
       </div>
       <div class="flex gap-1">
         <button class="win98-window-btn" onclick="minimizeWindow('window-pc')">_</button>
-        <button class="win98-window-btn" onclick="maximizeWindow('window-pc')">⬜</button>
+        <button class="win98-window-btn" onclick="maximizeWindow('window-pc')">⬛</button>
         <button class="win98-window-btn" onclick="closeWindow('window-pc')">X</button>
       </div>
     </div>
@@ -265,7 +261,7 @@
     </div>
 
     <!-- Contenido interno de la unidad central -->
-    <div class="p-4 bg-white flex-1 overflow-auto win98-inset m-1" style="min-height: 220px;">
+    <div class="p-4 bg-white flex-1 overflow-auto win98-inset m-1" style="min-height: 200px;">
       <p class="text-xs text-gray-600 mb-4 font-mono">Haz clic en un elemento para ingresar a la sección deseada del portafolio:</p>
       
       <!-- Cuadrícula de Unidades e Iconos dentro del menú -->
@@ -274,33 +270,33 @@
         <!-- Enlace Proyectos -->
         <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('proyectos.html')">
           <img src="assets/svg/proyectos.svg" alt="Proyectos" class="w-10 h-10 pointer-events-none">
-          <span class="text-xs mt-2 text-center font-semibold">Proyectos (C:)</span>
+          <span class="text-xs mt-2 text-center">Proyectos</span>
         </div>
 
         <!-- Enlace Sobre Mí -->
         <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('sobre-mi.html')">
           <img src="assets/svg/sobre-mi.svg" alt="Sobre Mí" class="w-10 h-10 pointer-events-none">
-          <span class="text-xs mt-2 text-center">Sobre Mí (A:)</span>
+          <span class="text-xs mt-2 text-center">Sobre Mí</span>
         </div>
 
         <!-- Enlace Contacto -->
         <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('contacto.html')">
           <img src="assets/svg/contacto.svg" alt="Contacto" class="w-10 h-10 pointer-events-none">
-          <span class="text-xs mt-2 text-center">Contacto.exe</span>
+          <span class="text-xs mt-2 text-center">Contacto</span>
         </div>
 
         <!-- Enlace Paint 98 -->
         <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('paint.html')">
           <img src="assets/svg/paint.svg" alt="Paint 98" class="w-10 h-10 pointer-events-none">
-          <span class="text-xs mt-2 text-center">Paint98.lnk</span>
+          <span class="text-xs mt-2 text-center">Paint</span>
         </div>
 
       </div>
 
       <!-- Información de Sistema / Footer de ventana -->
       <div class="mt-8 border-t pt-2 border-dashed border-gray-400 font-mono text-[11px] text-gray-600">
-        <p>• Portafolio de Diseño Gráfico y Digital</p>
-        <p>• Versión de la Interfaz: Windows 98 Second Edition</p>
+        <p>• Portafolio de Diseño</p>
+        <p>• Versión de la Interfaz: Estrabismx 98 First Edition</p>
         <p>• Espacio ocupado en disco: 2.1 MB / Espacio libre: 1.44 MB</p>
       </div>
     </div>
@@ -308,7 +304,7 @@
     <!-- Barra de estado -->
     <div class="bg-[#c0c0c0] px-2 py-1 text-xs flex justify-between border-t border-white">
       <span>4 elemento(s) de navegación</span>
-      <span class="border-l border-white pl-2">Mi Computador</span>
+      <span class="border-l border-white pl-2">Mi PC</span>
     </div>
   </div>
 
@@ -333,15 +329,8 @@
   <footer class="taskbar w-full flex justify-between items-center px-1 z-50 relative">
     
     <div class="flex items-center gap-1.5 h-full">
-      <!-- Botón de Inicio -->
-      <button class="win98-button font-bold text-sm flex items-center gap-1.5" id="start-btn" onclick="toggleStartMenu()" style="height: 28px;">
-        <!-- Pequeño logo clásico de Windows pixelado por divs -->
-        <div class="grid grid-cols-2 gap-0.5 w-3.5 h-3.5">
-          <div class="bg-red-500"></div>
-          <div class="bg-green-500"></div>
-          <div class="bg-blue-500"></div>
-          <div class="bg-yellow-500"></div>
-        </div>
+    <!-- Botón de Inicio -->
+      <button class="win98-button font-bold text-sm flex items-center justify-center px-3" id="start-btn" onclick="toggleStartMenu()" style="height: 28px;">
         <span>Inicio</span>
       </button>
 
@@ -365,48 +354,29 @@
   <!-- ================= MENÚ DE INICIO ================= -->
   <div class="start-menu win98-outset flex" id="start-menu" style="display: none;">
     <div class="start-menu-sidebar font-bold flex items-center justify-center">
-      Windows 98
+      Estrabismx 98
     </div>
     <div class="flex-1 flex flex-col bg-[#c0c0c0] text-xs py-1 font-sans">
       <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="toggleWindow('window-pc'); toggleStartMenu()">
-        <span>💻</span> <b>Mi Computador (Menú)</b>
+        <span>💻</span> <b>Mi PC (Menú)</b>
       </div>
       
       <div class="border-t border-gray-400 my-1"></div>
 
       <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="navigateTo('proyectos.html')">
-        <span>📁</span> <b>Proyectos (C:)</b>
+        <span>📁</span> <b>Proyectos</b>
       </div>
       <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="navigateTo('sobre-mi.html')">
-        <span>📝</span> <b>Sobre Mí (A:)</b>
+        <span>📝</span> <b>Sobre Mí</b>
       </div>
       <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="navigateTo('contacto.html')">
-        <span>✉️</span> <b>Contacto.exe</b>
+        <span>✉️</span> <b>Contacto</b>
       </div>
       <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="navigateTo('paint.html')">
-        <span>🎨</span> <b>Paint 98</b>
-      </div>
-      
-      <div class="border-t border-gray-400 my-1"></div>
-      
-      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="triggerShutdown()">
-        <span>🚪</span> <b>Apagar...</b>
+        <span>🎨</span> <b>Paint</b>
       </div>
     </div>
   </div>
-
-
-  <!-- ================= PANTALLA DE APAGADO RETRO ================= -->
-  <div class="hidden fixed inset-0 bg-black text-green-500 font-mono z-[10000] p-8 flex-col justify-center items-center text-center" id="shutdown-screen">
-    <div class="max-w-md">
-      <p class="text-xl mb-6 text-red-500 font-bold">*** APAGADO COMPLETADO ***</p>
-      <p class="mb-4">Has salido del Portafolio Interactivo.</p>
-      <p class="mb-8">Para volver a explorar los diseños y la experiencia, haz clic en el botón inferior para reiniciar el escritorio.</p>
-      <h1 class="text-orange-500 font-bold text-2xl animate-pulse">Ahora es seguro apagar su equipo.</h1>
-      <button class="win98-button mt-8 text-black font-sans" onclick="restartSystem()">Reiniciar Escritorio</button>
-    </div>
-  </div>
-
 
   <!-- ================= CODIGO JAVASCRIPT ================= -->
   <script>
@@ -541,7 +511,7 @@
           btn.classList.add('win98-inset');
         }
 
-        btn.innerHTML = `<span>💻</span> <span>Mi PC</span>`;
+        btn.innerHTML = `<img src="assets/svg/mipc.svg" alt="Mi PC" class="w-4 h-4 pointer-events-none"> <span class="ml-1">Mi PC</span>`;
         btn.onclick = () => {
           if (isFocused) {
             minimizeWindow('window-pc');
@@ -630,18 +600,6 @@
 
     function closeAlert() {
       document.getElementById('sys-alert').classList.add('hidden');
-    }
-
-    // Acciones de apagado y restauración
-    function triggerShutdown() {
-      document.getElementById('shutdown-screen').style.display = 'flex';
-    }
-
-    function restartSystem() {
-      document.getElementById('shutdown-screen').style.display = 'none';
-      const winPc = document.getElementById('window-pc');
-      winPc.style.display = 'flex';
-      focusWindow('window-pc');
     }
   </script>
 </body>

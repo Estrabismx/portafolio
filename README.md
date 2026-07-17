@@ -9,6 +9,9 @@ Hola soy Camila Ramírez, aka EstrabismX
 >[!NOTE]
 > CHECKLIST 
 
+- [x] Página principal
+
+- [x] Sobre Mí
 
 - [ ] Cambiar a iconos propios o con libre uso
 
