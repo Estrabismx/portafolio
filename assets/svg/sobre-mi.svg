@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 314.89 442.82">
+<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 324.89 452.82">
   <defs>
     <style>
       .cls-1 {
-        fill: #999;
-      }
-
-      .cls-2 {
-        fill: #009;
-      }
-
-      .cls-3 {
         fill: #fff;
         stroke: #000;
         stroke-miterlimit: 10;
-        stroke-width: 6px;
+        stroke-width: 16px;
+      }
+
+      .cls-2 {
+        fill: #999;
+      }
+
+      .cls-3 {
+        fill: #009;
       }
     </style>
   </defs>
   <g id="Ilustración_de_conjunto_de_iconos" data-name="Ilustración de conjunto de iconos">
     <g>
-      <rect class="cls-3" x="-60.96" y="66.96" width="436.82" height="308.89" rx="12" ry="12" transform="translate(-63.96 378.85) rotate(-90)"/>
-      <rect class="cls-2" x="29.46" y="46.92" width="255.98" height="29.62" rx="6" ry="6"/>
-      <rect class="cls-1" x="29.46" y="117.58" width="205.84" height="18.45" rx="3.75" ry="3.75"/>
-      <rect class="cls-1" x="29.46" y="193.22" width="127.99" height="14.81" rx="2.65" ry="2.65"/>
-      <rect class="cls-1" x="29.46" y="313.22" width="114.26" height="14.81" rx="2.5" ry="2.5"/>
-      <rect class="cls-1" x="29.46" y="253.22" width="102.92" height="14.81" rx="2.37" ry="2.37"/>
-      <rect class="cls-1" x="29.46" y="223.22" width="169.58" height="14.81" rx="3.05" ry="3.05"/>
-      <rect class="cls-1" x="29.46" y="283.22" width="196.82" height="14.81" rx="3.28" ry="3.28"/>
+      <rect class="cls-1" x="-55.96" y="71.96" width="436.82" height="308.89" rx="12" ry="12" transform="translate(-63.96 388.85) rotate(-90)"/>
+      <rect class="cls-3" x="34.46" y="51.92" width="255.98" height="47.74" rx="7.62" ry="7.62"/>
+      <rect class="cls-2" x="34.46" y="122.58" width="205.84" height="41.43" rx="5.61" ry="5.61"/>
+      <rect class="cls-2" x="34.46" y="198.22" width="127.99" height="23.23" rx="3.31" ry="3.31"/>
+      <rect class="cls-2" x="34.46" y="296.85" width="102.92" height="23.74" rx="3.01" ry="3.01"/>
+      <rect class="cls-2" x="34.46" y="246.45" width="169.58" height="25.4" rx="3.99" ry="3.99"/>
+      <rect class="cls-2" x="34.46" y="345.6" width="196.82" height="24.38" rx="4.21" ry="4.21"/>
     </g>
   </g>
 </svg>

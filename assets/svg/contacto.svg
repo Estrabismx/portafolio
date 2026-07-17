@@ -1,31 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 428.54 304.74">
+<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 438.74 314.94">
   <defs>
     <style>
       .cls-1 {
-        stroke-width: 6.05px;
-      }
-
-      .cls-1, .cls-2, .cls-3 {
         fill: #fff;
         stroke: #000;
         stroke-miterlimit: 10;
-      }
-
-      .cls-2 {
-        stroke-width: 5.25px;
-      }
-
-      .cls-3 {
-        stroke-width: 5.81px;
+        stroke-width: 16px;
       }
     </style>
   </defs>
   <g id="Ilustración_de_conjunto_de_iconos" data-name="Ilustración de conjunto de iconos">
     <g>
-      <rect class="cls-3" x="2.9" y="2.9" width="422.74" height="298.94" rx="11.61" ry="11.61"/>
-      <polyline class="cls-2" points="6.17 299.55 214.27 138.99 421.6 298.96"/>
-      <path class="cls-1" d="M7.06,7.02l158.36,156.8c27.62,25.37,70.07,25.37,97.69,0L421.13,7.37"/>
+      <rect class="cls-1" x="8" y="8" width="422.74" height="298.94" rx="11.61" ry="11.61"/>
+      <polyline class="cls-1" points="11.27 304.65 219.37 144.09 426.7 304.06"/>
+      <path class="cls-1" d="M12.16,12.12l158.36,156.8c27.62,25.37,70.07,25.37,97.69,0L426.23,12.46"/>
     </g>
   </g>
 </svg>
