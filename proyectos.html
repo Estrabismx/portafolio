@@ -114,10 +114,10 @@
 
     /* Icono de archivo en el explorador */
     .file-icon {
-      width: 75px;
+      width: 150px;
       text-align: center;
-      margin: 8px;
-      font-size: 11px;
+      margin: 12px;
+      font-size: 12px;
       outline: none;
     }
 
@@ -244,59 +244,41 @@
         
         <!-- Proyecto 1 -->
 <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p1')" ondblclick="runDemo('p1')">
-  <img src="assets/proyecto-01/proyecto_01.svg" class="w-12 h-12 mb-1 object-contain" alt="Proyecto 01">
-  <span class="icon-text px-1 truncate w-full">Proyecto_01</span>
+  <img src="assets/proyecto-01/proyecto_01.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 01">
+  <span class="icon-text px-1 truncate w-full">Banca Reticulada</span>
 </div>
         <!-- Proyecto 2 -->
        
 <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p2')" ondblclick="runDemo('p2')">
-  <img src="assets/proyecto-02/proyecto_02.svg" class="w-12 h-12 mb-1 object-contain" alt="Proyecto 02">
-  <span class="icon-text px-1 truncate w-full">Proyecto_02</span>
+  <img src="assets/proyecto-02/proyecto_02.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 02">
+  <span class="icon-text px-1 truncate w-full">Lampel</span>
 </div>
 
         <!-- Proyecto 3 -->
         <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p3')" ondblclick="runDemo('p3')">
-  <img src="assets/proyecto-03/proyecto_03.svg" class="w-12 h-12 mb-1 object-contain" alt="Proyecto 03">
-  <span class="icon-text px-1 truncate w-full">Proyecto_03</span>
+  <img src="assets/proyecto-03/proyecto_03.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 03">
+  <span class="icon-text px-1 truncate w-full"><i>Mimus thenca</i></span>
 </div>
 
         <!-- Proyecto 4 -->
         <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p4')" ondblclick="runDemo('p4')">
-          <svg class="w-12 h-12 mb-1" viewBox="0 0 32 32" fill="none">
-            <!-- Icono de engranaje para aplicación ejecutable -->
-            <rect x="4" y="4" width="24" height="24" fill="#c0c0c0" stroke="black" stroke-width="2"/>
-            <circle cx="16" cy="16" r="6" fill="#808080" stroke="black" stroke-width="1.5"/>
-            <rect x="14" y="6" width="4" height="20" fill="black"/>
-            <rect x="6" y="14" width="20" height="4" fill="black"/>
-          </svg>
-          <span class="icon-text px-1 truncate w-full">vintage_play.exe</span>
-        </div>
+  <img src="assets/proyecto-04/proyecto_04.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 04">
+  <span class="icon-text px-1 truncate w-full">Élé chair</span>
+</div>
+
 
         <!-- Proyecto 5 -->
         <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p5')" ondblclick="runDemo('p5')">
-          <svg class="w-12 h-12 mb-1" viewBox="0 0 32 32" fill="none">
-            <path d="M4 2 L22 2 L28 8 L28 30 L4 30 Z" fill="#ffffff" stroke="black" stroke-width="2"/>
-            <path d="M22 2 L22 8 L28 8" fill="#e0e0e0" stroke="black" stroke-width="2"/>
-            <!-- Paleta de color artística -->
-            <circle cx="11" cy="15" r="3" fill="#ff00ff"/>
-            <circle cx="19" cy="15" r="3" fill="#ffff00"/>
-            <circle cx="15" cy="22" r="3" fill="#00ffff"/>
-          </svg>
-          <span class="icon-text px-1 truncate w-full">poster_90s.jpg</span>
-        </div>
+  <img src="assets/proyecto-05/proyecto_05.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 05">
+  <span class="icon-text px-1 truncate w-full">Dualshock II</span>
+</div>
+
 
         <!-- Proyecto 6 -->
         <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p6')" ondblclick="runDemo('p6')">
-          <svg class="w-12 h-12 mb-1" viewBox="0 0 32 32" fill="none">
-            <!-- Icono de documento de texto -->
-            <path d="M4 2 L22 2 L28 8 L28 30 L4 30 Z" fill="#ffffff" stroke="black" stroke-width="2"/>
-            <path d="M22 2 L22 8 L28 8" fill="#e0e0e0" stroke="black" stroke-width="2"/>
-            <text x="8" y="24" font-family="monospace" font-size="9" font-weight="bold" fill="blue">W</text>
-            <line x1="14" y1="16" x2="24" y2="16" stroke="gray" stroke-width="1.5"/>
-            <line x1="14" y1="20" x2="24" y2="20" stroke="gray" stroke-width="1.5"/>
-          </svg>
-          <span class="icon-text px-1 truncate w-full">typ_catalog.doc</span>
-        </div>
+  <img src="assets/proyecto-06/proyecto_06.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 06">
+  <span class="icon-text px-1 truncate w-full">Mochila Kanken</span>
+</div>
 
       </div>
 
@@ -331,68 +313,68 @@
     const proyectos = {
       p1: {
         title: "Proyecto 01",
-        fullTitle: "Ejercicio Estructural - Banca reticulada",
+        fullTitle: "Mobiliario Estructural - Banca reticulada",
         type: "Taller Colectivo",
         year: "2025-2",
         size: "142 KB",
         image: "assets/proyecto-01/proyecto_01.svg",
         desc: "Ejercicio realizado con el objetivo de comprender el funcionamiento de las distribuciones de cargas en estructuras. La banca reticulada llega a soportar 300 kg.",
-        tags: ["Fabricación Manual", "Ejercicio", "Carpinteria"],
+        tags: ["Fabricación Manual", "Ejercicio", "Reticulado"],
         url: "proyecto_01.html"
       },
       p2: {
         title: "Proyecto 02",
-        fullTitle: "Diseño Web Estilo Web 1.0",
-        type: "Documento HTML",
+        fullTitle: " Elemento Luminico - Lampel",
+        type: "Taller Colectivo",
         year: "2025-2",
         size: "34 KB",
         image: "assets/proyecto-02/proyecto_02.svg",
-        desc: "Maquetación nostálgica con tablas y marcos simulando el internet de los noventa. Optimizado para Netscape Navigator.",
-        tags: ["HTML", "CSS", "UI Retro"],
+        desc: "Ejercicio conceptual para comprender la influencia de la luz en los ambientes sociales. Lampel se adapta al ambiente que uno desee generar.",
+        tags: ["Fabricación Manual", "Diseño de producto", "Dinámico"],
         url: "proyecto_02.html"
       },
       p3: {
         title: "Proyecto 03",
-        fullTitle: "Iconografía Isométrica 3D",
-        type: "Imagen de mapa de bits",
-        year: "2026",
+        fullTitle: "Material pedagógico -  Mimus Thenca",
+        type: "Taller Colectivo - PARQUEMET",
+        year: "2025-2",
         size: "920 KB",
         image: "assets/proyecto-03/proyecto_03.svg",
-        desc: "Galería de ilustraciones y assets pixelados representando consolas, disquetes de 3.5 pulgadas y hardware del siglo pasado.",
-        tags: ["Isometric", "Pixel-Art", "Blender"],
+        desc: "Este material fue pensado para facilitar la labor pedagógica del PARQUEMET, quienes nos indicaron la necesidad de elementos que ayudaran a la labor educativa que tiene esta red de parques.",
+        tags: ["Fabricación Manual/Digital", "Colaboración", "Movil"],
         url: "proyecto_03.html"
       },
       p4: {
         title: "Proyecto 04",
-        fullTitle: "Reproductor Vintage Player",
-        type: "Aplicación interactiva",
-        year: "2025",
+        fullTitle: "Foto Recreación - Élé Chair",
+        type: "Maquinas y Procesos",
+        year: "2025-1",
         size: "2.1 MB",
         image: "assets/proyecto-04/proyecto_04.svg",
-        desc: "Concepto de UI táctil para reproductor de audio, incorporando físicas analógicas basadas en reproductores de casete clásicos.",
-        tags: ["Mobile UX", "Concept", "Figma"],
+        desc: "Recreación de elementos mediante el uso de fotografias. El elemento en cuestión fue la silla Élé Chair, diseñada por Ann Demeulemeester",
+        tags: ["Fabricación Manual", "Análisis", "Reproducción"],
         url: "proyecto_04.html"
       },
       p5: {
         title: "Proyecto 05",
-        fullTitle: "Afiche Publicitario Vaporwave",
-        type: "Imagen JPEG",
-        year: "2026",
+        fullTitle: " Replica a Detalle - Dualshock II",
+        type: "Modelado 3D",
+        year: "2025-1",
         size: "340 KB",
         image: "assets/proyecto-05/proyecto_05.svg",
-        desc: "Diseño de afiche estético utilizando paletas cromáticas encendidas (cian y magenta) y patrones de cuadrícula abstracta.",
-        tags: ["Editorial", "Vaporwave", "Posters"],
+        desc: "Ejercicio práctico para la profundización en técnicas de modelado 3D y renderizado en Rhino 8. El trabajo constó de una reproducción fiel del control Dualshock II de PlayStation 2, con énfasis en la precisión de detalles y texturas.",
+        tags: ["Modelado 3D", "Renderizado", "Reproducción"],
         url: "proyecto_05.html"
       },
       p6: {
         title: "Proyecto 06",
-        fullTitle: "Catálogo de Tipografías Monospace",
-        type: "Documento de Microsoft Word",
-        year: "1999",
+        fullTitle: "Mejora de producto - Mochila Kanken",
+        type: "Prototipo",
+        year: "2025-2",
         size: "72 KB",
         image: "assets/proyecto-06/proyecto_06.svg",
-        desc: "Estudio tipográfico comparativo entre fuentes monoespaciadas clásicas para legibilidad óptima en terminales CRT.",
-        tags: ["Tipografía", "Análisis", "Layout"],
+        desc: "Trabajo centrado en la recreación de un producto, pero diseñando una mejora para este. La mejora debía ser funcional y factible con el proceso productivo del producto original.",
+        tags: ["Fabricación Manual", "Análisis", "Prototipado"],
         url: "proyecto_06.html"
       }
     };
