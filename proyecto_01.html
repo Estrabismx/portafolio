@@ -219,10 +219,11 @@
         </div>
 
         <!-- Lateral Derecho: Información que cambia según la pestaña seleccionada -->
-        <div class="flex-1 flex flex-col h-full overflow-hidden">
+        <div class="flex-1 flex flex-col md:h-full md:overflow-hidden mt-4 md:mt-0">
+        </div>
           
           <!-- CONTENIDO: PESTAÑA GENERAL (DESCRIPCIÓN) -->
-          <div id="content-desc" class="tab-content flex-1 flex flex-col">
+          <div id="content-desc" class="tab-content flex-1 flex flex-col h-auto md:h-full"></div>
             <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">Ejercicio Estructural - Banca reticulada</h1>
             <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
             Esta banca nació como una manera de entender el funcionamiento de las fuerzas estructurales. Para lograrlo se nos indicó crear un mobiliario que tuviera dimensiones mínimas de 150cm de largo, 40cm de ancho y 42cm de alto. Además de poner la limitante de utilizar 12 Junquillos de 19mm de lado como material   
@@ -245,7 +246,7 @@
           </div>
 
           <!-- CONTENIDO: PESTAÑA ESPECIFICACIONES (FICHA TÉCNICA) -->
-          <div id="content-specs" class="tab-content hidden flex-1 flex flex-col">
+          <div id="content-specs" class="tab-content hidden flex-1 flex flex-col h-auto md:h-full"></div>
             <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">FICHA TÉCNICA DEL DESARROLLO</h1>
             <table class="w-full text-xs font-mono text-left border-collapse">
               <tbody>
@@ -279,12 +280,12 @@
           </div>
 
           <!-- CONTENIDO: PESTAÑA CAPTURAS (GALERÍA UNIFORME - 8 MINIATURAS DEL MISMO TAMAÑO) -->
-          <div id="content-capturas" class="tab-content hidden flex-1 flex flex-col overflow-hidden">
+          <div id="content-capturas" class="tab-content hidden flex-1 flex flex-col md:overflow-hidden h-auto md:h-full"></div>
             <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">GALERÍA</h1>
             <p class="text-xs text-gray-600 font-mono mb-2">Haz clic en una miniatura para visualizarla a gran escala a la izquierda.</p>
             
             <!-- Grilla con scroll de Windows donde todos los elementos miden exactamente el mismo tamaño (h-28) -->
-            <div class="grid grid-cols-2 gap-2 flex-1 overflow-y-auto pr-1 select-none">
+            <div class="grid grid-cols-2 gap-2 flex-1 md:overflow-y-auto pr-1 select-none"></div>
               
               <!-- Miniatura 1 -->
               <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-01/proyecto_01a.jpg', 'Entrega Encargo', '800 x 600 PX')" ondblclick="openImageViewer()">
