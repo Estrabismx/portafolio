@@ -173,7 +173,7 @@
           <circle cx="14" cy="7" r="1" fill="yellow"/>
           <circle cx="18" cy="7" r="1" fill="green"/>
         </svg>
-        <span>Propiedades: Banca Reticulada </span>
+        <span>Propiedades: Banca Reticulada</span>
       </div>
       <div class="flex gap-1">
         <button class="win98-window-btn" onclick="navigateTo('proyectos.html')">_</button>
@@ -278,17 +278,17 @@
             </div>
           </div>
 
-          <!-- CONTENIDO: PESTAÑA CAPTURAS (GALERÍA UNIFORME) -->
-          <div id="content-capturas" class="tab-content hidden flex-1 flex flex-col h-auto md:h-full md:overflow-hidden">
+          <!-- CONTENIDO: PESTAÑA CAPTURAS (GALERÍA UNIFORME - 8 MINIATURAS DEL MISMO TAMAÑO) -->
+          <div id="content-capturas" class="tab-content hidden flex-1 flex flex-col md:overflow-hidden h-auto md:h-full">
             <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">GALERÍA</h1>
             <p class="text-xs text-gray-600 font-mono mb-2">Haz clic en una miniatura para visualizarla a gran escala a la izquierda.</p>
             
-            <!-- Grilla con scroll de Windows donde todos los elementos miden exactamente el mismo tamaño -->
+            <!-- Grilla con scroll de Windows donde todos los elementos miden exactamente el mismo tamaño (h-28) -->
             <div class="grid grid-cols-2 gap-2 flex-1 md:overflow-y-auto pr-1 select-none pb-4">
               
               <!-- Miniatura 1 -->
               <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-01/proyecto_01a.jpg', 'Entrega Encargo', '800 x 600 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-16 bg-black flex items-center justify-center overflow-hidden">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-01/proyecto_01a.jpg" alt="Captura 1" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_01a'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_01a.jpg</div>
@@ -296,7 +296,7 @@
               
               <!-- Miniatura 2 -->
               <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-01/proyecto_01b.jpg', 'Banca completa', '1024 x 768 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-16 bg-black flex items-center justify-center overflow-hidden">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-01/proyecto_01b.jpg" alt="Captura 2" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_01b'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_01b.jpg</div>
@@ -304,7 +304,7 @@
               
               <!-- Miniatura 3 -->
               <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-01/proyecto_01c.jpg', 'Detalle', '1280 x 960 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-16 bg-black flex items-center justify-center overflow-hidden">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-01/proyecto_01c.jpg" alt="Captura 3" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_01c'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_01c.jpg</div>
@@ -312,7 +312,7 @@
               
               <!-- Miniatura 4 -->
               <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-01/proyecto_01d.jpg', 'Detalle', '800 x 600 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-16 bg-black flex items-center justify-center overflow-hidden">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-01/proyecto_01d.jpg" alt="Captura 4" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_01d'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_01d.jpg</div>
@@ -320,7 +320,7 @@
 
               <!-- Miniatura 5 -->
               <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-01/proyecto_01e.jpg', 'Proceso', '1280 x 1024 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-16 bg-black flex items-center justify-center overflow-hidden">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-01/proyecto_01e.jpg" alt="Captura 5" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_01e'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_01e.jpg</div>
@@ -328,7 +328,7 @@
 
               <!-- Miniatura 6 -->
               <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-01/proyecto_01f.jpg', 'Proceso', '1024 x 768 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-16 bg-black flex items-center justify-center overflow-hidden">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-01/proyecto_01f.jpg" alt="Captura 6" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_01f'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_01f.jpg</div>
@@ -336,7 +336,7 @@
 
               <!-- Miniatura 7 -->
               <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-01/proyecto_01g.jpg', 'Proceso', '1600 x 1200 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-16 bg-black flex items-center justify-center overflow-hidden">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-01/proyecto_01g.jpg" alt="Captura 7" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_01g'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_01g.jpg</div>
@@ -344,7 +344,7 @@
 
               <!-- Miniatura 8 -->
               <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-01/proyecto_01h.png', 'Lamina Fuerzas', '1024 x 1024 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-16 bg-black flex items-center justify-center overflow-hidden">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-01/proyecto_01h.png" alt="Captura 8" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_01h'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_01h.png</div>
