@@ -219,11 +219,11 @@
       <div class="win98-button-static">Ir</div>
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL: SPLIT VIEW -->
-    <div class="flex-1 flex bg-white win98-inset m-1 overflow-hidden">
+    <!-- CONTENEDOR PRINCIPAL: SPLIT VIEW ADAPTABLE -->
+    <div class="flex-1 flex flex-col md:flex-row bg-white win98-inset m-1 overflow-y-auto md:overflow-hidden">
       
-      <!-- Panel de Vista Web de Windows 98 (Lateral Izquierdo) -->
-      <div class="w-full md:w-80 bg-[#f0f0f0] border-r border-gray-400 p-4 flex flex-col justify-between overflow-y-auto select-none" id="preview-panel">
+      <!-- Panel de Vista Web de Windows 98 (Lateral Izquierdo / Superior en celular) -->
+      <div class="w-full md:w-80 bg-[#f0f0f0] border-b md:border-b-0 md:border-r border-gray-400 p-4 flex flex-col justify-between shrink-0 select-none" id="preview-panel">
         <!-- El ID 'preview-dynamic-content' es crítico para actualizar el visor sin corromper el panel -->
         <div id="preview-dynamic-content" class="flex flex-col h-full justify-between">
           <div>
@@ -239,46 +239,44 @@
         </div>
       </div>
 
-      <!-- Cuadrícula de Archivos (Lateral Derecho) -->
-      <div class="flex-1 p-4 overflow-y-auto bg-white flex flex-wrap content-start gap-4">
+      <!-- Cuadrícula de Archivos (Lateral Derecho / Inferior en celular) -->
+      <div class="flex-1 p-4 md:overflow-y-auto bg-white flex flex-wrap justify-center md:justify-start content-start gap-4">
         
         <!-- Proyecto 1 -->
-<div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p1')" ondblclick="runDemo('p1')">
-  <img src="assets/proyecto-01/proyecto_01.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 01">
-  <span class="icon-text px-1 truncate w-full">Banca Reticulada</span>
-</div>
+        <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p1')" ondblclick="runDemo('p1')">
+          <img src="assets/proyecto-01/proyecto_01.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 1">
+          <span class="icon-text px-1 truncate w-full">Banca Reticulada</span>
+        </div>
+
         <!-- Proyecto 2 -->
-       
-<div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p2')" ondblclick="runDemo('p2')">
-  <img src="assets/proyecto-02/proyecto_02.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 02">
-  <span class="icon-text px-1 truncate w-full">Lampel</span>
-</div>
+        <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p2')" ondblclick="runDemo('p2')">
+          <img src="assets/proyecto-02/proyecto_02.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 02">
+          <span class="icon-text px-1 truncate w-full">Lampel</span>
+        </div>
 
         <!-- Proyecto 3 -->
         <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p3')" ondblclick="runDemo('p3')">
-  <img src="assets/proyecto-03/proyecto_03.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 03">
-  <span class="icon-text px-1 truncate w-full"><i>Mimus thenca</i></span>
-</div>
+          <img src="assets/proyecto-03/proyecto_03.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 03">
+          <span class="icon-text px-1 truncate w-full"><i>Mimus thenca</i></span>
+        </div>
 
         <!-- Proyecto 4 -->
         <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p4')" ondblclick="runDemo('p4')">
-  <img src="assets/proyecto-04/proyecto_04.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 04">
-  <span class="icon-text px-1 truncate w-full">Élé chair</span>
-</div>
-
+          <img src="assets/proyecto-04/proyecto_04.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 04">
+          <span class="icon-text px-1 truncate w-full">Élé chair</span>
+        </div>
 
         <!-- Proyecto 5 -->
         <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p5')" ondblclick="runDemo('p5')">
-  <img src="assets/proyecto-05/proyecto_05.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 05">
-  <span class="icon-text px-1 truncate w-full">Dualshock II</span>
-</div>
-
+          <img src="assets/proyecto-05/proyecto_05.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 05">
+          <span class="icon-text px-1 truncate w-full">Dualshock II</span>
+        </div>
 
         <!-- Proyecto 6 -->
         <div class="file-icon flex flex-col items-center" tabindex="0" onclick="selectProject('p6')" ondblclick="runDemo('p6')">
-  <img src="assets/proyecto-06/proyecto_06.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 06">
-  <span class="icon-text px-1 truncate w-full">Mochila Kanken</span>
-</div>
+          <img src="assets/proyecto-06/proyecto_06.svg" class="w-20 h-20 mb-1 object-contain" alt="Proyecto 06">
+          <span class="icon-text px-1 truncate w-full">Mochila Kanken</span>
+        </div>
 
       </div>
 
@@ -312,7 +310,7 @@
     // Base de datos de los 6 proyectos configurables con su respectiva URL de destino
     const proyectos = {
       p1: {
-        title: "Proyecto 01",
+        title: "Banca Reticulada",
         fullTitle: "Mobiliario Estructural - Banca reticulada",
         type: "Taller Colectivo",
         year: "2025-2",
@@ -323,7 +321,7 @@
         url: "proyecto_01.html"
       },
       p2: {
-        title: "Proyecto 02",
+        title: "Lampel",
         fullTitle: " Elemento Luminico - Lampel",
         type: "Taller Colectivo",
         year: "2025-2",
@@ -334,7 +332,7 @@
         url: "proyecto_02.html"
       },
       p3: {
-        title: "Proyecto 03",
+        title: "Mimus Thenca",
         fullTitle: "Material pedagógico -  Mimus Thenca",
         type: "Taller Colectivo - PARQUEMET",
         year: "2025-2",
@@ -345,7 +343,7 @@
         url: "proyecto_03.html"
       },
       p4: {
-        title: "Proyecto 04",
+        title: "Élé Chair",
         fullTitle: "Foto Recreación - Élé Chair",
         type: "Maquinas y Procesos",
         year: "2025-1",
@@ -356,7 +354,7 @@
         url: "proyecto_04.html"
       },
       p5: {
-        title: "Proyecto 05",
+        title: "Dualshock II",
         fullTitle: " Replica a Detalle - Dualshock II",
         type: "Modelado 3D",
         year: "2025-1",
@@ -367,7 +365,7 @@
         url: "proyecto_05.html"
       },
       p6: {
-        title: "Proyecto 06",
+        title: "Mochila Kanken",
         fullTitle: "Mejora de producto - Mochila Kanken",
         type: "Prototipo",
         year: "2025-2",

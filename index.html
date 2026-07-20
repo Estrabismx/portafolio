@@ -14,7 +14,6 @@
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
   <style>
-    /* Estilos base inspirados en la interfaz clásica de Windows 95/98 */
     :root {
       --win98-bg: #c0c0c0;
       --win98-fg: #000000;
@@ -23,7 +22,7 @@
       --win98-dark-gray: #404040;
       --win98-blue: #000080;
       --win98-blue-light: #1084d0;
-      --desktop-teal: #008184;
+      --desktop-teal: #008080;
     }
 
     body {
@@ -146,26 +145,26 @@
       color: white;
     }
 
-    /* CURSORES PERSONALIZADOS (Referencia a la carpeta local de assets) */
-   html, body, .retro-cursor {
+    /* CURSORES PERSONALIZADOS (Corregidos con Hotspot '0 0' y fallback correcto) */
+    html, body, .retro-cursor {
       cursor: url('assets/svg/cursor-estandar.svg') 0 0, default !important;
     }
 
-    /* Aplicación precisa del cursor de acción a elementos interactivos reales únicamente */
-    a, button, select, option, input, textarea, img,
+    /* Aplicación del cursor de acción con Hotspot '0 0' y fallback correcto */
+    a, button, select, option, input, textarea,
     .win98-button, .win98-window-btn, .desktop-icon, .start-menu-item,
     .cursor-pointer, .hover\:underline {
-      cursor: url('assets/svg/cursor-accion.svg'), pointer !important;
+      cursor: url('assets/svg/cursor-accion.svg') 0 0, pointer !important;
     }
 
     /* Iconos del Escritorio */
     .desktop-icon {
-      width: 120px;
+      width: 80px;
       text-align: center;
       margin: 12px;
       color: white;
       text-shadow: 1px 1px 1px black;
-      font-size: 14px;
+      font-size: 11px;
     }
 
     .desktop-icon:focus .icon-text {
@@ -202,7 +201,7 @@
 </head>
 <body class="retro-cursor h-screen w-screen relative overflow-hidden flex flex-col justify-between">
 
-<!-- ================= ESCRITORIO PRINCIPAL ================= -->
+  <!-- ================= STREAMING_CHUNK: Cargando Escritorio Principal... ================= -->
   <div id="desktop" class="flex-1 w-full relative p-4 flex flex-col flex-wrap content-start items-start justify-start z-10" style="height: calc(100vh - 40px);">
     
     <!-- Icono: Mi PC -->
@@ -224,7 +223,7 @@
     </div>
 
     <!-- Icono: Contacto -->
-    <div class="desktop-icon flex flex-col items-center" tabindex="0" onclick="navigateTo('contacto.html')">
+    <div class="desktop-icon flex flex-col items-center" tabindex="0" onclick="toggleWindow('window-contacto')">
       <img src="assets/svg/contacto.svg" alt="Contacto" class="w-16 h-16 mb-1 pointer-events-none">
       <span class="icon-text px-1">Contacto</span>
     </div>
@@ -238,7 +237,7 @@
   </div>
 
 
-  <!-- ================= VENTANA CENTRAL: MI PC ================= -->
+  <!-- ================= STREAMING_CHUNK: Cargando Ventana Central Mi PC... ================= -->
   <div id="window-pc" class="window win98-outset z-20" style="width: 440px; top: 15%; left: calc(50vw - 220px);" onclick="focusWindow('window-pc')">
     <div class="win98-titlebar" id="window-pc-handle">
       <div class="flex items-center gap-1.5">
@@ -246,9 +245,9 @@
         <span>Mi PC - Menú de Navegación</span>
       </div>
       <div class="flex gap-1">
-        <button class="win98-window-btn" onclick="minimizeWindow('window-pc')">_</button>
-        <button class="win98-window-btn" onclick="maximizeWindow('window-pc')">⬛</button>
-        <button class="win98-window-btn" onclick="closeWindow('window-pc')">X</button>
+        <button class="win98-window-btn" onclick="minimizeWindow('window-pc'); event.stopPropagation();">_</button>
+        <button class="win98-window-btn" onclick="maximizeWindow('window-pc'); event.stopPropagation();">⬛</button>
+        <button class="win98-window-btn" onclick="closeWindow('window-pc'); event.stopPropagation();">X</button>
       </div>
     </div>
     
@@ -268,25 +267,25 @@
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         
         <!-- Enlace Proyectos -->
-        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('proyectos.html')">
+        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('proyectos.html'); event.stopPropagation();">
           <img src="assets/svg/proyectos.svg" alt="Proyectos" class="w-10 h-10 pointer-events-none">
           <span class="text-xs mt-2 text-center">Proyectos</span>
         </div>
 
         <!-- Enlace Sobre Mí -->
-        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('sobre-mi.html')">
+        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('sobre-mi.html'); event.stopPropagation();">
           <img src="assets/svg/sobre-mi.svg" alt="Sobre Mí" class="w-10 h-10 pointer-events-none">
           <span class="text-xs mt-2 text-center">Sobre Mí</span>
         </div>
 
         <!-- Enlace Contacto -->
-        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('contacto.html')">
+        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="toggleWindow('window-contacto'); event.stopPropagation();">
           <img src="assets/svg/contacto.svg" alt="Contacto" class="w-10 h-10 pointer-events-none">
           <span class="text-xs mt-2 text-center">Contacto</span>
         </div>
 
         <!-- Enlace Paint 98 -->
-        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('paint.html')">
+        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="navigateTo('paint.html'); event.stopPropagation();">
           <img src="assets/svg/paint.svg" alt="Paint" class="w-10 h-10 pointer-events-none">
           <span class="text-xs mt-2 text-center">Paint</span>
         </div>
@@ -309,6 +308,52 @@
   </div>
 
 
+  <!-- ================= STREAMING_CHUNK: Cargando Ventana de Contacto... ================= -->
+  <div id="window-contacto" class="window win98-outset z-20" style="width: 320px; top: 25%; left: calc(50vw - 160px); display: none;" onclick="focusWindow('window-contacto')">
+    <div class="win98-titlebar" id="window-contacto-handle">
+      <div class="flex items-center gap-1.5">
+        <img src="assets/svg/contacto.svg" alt="Contacto" class="w-4 h-4 pointer-events-none">
+        <span>Informacion_Contacto</span>
+      </div>
+      <div class="flex gap-1">
+        <button class="win98-window-btn" onclick="minimizeWindow('window-contacto'); event.stopPropagation();">_</button>
+        <button class="win98-window-btn" onclick="closeWindow('window-contacto'); event.stopPropagation();">X</button>
+      </div>
+    </div>
+
+    <!-- Contenido Estático de Redes y Datos -->
+    <div class="p-4 bg-white flex-1 overflow-auto win98-inset m-1 font-mono text-xs select-text">
+      <p class="font-bold text-[#000080] border-b pb-1 mb-3 uppercase">Datos del Diseñador</p>
+      
+      <div class="space-y-3">
+        <div>
+          <span class="font-bold text-gray-600 block">E-mail:</span>
+          <a href="mailto:camila.ramirez2@mail.udp.cl" class="text-blue-800 hover:underline cursor-pointer">camila.ramirez2@mail.udp.cl</a>
+        </div>
+        
+        <div>
+          <span class="font-bold text-gray-600 block">Instagram:</span>
+          <a href="https://instagram.com/n.arkotikk" target="_blank" class="text-blue-800 hover:underline cursor-pointer">@n.arkotikk</a>
+        </div>
+        
+        <div>
+          <span class="font-bold text-gray-600 block">GitHub:</span>
+          <a href="https://github.com/estrabismx" target="_blank" class="text-blue-800 hover:underline cursor-pointer">github.com/estrabismx</a>
+        </div>
+      </div>
+
+      <div class="mt-5 pt-3 border-t border-dashed border-gray-400 text-[10px] text-gray-500 text-center">
+        Haga clic en los enlaces para abrir de forma externa.
+      </div>
+    </div>
+
+    <!-- Botón Aceptar inferior clásico -->
+    <div class="p-2 flex justify-end bg-[#c0c0c0] border-t border-white">
+      <button class="win98-button font-sans" onclick="closeWindow('window-contacto'); event.stopPropagation();">Aceptar</button>
+    </div>
+  </div>
+
+
   <!-- ================= DIÁLOGOS DE ALERTA DE SISTEMA (MOCK ALERTS) ================= -->
   <div id="sys-alert" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 win98-outset" style="width: 320px;">
     <div class="win98-titlebar">
@@ -325,12 +370,13 @@
   </div>
 
 
-  <!-- ================= BARRA DE TAREAS ================= -->
+  <!-- ================= STREAMING_CHUNK: Cargando Barra de Tareas... ================= -->
   <footer class="taskbar w-full flex justify-between items-center px-1 z-50 relative">
     
     <div class="flex items-center gap-1.5 h-full">
-    <!-- Botón de Inicio -->
-      <button class="win98-button font-bold text-sm flex items-center justify-center px-3" id="start-btn" onclick="toggleStartMenu()" style="height: 28px;">
+      <!-- Botón de Inicio -->
+      <button class="win98-button font-bold text-sm flex items-center gap-1.5" id="start-btn" onclick="toggleStartMenu()" style="height: 28px;">
+        <!-- Pequeño logo clásico de Windows pixelado por divs -->
         <span>Inicio</span>
       </button>
 
@@ -369,7 +415,7 @@
       <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="navigateTo('sobre-mi.html')">
         <span>📝</span> <b>Sobre Mí</b>
       </div>
-      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="navigateTo('contacto.html')">
+      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="toggleWindow('window-contacto'); toggleStartMenu()">
         <span>✉️</span> <b>Contacto</b>
       </div>
       <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="navigateTo('paint.html')">
@@ -378,7 +424,7 @@
     </div>
   </div>
 
-  <!-- ================= CODIGO JAVASCRIPT ================= -->
+  <!-- ================= STREAMING_CHUNK: Cargando Scripts del Sistema Operativo... ================= -->
   <script>
     // Z-index para orden de superposición de ventanas
     let maxZIndex = 100;
@@ -446,14 +492,25 @@
       updateTaskbar();
     }
 
-    // Alternar visibilidad de ventana
+    // Alternar visibilidad de ventana de manera inteligente (Abrir, Enfocar o Cerrar)
     function toggleWindow(id) {
       const win = document.getElementById(id);
       if (!win) return;
-      if (win.style.display === 'none') {
+      
+      const isVisible = win.style.display !== 'none';
+      // Detecta si la ventana es la que actualmente tiene el z-index más alto y está activa
+      const currentZ = parseInt(win.style.zIndex) || 0;
+      const isFocused = currentZ === maxZIndex && !win.querySelector('.win98-titlebar').classList.contains('inactive');
+
+      if (!isVisible) {
+        // Si no es visible, la mostramos y enfocamos
         win.style.display = 'flex';
         focusWindow(id);
+      } else if (!isFocused) {
+        // Si ya es visible pero está detrás de otra, la traemos al frente (primer plano)
+        focusWindow(id);
       } else {
+        // Si ya está visible y en primer plano, se minimiza/cierra
         win.style.display = 'none';
         updateTaskbar();
       }
@@ -495,32 +552,39 @@
       }
     }
 
-    // Mantener la barra de tareas sincronizada con el estado de "Mi PC"
+    // Mantener la barra de tareas sincronizada con el estado de las ventanas abiertas
     function updateTaskbar() {
       const container = document.getElementById('taskbar-apps');
       container.innerHTML = '';
 
-      const winPc = document.getElementById('window-pc');
-      if (winPc && winPc.style.display !== 'none') {
-        const btn = document.createElement('button');
-        btn.className = 'win98-button text-xs font-semibold flex items-center gap-1.5';
-        btn.style.height = '28px';
+      const apps = [
+        { id: 'window-pc', title: 'Mi PC', icon: 'assets/svg/mipc.svg' },
+        { id: 'window-contacto', title: 'Contacto', icon: 'assets/svg/contacto.svg' }
+      ];
 
-        const isFocused = parseInt(winPc.style.zIndex) === maxZIndex;
-        if (isFocused) {
-          btn.classList.add('win98-inset');
-        }
+      apps.forEach(app => {
+        const el = document.getElementById(app.id);
+        if (el && el.style.display !== 'none') {
+          const btn = document.createElement('button');
+          btn.className = 'win98-button text-xs font-semibold flex items-center gap-1.5';
+          btn.style.height = '28px';
 
-        btn.innerHTML = `<img src="assets/svg/mipc.svg" alt="Mi PC" class="w-4 h-4 pointer-events-none"> <span class="ml-1">Mi PC</span>`;
-        btn.onclick = () => {
+          const isFocused = parseInt(el.style.zIndex) === maxZIndex;
           if (isFocused) {
-            minimizeWindow('window-pc');
-          } else {
-            focusWindow('window-pc');
+            btn.classList.add('win98-inset');
           }
-        };
-        container.appendChild(btn);
-      }
+
+          btn.innerHTML = `<img src="${app.icon}" alt="${app.title}" class="w-4 h-4 pointer-events-none"> <span class="ml-1">${app.title}</span>`;
+          btn.onclick = () => {
+            if (isFocused) {
+              minimizeWindow(app.id);
+            } else {
+              focusWindow(app.id);
+            }
+          };
+          container.appendChild(btn);
+        }
+      });
     }
 
     // Funciones de Drag & Drop (Arrastrar Ventana de forma fluida)
@@ -585,6 +649,7 @@
       const winPcHandle = document.getElementById('window-pc-handle');
       
       makeDraggable(winPc, winPcHandle);
+      makeDraggable(document.getElementById('window-contacto'), document.getElementById('window-contacto-handle'));
       
       // Mostrar y enfocar la ventana central al cargar la página automáticamente
       winPc.style.display = 'flex';
@@ -598,6 +663,7 @@
       document.getElementById('sys-alert').style.zIndex = maxZIndex + 50;
     }
 
+    // Cerrar alertas
     function closeAlert() {
       document.getElementById('sys-alert').classList.add('hidden');
     }
