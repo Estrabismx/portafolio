@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mochila Kanken </title>
+  <title>Mochila Kanken</title>
   
   <!-- Tailwind CSS para utilidades de diseño modernas -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -173,7 +173,7 @@
           <circle cx="14" cy="7" r="1" fill="yellow"/>
           <circle cx="18" cy="7" r="1" fill="green"/>
         </svg>
-        <span>Propiedades: Banca Reticulada </span>
+        <span>Propiedades: Mochila Kanken </span>
       </div>
       <div class="flex gap-1">
         <button class="win98-window-btn" onclick="navigateTo('proyectos.html')">_</button>
@@ -202,7 +202,7 @@
       <div class="flex-1 bg-white win98-inset p-4 flex flex-col md:flex-row gap-6 overflow-y-auto">
         
         <!-- Lateral izquierdo: Previsualización de Imagen / Mockup Principal -->
-        <div class="w-full md:w-1/2 flex flex-col justify-between h-full">
+        <div class="w-full md:w-1/2 flex flex-col justify-between h-auto md:h-full flex-shrink-0">
           <!-- Caja contenedora de proporción fija con fondo negro para adaptarse perfectamente -->
           <div class="border-2 border-inset bg-black p-1 relative cursor-pointer flex-1 flex items-center justify-center min-h-[250px] max-h-[380px] overflow-hidden" onclick="openImageViewer()">
             <!-- Imagen Principal del Proyecto (Ajustada con object-contain para mostrarla completa) -->
@@ -219,13 +219,13 @@
         </div>
 
         <!-- Lateral Derecho: Información que cambia según la pestaña seleccionada -->
-        <div class="flex-1 flex flex-col h-full overflow-hidden">
+        <div class="flex-1 flex flex-col md:h-full md:overflow-hidden mt-4 md:mt-0">
           
           <!-- CONTENIDO: PESTAÑA GENERAL (DESCRIPCIÓN) -->
-          <div id="content-desc" class="tab-content flex-1 flex flex-col">
+          <div id="content-desc" class="tab-content flex-1 flex flex-col h-auto md:h-full">
             <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">Mejora de Producto - Mochila Kanken</h1>
             <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
-           Al realizar este proyecto se buscó hacer una replica de un producto ya existente, en este caso la famosa mochila Kanken. Una parte a destacar fue la importancia del prototipado, mediante este se buscó hacer un análisis de las piezas y sus uniones. Una vez ya interiorizado los volumenes que componian a la mochila, se realizó un prototipo de alta fidelidad, considerando los mismos materiales y dimensiones que en el producto original.
+            Al realizar este proyecto se buscó hacer una replica de un producto ya existente, en este caso la famosa mochila Kanken. Una parte a destacar fue la importancia del prototipado, mediante este se buscó hacer un análisis de las piezas y sus uniones. Una vez ya interiorizado los volumenes que componian a la mochila, se realizó un prototipo de alta fidelidad, considerando los mismos materiales y dimensiones que en el producto original.
             </p>
             <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
               Una vez ya finalizado el prototipado se avanzó con la segunda parte, en la cual se debía diseñar una mejora para el producto. Se debian considerar que posea un lenguaje visual similar al original, además de ser compatible con sus procesos productivos, es decir que fuera factible de producir sin aumentar costos. Por lo que se desarrollo un bolso organizador con los mismos materiales y tipos de costura que la mochila original. 
@@ -233,8 +233,7 @@
             <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
               Este trabajo fue realizado en conjunto de Jiamin Huang.
             </p>
-            
-            <div class="mt-auto">
+            <div class="mt-auto pt-4">
               <span class="font-bold text-xs block mb-1">Paletas de Colores Utilizadas:</span>
               <div class="flex gap-2">
                 <div class="w-6 h-6 border bg-[#0D0D0D]" title="Café01"></div>
@@ -246,7 +245,7 @@
           </div>
 
           <!-- CONTENIDO: PESTAÑA ESPECIFICACIONES (FICHA TÉCNICA) -->
-          <div id="content-specs" class="tab-content hidden flex-1 flex flex-col">
+          <div id="content-specs" class="tab-content hidden flex-1 flex flex-col h-auto md:h-full">
             <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">FICHA TÉCNICA DEL DESARROLLO</h1>
             <table class="w-full text-xs font-mono text-left border-collapse">
               <tbody>
@@ -280,72 +279,72 @@
           </div>
 
           <!-- CONTENIDO: PESTAÑA CAPTURAS (GALERÍA UNIFORME - 8 MINIATURAS DEL MISMO TAMAÑO) -->
-          <div id="content-capturas" class="tab-content hidden flex-1 flex flex-col overflow-hidden">
+          <div id="content-capturas" class="tab-content hidden flex-1 flex flex-col h-auto md:h-full md:overflow-hidden">
             <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">GALERÍA</h1>
             <p class="text-xs text-gray-600 font-mono mb-2">Haz clic en una miniatura para visualizarla a gran escala a la izquierda.</p>
             
             <!-- Grilla con scroll de Windows donde todos los elementos miden exactamente el mismo tamaño (h-28) -->
-            <div class="grid grid-cols-2 gap-2 flex-1 overflow-y-auto pr-1 select-none">
+            <div class="grid grid-cols-2 gap-2 flex-1 md:overflow-y-auto pr-1 select-none pb-4">
               
               <!-- Miniatura 1 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06a.jpg', 'Foto Estudio', '800 x 600 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06a.jpg', 'Foto Estudio', '800 x 600 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-06/proyecto_06a.jpg" alt="Captura 1" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_06a'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_06a.jpg</div>
               </div>
               
               <!-- Miniatura 2 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06b.jpg', 'Producto Final', '1024 x 768 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06b.jpg', 'Producto Final', '1024 x 768 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-06/proyecto_06b.jpg" alt="Captura 2" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_06b'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_06b.jpg</div>
               </div>
               
               <!-- Miniatura 3 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06c.jpg', 'Producto Final', '1280 x 960 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06c.jpg', 'Bolso Organizador', '1280 x 960 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-06/proyecto_06c.jpg" alt="Captura 3" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_06c'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_06c.jpg</div>
               </div>
               
               <!-- Miniatura 4 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06d.png', 'Lamina Producto', '800 x 600 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06d.png', 'Lamina Producto', '800 x 600 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-06/proyecto_06d.png" alt="Captura 4" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_06d'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_06d.png</div>
               </div>
 
               <!-- Miniatura 5 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06e.png', 'Prototipos', '1280 x 1024 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06e.png', 'Prototipos', '1280 x 1024 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-06/proyecto_06e.png" alt="Captura 5" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_06e'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_06e.png</div>
               </div>
 
               <!-- Miniatura 6 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06f.gif', 'Detalle Logo', '1024 x 768 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06f.gif', 'Detalle Logo', '1024 x 768 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-06/proyecto_06f.gif" alt="Captura 6" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_06f'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_06f.gif</div>
               </div>
 
               <!-- Miniatura 7 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06g.gif', 'Video Promocional', '1600 x 1200 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06g.gif', 'Video Promocional', '1600 x 1200 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-06/proyecto_06g.gif" alt="Captura 7" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_06g'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_06g.gif</div>
               </div>
 
               <!-- Miniatura 8 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06h.gif', 'Video Proceso', '1024 x 1024 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-06/proyecto_06h.gif', 'Video Proceso', '1024 x 1024 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-06/proyecto_06h.gif" alt="Captura 8" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_06h'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_06h.gif</div>
@@ -354,7 +353,7 @@
             </div>
           </div>
 
-        </div>
+        </div> <!-- Fin Lateral Derecho -->
 
       </div>
 
@@ -427,14 +426,14 @@
   <script>
     // Registro de los archivos de la galería del proyecto para la navegación secuencial
     const galeriaImagenes = [
-      { url: 'assets/proyecto-06/proyecto_06a.jpg', caption: 'CONCEPTO PRINCIPAL BRANDING', resolution: '800 x 600 PX' },
-      { url: 'assets/proyecto-06/proyecto_06b.jpg', caption: 'DISEÑO DE PAPELERÍA CORPORATIVA', resolution: '1024 x 768 PX' },
-      { url: 'assets/proyecto-06/proyecto_06c.jpg', caption: 'PROTOTIPO DE EMPAQUE (BOX)', resolution: '1280 x 960 PX' },
-      { url: 'assets/proyecto-06/proyecto_06d.png', caption: 'ESTUDIO DE RETÍCULA Y FUENTES', resolution: '800 x 600 PX' },
-      { url: 'assets/proyecto-06/proyecto_06e.png', caption: 'MOCKUP DE INTERFAZ WEB RESPONSIVA', resolution: '1280 x 1024 PX' },
-      { url: 'assets/proyecto-06/proyecto_06f.gif', caption: 'ESTILO EDITORIAL Y SEÑALIZACIÓN', resolution: '1024 x 768 PX' },
-      { url: 'assets/proyecto-06/proyecto_06g.gif', caption: 'PRUEBAS DE IMPRESIÓN Y TEXTURAS', resolution: '1600 x 1200 PX' },
-      { url: 'assets/proyecto-06/proyecto_06h.gif', caption: 'ANÁLISIS DE HARDWARE Y RENDER', resolution: '1024 x 1024 PX' }
+      { url: 'assets/proyecto-06/proyecto_06a.jpg', caption: 'Foto Estudio', resolution: '800 x 600 PX' },
+      { url: 'assets/proyecto-06/proyecto_06b.jpg', caption: 'Producto Final', resolution: '1024 x 768 PX' },
+      { url: 'assets/proyecto-06/proyecto_06c.jpg', caption: 'Bolso Organizador', resolution: '1280 x 960 PX' },
+      { url: 'assets/proyecto-06/proyecto_06d.png', caption: 'Lamina Producto', resolution: '800 x 600 PX' },
+      { url: 'assets/proyecto-06/proyecto_06e.png', caption: 'Prototipos', resolution: '1280 x 1024 PX' },
+      { url: 'assets/proyecto-06/proyecto_06f.gif', caption: 'Detalle Logo', resolution: '1024 x 768 PX' },
+      { url: 'assets/proyecto-06/proyecto_06g.gif', caption: 'Video Promocional', resolution: '1600 x 1200 PX' },
+      { url: 'assets/proyecto-06/proyecto_06h.gif', caption: 'Video Proceso', resolution: '1024 x 1024 PX' }
     ];
 
     let currentViewerIndex = 0;
@@ -515,6 +514,7 @@
       document.getElementById('sys-alert').classList.remove('hidden');
     }
 
+    // Cerrar alertas
     function closeAlert() {
       document.getElementById('sys-alert').classList.add('hidden');
     }

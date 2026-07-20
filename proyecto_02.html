@@ -202,7 +202,7 @@
       <div class="flex-1 bg-white win98-inset p-4 flex flex-col md:flex-row gap-6 overflow-y-auto">
         
         <!-- Lateral izquierdo: Previsualización de Imagen / Mockup Principal -->
-        <div class="w-full md:w-1/2 flex flex-col justify-between h-full">
+        <div class="w-full md:w-1/2 flex flex-col justify-between h-auto md:h-full flex-shrink-0">
           <!-- Caja contenedora de proporción fija con fondo negro para adaptarse perfectamente -->
           <div class="border-2 border-inset bg-black p-1 relative cursor-pointer flex-1 flex items-center justify-center min-h-[250px] max-h-[380px] overflow-hidden" onclick="openImageViewer()">
             <!-- Imagen Principal del Proyecto (Ajustada con object-contain para mostrarla completa) -->
@@ -219,21 +219,21 @@
         </div>
 
         <!-- Lateral Derecho: Información que cambia según la pestaña seleccionada -->
-        <div class="flex-1 flex flex-col h-full overflow-hidden">
+        <div class="flex-1 flex flex-col md:h-full md:overflow-hidden mt-4 md:mt-0">
           
           <!-- CONTENIDO: PESTAÑA GENERAL (DESCRIPCIÓN) -->
-          <div id="content-desc" class="tab-content flex-1 flex flex-col">
+          <div id="content-desc" class="tab-content flex-1 flex flex-col h-auto md:h-full">
             <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">Ejercicio Conceptual - Lampel</h1>
             <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
-            Lampel nació como un ejercicio conceptual de diseño, donde se buscó generar una experiencia que influya en el ambiente. En este caso, se enfocá en el dinamismo de un espacio, generando una apertura a espacios más sociales al aumentar la intensidad luminica subiendo su pantalla, pero también generando un espacio más íntimo al bajar su pantalla y disminuir la intensidad luminica.
-          </p>
+            Lampel nació como un ejercicio conceptual de diseño, donde se buscó generar una experiencia que influya en el ambiente. En este caso, se enfoca en el dinamismo de un espacio, generando una apertura a espacios más sociales al aumentar la intensidad lumínica subiendo su pantalla, pero también generando un espacio más íntimo al bajar su pantalla y disminuir la intensidad lumínica.
+            </p>
             <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
-            Para lograr esta experiencia, se trabajo en un sistema movil que permita subir y bajar la pantalla. Esto se logró mediante un sistema de poleas y contrapesos, que permite que la pantalla se mueva suavemente y logre fijarse en la posición deseada.
+            Para lograr esta experiencia, se trabajó en un sistema móvil que permita subir y bajar la pantalla. Esto se logró mediante un sistema de poleas y contrapesos, que permite que la pantalla se mueva suavemente y logre fijarse en la posición deseada.
             </p>    
-          <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
+            <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
               Trabajo realizado en conjunto de: Isidora Alvarez - Jiamin Huang - Dayana Pañitrur 
             </p>
-            <div class="mt-auto">
+            <div class="mt-auto pt-4">
               <span class="font-bold text-xs block mb-1">Paletas de Colores Utilizadas:</span>
               <div class="flex gap-2">
                 <div class="w-6 h-6 border bg-[#FCF5F3]" title="Blanco"></div>
@@ -245,7 +245,7 @@
           </div>
 
           <!-- CONTENIDO: PESTAÑA ESPECIFICACIONES (FICHA TÉCNICA) -->
-          <div id="content-specs" class="tab-content hidden flex-1 flex flex-col">
+          <div id="content-specs" class="tab-content hidden flex-1 flex flex-col h-auto md:h-full">
             <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">FICHA TÉCNICA DEL DESARROLLO</h1>
             <table class="w-full text-xs font-mono text-left border-collapse">
               <tbody>
@@ -279,72 +279,72 @@
           </div>
 
           <!-- CONTENIDO: PESTAÑA CAPTURAS (GALERÍA UNIFORME - 8 MINIATURAS DEL MISMO TAMAÑO) -->
-          <div id="content-capturas" class="tab-content hidden flex-1 flex flex-col overflow-hidden">
+          <div id="content-capturas" class="tab-content hidden flex-1 flex flex-col md:overflow-hidden h-auto md:h-full">
             <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">GALERÍA</h1>
             <p class="text-xs text-gray-600 font-mono mb-2">Haz clic en una miniatura para visualizarla a gran escala a la izquierda.</p>
             
             <!-- Grilla con scroll de Windows donde todos los elementos miden exactamente el mismo tamaño (h-28) -->
-            <div class="grid grid-cols-2 gap-2 flex-1 overflow-y-auto pr-1 select-none">
+            <div class="grid grid-cols-2 gap-2 flex-1 md:overflow-y-auto pr-1 select-none pb-4">
               
               <!-- Miniatura 1 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02a.jpg', 'Entrega Encargo', '800 x 600 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02a.jpg', 'Entrega Encargo', '800 x 600 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-02/proyecto_02a.jpg" alt="Captura 1" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02a'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02a.jpg</div>
               </div>
               
               <!-- Miniatura 2 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02b.jpg', 'Posición 1', '1024 x 768 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02b.jpg', 'Posición 1', '1024 x 768 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-02/proyecto_02b.jpg" alt="Captura 2" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02b'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02b.jpg</div>
               </div>
               
               <!-- Miniatura 3 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02c.jpg', 'Posición 2', '1280 x 960 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02c.jpg', 'Posición 2', '1280 x 960 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-02/proyecto_02c.jpg" alt="Captura 3" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02c'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02c.jpg</div>
               </div>
               
               <!-- Miniatura 4 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02d.gif', 'Movimiento', '800 x 600 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02d.gif', 'Movimiento', '800 x 600 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-02/proyecto_02d.gif" alt="Captura 4" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02d'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02d.gif</div>
               </div>
 
               <!-- Miniatura 5 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02e.jpg', 'Planimetría Explosionado', '1280 x 1024 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02e.jpg', 'Planimetría Explosionado', '1280 x 1024 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-02/proyecto_02e.jpg" alt="Captura 5" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02e'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02e.jpg</div>
               </div>
 
               <!-- Miniatura 6 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02f.jpg', 'Planimetría Isometrica', '1024 x 768 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02f.jpg', 'Planimetría Isometrica', '1024 x 768 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-02/proyecto_02f.jpg" alt="Captura 6" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02f'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02f.jpg</div>
               </div>
 
               <!-- Miniatura 7 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02g.png', 'Proceso', '1600 x 1200 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02g.png', 'Proceso', '1600 x 1200 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-02/proyecto_02g.png" alt="Captura 7" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02g'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02g.png</div>
               </div>
 
               <!-- Miniatura 8 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02h.png', 'Lamina Fuerzas', '1024 x 1024 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-02/proyecto_02h.png', 'Lamina Fuerzas', '1024 x 1024 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-02/proyecto_02h.png" alt="Captura 8" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_02h'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_02h.png</div>
@@ -353,7 +353,7 @@
             </div>
           </div>
 
-        </div>
+        </div> <!-- Fin Lateral Derecho -->
 
       </div>
 

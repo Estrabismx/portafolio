@@ -202,7 +202,7 @@
       <div class="flex-1 bg-white win98-inset p-4 flex flex-col md:flex-row gap-6 overflow-y-auto">
         
         <!-- Lateral izquierdo: Previsualización de Imagen / Mockup Principal -->
-        <div class="w-full md:w-1/2 flex flex-col justify-between h-full">
+        <div class="w-full md:w-1/2 flex flex-col justify-between h-auto md:h-full flex-shrink-0">
           <!-- Caja contenedora de proporción fija con fondo negro para adaptarse perfectamente -->
           <div class="border-2 border-inset bg-black p-1 relative cursor-pointer flex-1 flex items-center justify-center min-h-[250px] max-h-[380px] overflow-hidden" onclick="openImageViewer()">
             <!-- Imagen Principal del Proyecto (Ajustada con object-contain para mostrarla completa) -->
@@ -219,10 +219,10 @@
         </div>
 
         <!-- Lateral Derecho: Información que cambia según la pestaña seleccionada -->
-        <div class="flex-1 flex flex-col h-full overflow-hidden">
+        <div class="flex-1 flex flex-col md:h-full md:overflow-hidden mt-4 md:mt-0">
           
           <!-- CONTENIDO: PESTAÑA GENERAL (DESCRIPCIÓN) -->
-          <div id="content-desc" class="tab-content flex-1 flex flex-col">
+          <div id="content-desc" class="tab-content flex-1 flex flex-col h-auto md:h-full">
             <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">Replica a Detalle - Dualshock II</h1>
             <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
             En este ejercicio se buscó replicar con precisión un objeto compuesto por un mínimo de 5 elementos, en este caso se enfocó en el control Dualshock II, utilizando el software de modelado 3D, Rhino 8. El objetivo principal fue capturar cada detalle del objeto original, desde encajes hasta texturas (mediante renderizado), para lograrlo se utilizaron la gran mayoria de herramientas disponibles en el software.
@@ -230,19 +230,19 @@
             <p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">
               Otro objetivo a lograr fue el desarrollo de renders fotorealistas en los que se apreciara cada detalle del objeto, todo esto se realizó mediante el uso de Vray. El resultado final fue una replica en la que se consideraron elementos claves, como lo son las placas PCB, los botones, encajes y demás detalles que hacen que el objeto sea funcional. 
             </p>
-            <div class="mt-auto">
+            <div class="mt-auto pt-4">
               <span class="font-bold text-xs block mb-1">Paletas de Colores Utilizadas:</span>
               <div class="flex gap-2">
-                <div class="w-6 h-6 border bg-[#0A090A]" title="Café01"></div>
-                <div class="w-6 h-6 border bg-[#423D3F]" title="Café02"></div>
-                <div class="w-6 h-6 border bg-[#483D3F]" title="Café03"></div>
-                <div class="w-6 h-6 border bg-[#E1DCE5]" title="Café04"></div>
+                <div class="w-6 h-6 border bg-[#0A090A]" title="Gris Oscuro"></div>
+                <div class="w-6 h-6 border bg-[#423D3F]" title="Gris Medio"></div>
+                <div class="w-6 h-6 border bg-[#483D3F]" title="Gris Claro"></div>
+                <div class="w-6 h-6 border bg-[#E1DCE5]" title="Blanco Perla"></div>
               </div>
             </div>
           </div>
 
           <!-- CONTENIDO: PESTAÑA ESPECIFICACIONES (FICHA TÉCNICA) -->
-          <div id="content-specs" class="tab-content hidden flex-1 flex flex-col">
+          <div id="content-specs" class="tab-content hidden flex-1 flex flex-col h-auto md:h-full">
             <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">FICHA TÉCNICA DEL DESARROLLO</h1>
             <table class="w-full text-xs font-mono text-left border-collapse">
               <tbody>
@@ -276,72 +276,72 @@
           </div>
 
           <!-- CONTENIDO: PESTAÑA CAPTURAS (GALERÍA UNIFORME - 8 MINIATURAS DEL MISMO TAMAÑO) -->
-          <div id="content-capturas" class="tab-content hidden flex-1 flex flex-col overflow-hidden">
+          <div id="content-capturas" class="tab-content hidden flex-1 flex flex-col h-auto md:h-full md:overflow-hidden">
             <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">GALERÍA</h1>
             <p class="text-xs text-gray-600 font-mono mb-2">Haz clic en una miniatura para visualizarla a gran escala a la izquierda.</p>
             
             <!-- Grilla con scroll de Windows donde todos los elementos miden exactamente el mismo tamaño (h-28) -->
-            <div class="grid grid-cols-2 gap-2 flex-1 overflow-y-auto pr-1 select-none">
+            <div class="grid grid-cols-2 gap-2 flex-1 md:overflow-y-auto pr-1 select-none pb-4">
               
               <!-- Miniatura 1 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05a.png', 'Render detalle', '800 x 600 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05a.png', 'Render detalle', '800 x 600 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-05/proyecto_05a.png" alt="Captura 1" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_05a'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_05a.png</div>
               </div>
               
               <!-- Miniatura 2 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05b.png', 'Render detalle', '1024 x 768 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05b.png', 'Render detalle', '1024 x 768 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-05/proyecto_05b.png" alt="Captura 2" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_05b'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_05b.png</div>
               </div>
               
               <!-- Miniatura 3 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05c.png', 'Render general', '1280 x 960 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05c.png', 'Render general', '1280 x 960 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-05/proyecto_05c.png" alt="Captura 3" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_05c'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_05c.png</div>
               </div>
               
               <!-- Miniatura 4 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05d.png', 'Render explosionado', '800 x 600 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05d.png', 'Render explosionado', '800 x 600 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-05/proyecto_05d.png" alt="Captura 4" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_05d'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_05d.png</div>
               </div>
 
               <!-- Miniatura 5 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05e.png', 'Imagen Estudio', '1280 x 1024 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05e.png', 'Imagen Estudio', '1280 x 1024 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-05/proyecto_05e.png" alt="Captura 5" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_05e'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_05e.png</div>
               </div>
 
               <!-- Miniatura 6 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05f.jpg', 'Planimétria Explosionado', '1024 x 768 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05f.jpg', 'Planimétria Explosionado', '1024 x 768 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-05/proyecto_05f.jpg" alt="Captura 6" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_05f'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_05f.jpg</div>
               </div>
 
               <!-- Miniatura 7 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05g.gif', 'Animación Explosionado', '1600 x 1200 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05g.gif', 'Animación Explosionado', '1600 x 1200 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-05/proyecto_05g.gif" alt="Captura 7" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_05g'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_05g.gif</div>
               </div>
 
               <!-- Miniatura 8 -->
-              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-40 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05h.png', 'Modelo en Rhino', '1024 x 1024 PX')" ondblclick="openImageViewer()">
-                <div class="w-full h-36 bg-black flex items-center justify-center overflow-hidden">
+              <div class="border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between" onclick="updatePreview('assets/proyecto-05/proyecto_05h.png', 'Modelo en Rhino', '1024 x 1024 PX')" ondblclick="openImageViewer()">
+                <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden">
                   <img src="assets/proyecto-05/proyecto_05h.png" alt="Captura 8" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=proyecto_05h'">
                 </div>
                 <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">proyecto_05h.png</div>
@@ -350,7 +350,7 @@
             </div>
           </div>
 
-        </div>
+        </div> <!-- Fin Lateral Derecho -->
 
       </div>
 
@@ -423,14 +423,14 @@
   <script>
     // Registro de los archivos de la galería del proyecto para la navegación secuencial
     const galeriaImagenes = [
-      { url: 'assets/proyecto-05/proyecto_05a.png', caption: 'CONCEPTO PRINCIPAL BRANDING', resolution: '800 x 600 PX' },
-      { url: 'assets/proyecto-05/proyecto_05b.png', caption: 'DISEÑO DE PAPELERÍA CORPORATIVA', resolution: '1024 x 768 PX' },
-      { url: 'assets/proyecto-05/proyecto_05c.png', caption: 'PROTOTIPO DE EMPAQUE (BOX)', resolution: '1280 x 960 PX' },
-      { url: 'assets/proyecto-05/proyecto_05d.png', caption: 'ESTUDIO DE RETÍCULA Y FUENTES', resolution: '800 x 600 PX' },
-      { url: 'assets/proyecto-05/proyecto_05e.png', caption: 'MOCKUP DE INTERFAZ WEB RESPONSIVA', resolution: '1280 x 1024 PX' },
-      { url: 'assets/proyecto-05/proyecto_05f.jpg', caption: 'ESTILO EDITORIAL Y SEÑALIZACIÓN', resolution: '1024 x 768 PX' },
-      { url: 'assets/proyecto-05/proyecto_05g.gif', caption: 'PRUEBAS DE IMPRESIÓN Y TEXTURAS', resolution: '1600 x 1200 PX' },
-      { url: 'assets/proyecto-05/proyecto_05h.png', caption: 'ANÁLISIS DE HARDWARE Y RENDER', resolution: '1024 x 1024 PX' }
+      { url: 'assets/proyecto-05/proyecto_05a.png', caption: 'Render detalle', resolution: '800 x 600 PX' },
+      { url: 'assets/proyecto-05/proyecto_05b.png', caption: 'Render detalle', resolution: '1024 x 768 PX' },
+      { url: 'assets/proyecto-05/proyecto_05c.png', caption: 'Render general', resolution: '1280 x 960 PX' },
+      { url: 'assets/proyecto-05/proyecto_05d.png', caption: 'Render explosionado', resolution: '800 x 600 PX' },
+      { url: 'assets/proyecto-05/proyecto_05e.png', caption: 'Imagen Estudio', resolution: '1280 x 1024 PX' },
+      { url: 'assets/proyecto-05/proyecto_05f.jpg', caption: 'Planimétria Explosionado', resolution: '1024 x 768 PX' },
+      { url: 'assets/proyecto-05/proyecto_05g.gif', caption: 'Animación Explosionado', resolution: '1600 x 1200 PX' },
+      { url: 'assets/proyecto-05/proyecto_05h.png', caption: 'Modelo en Rhino', resolution: '1024 x 1024 PX' }
     ];
 
     let currentViewerIndex = 0;
