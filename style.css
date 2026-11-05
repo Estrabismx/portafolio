@@ -1,0 +1,574 @@
+/* =====================================================================
+   ESTILOS DEL PORTAFOLIO — Estrabismx 98
+   Índice:
+     1. Variables y base
+     2. Bordes y botones Windows 98
+     3. Barras de título y controles de ventana
+     4. Scrollbars
+     5. Cursores personalizados
+     6. Escritorio, iconos y barra de tareas
+     7. Menú Inicio
+     8. Ventanas (posición, maximizar, celular)
+     9. Explorador de proyectos
+    10. Ventana de proyecto (pestañas)
+    11. WordPad (Sobre Mí)
+    12. Paint
+    13. Reproductor de video
+   ===================================================================== */
+
+
+/* ---------- 1. Variables y base ---------- */
+:root {
+  --win98-bg: #c0c0c0;
+  --win98-fg: #000000;
+  --win98-white: #ffffff;
+  --win98-gray: #808080;
+  --win98-dark-gray: #404040;
+  --win98-blue: #000080;
+  --win98-blue-light: #1084d0;
+  --desktop-teal: #008080;
+  --taskbar-height: 40px;
+}
+
+body {
+  font-family: 'Tahoma', 'Geneva', sans-serif;
+  background-color: var(--desktop-teal);
+  color: var(--win98-fg);
+  overflow: hidden;
+  user-select: none;
+  image-rendering: pixelated;
+}
+
+/* Fotos, planos y videos de los proyectos se escalan con suavizado normal.
+   Con "pixelated" las líneas finas de las planimetrías desaparecen al achicarse. */
+#window-proyecto img,
+#window-proyecto video,
+#image-viewer-window img,
+#image-viewer-window video,
+#explorer-preview img,
+#explorer-files img {
+  image-rendering: auto;
+}
+
+
+/* ---------- 2. Bordes y botones Windows 98 ---------- */
+
+/* Bordes 3D hacia afuera */
+.win98-outset {
+  background-color: var(--win98-bg);
+  border: 2px solid;
+  border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+  box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+}
+
+/* Bordes 3D hacia adentro (botón presionado / áreas de contenido) */
+.win98-inset {
+  background-color: var(--win98-white);
+  border: 2px solid;
+  border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+  box-shadow: inset 1px 1px 0px var(--win98-fg), inset -1px -1px 0px #dfdfdf;
+}
+
+.win98-button,
+.win98-button-static {
+  background-color: var(--win98-bg);
+  border: 2px solid;
+  border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+  box-shadow: inset 1px 1px 0px var(--win98-white), inset -1px -1px 0px var(--win98-dark-gray);
+  padding: 3px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--win98-fg);
+}
+
+.win98-button:active,
+.win98-button.active {
+  border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+  box-shadow: inset 1px 1px 0px var(--win98-fg);
+  padding: 4px 9px 2px 11px;
+}
+
+/* Botones dentro de las aplicaciones (explorador, WordPad, proyecto) un poco más compactos */
+.window-app .win98-button,
+.window-app .win98-button-static {
+  padding: 3px 8px;
+  font-size: 12px;
+}
+.window-app .win98-button:active,
+.window-app .win98-button.active {
+  padding: 4px 7px 2px 9px;
+}
+
+
+/* ---------- 3. Barras de título y controles de ventana ---------- */
+.win98-titlebar {
+  background: linear-gradient(90deg, var(--win98-blue), var(--win98-blue-light));
+  color: var(--win98-white);
+  font-weight: bold;
+  font-size: 13px;
+  padding: 3px 5px 3px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  touch-action: none; /* permite arrastrar con el dedo */
+}
+
+.win98-titlebar.inactive {
+  background: linear-gradient(90deg, var(--win98-gray), #b0b0b0);
+}
+
+.win98-titlebar .titlebar-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.win98-window-btn {
+  width: 16px;
+  height: 14px;
+  flex-shrink: 0;
+  background-color: var(--win98-bg);
+  border: 1px solid;
+  border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+  font-size: 9px;
+  font-weight: bold;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.win98-window-btn:active {
+  border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+}
+
+
+/* ---------- 4. Scrollbars ---------- */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+::-webkit-scrollbar-track {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"><rect width="1" height="1" fill="%23ffffff"/><rect x="1" y="1" width="1" height="1" fill="%23ffffff"/><rect x="1" width="1" height="1" fill="%23e0e0e0"/><rect y="1" width="1" height="1" fill="%23e0e0e0"/></svg>');
+  background-color: #dfdfdf;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--win98-bg);
+  border: 2px solid;
+  border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+  box-shadow: inset 1px 1px 0px var(--win98-white);
+}
+
+
+/* ---------- 5. Cursores personalizados ---------- */
+html, body, .retro-cursor, .win98-button-static {
+  cursor: url('assets/svg/cursor-estandar.svg') 0 0, default !important;
+}
+
+a, button, select, option, input, textarea,
+.win98-button, .win98-window-btn, .desktop-icon, .start-menu-item,
+.file-icon, .win98-tab, .tool-button,
+.cursor-pointer, .hover\:underline {
+  cursor: url('assets/svg/cursor-accion.svg') 0 0, pointer !important;
+}
+
+
+/* ---------- 6. Escritorio, iconos y barra de tareas ---------- */
+#desktop {
+  height: calc(100vh - var(--taskbar-height));
+}
+
+.desktop-icon {
+  width: 80px;
+  text-align: center;
+  margin: 12px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+  font-size: 11px;
+}
+
+.desktop-icon:focus .icon-text {
+  background-color: var(--win98-blue);
+  outline: 1px dotted white;
+}
+
+.taskbar {
+  height: var(--taskbar-height);
+  background-color: var(--win98-bg);
+  border-top: 2px solid var(--win98-white);
+  box-shadow: inset 0px 1px 0px var(--win98-white);
+  z-index: 99998;
+}
+
+#taskbar-apps {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+#taskbar-apps::-webkit-scrollbar {
+  display: none;
+}
+
+.taskbar-btn span {
+  max-width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* ---------- 7. Menú Inicio ---------- */
+.start-menu {
+  display: none;
+  position: absolute;
+  bottom: var(--taskbar-height);
+  left: 2px;
+  width: 210px;
+  z-index: 99999;
+}
+
+.start-menu-sidebar {
+  background: linear-gradient(180deg, var(--win98-blue), var(--win98-blue-light));
+  color: white;
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  font-family: 'VT323', monospace;
+  font-size: 24px;
+  padding: 10px 4px;
+  text-align: center;
+}
+
+.start-menu-item:hover {
+  background-color: var(--win98-blue);
+  color: white;
+}
+
+
+/* ---------- 8. Ventanas ---------- */
+.window {
+  position: absolute;
+  min-width: 320px;
+  max-width: 95vw;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Ventanas grandes (Proyectos, Sobre Mí, Paint, Proyecto): alto fijo con contenido con scroll */
+.window-app {
+  max-width: 100vw;
+  max-height: calc(100vh - var(--taskbar-height));
+  overflow: hidden;
+}
+
+/* Diálogos y visor por encima de todas las ventanas */
+.modal-layer {
+  z-index: 100000;
+}
+
+@media (max-width: 768px) {
+  .window {
+    width: 96% !important;
+    left: 2% !important;
+    top: 20px !important;
+  }
+  .window-app {
+    height: calc(100vh - var(--taskbar-height) - 30px) !important;
+    top: 10px !important;
+  }
+}
+
+/* Ventana maximizada (va después de la regla de celular para ganarle) */
+.window.maximized {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  max-width: 100vw;
+  height: calc(100vh - var(--taskbar-height)) !important;
+}
+
+
+/* ---------- 9. Explorador de proyectos ---------- */
+.file-icon {
+  width: 150px;
+  text-align: center;
+  margin: 12px;
+  font-size: 12px;
+  outline: none;
+}
+
+.file-icon:focus .icon-text,
+.file-icon.selected .icon-text {
+  background-color: var(--win98-blue);
+  color: var(--win98-white);
+  outline: 1px dotted var(--win98-white);
+}
+
+
+/* ---------- 10. Ventana de proyecto (pestañas) ---------- */
+.win98-tab {
+  background-color: var(--win98-bg);
+  border: 2px solid;
+  border-color: var(--win98-white) var(--win98-gray) var(--win98-white) var(--win98-white);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  padding: 3px 12px;
+  font-size: 12px;
+  margin-right: 2px;
+  position: relative;
+  top: 2px;
+  z-index: 10;
+}
+
+.win98-tab.active {
+  padding-top: 5px;
+  top: 0px;
+  font-weight: bold;
+  z-index: 30;
+}
+
+
+/* ---------- 11. WordPad (Sobre Mí) ---------- */
+.wordpad-ruler {
+  background-color: var(--win98-bg);
+  height: 20px;
+  position: relative;
+  border-bottom: 1px solid var(--win98-gray);
+}
+
+.ruler-tick {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--win98-gray);
+}
+
+.font-sans-serif {
+  font-family: 'Tahoma', 'Geneva', sans-serif !important;
+}
+.font-serif {
+  font-family: 'Times New Roman', Times, serif !important;
+}
+.font-mono-retro {
+  font-family: 'VT323', monospace !important;
+  font-size: 1.45em !important;
+}
+
+
+/* ---------- 12. Paint ---------- */
+.tool-button {
+  width: 25px;
+  height: 25px;
+  background-color: var(--win98-bg);
+  border: 2px solid;
+  border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool-button:active,
+.tool-button.active {
+  border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+  box-shadow: inset 1px 1px 0px var(--win98-fg);
+  background-color: #e0e0e0;
+}
+
+.canvas-container {
+  background-color: var(--win98-gray);
+  overflow: auto;
+}
+
+#paintCanvas {
+  background-color: #ffffff;
+  display: block;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  touch-action: none;
+}
+
+
+/* ---------- 13. Reproductor de video (estilo Media Player 98) ---------- */
+.video-player {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 100%;
+  padding: 2px;
+}
+
+.video-screen {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid;
+  border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+}
+
+.video-screen video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* En el visor ampliado el video puede crecer más */
+.viewer-media .video-player {
+  max-width: 900px;
+}
+.viewer-media .video-screen video {
+  max-height: 65vh;
+}
+
+.video-player:fullscreen {
+  max-height: none;
+  height: 100%;
+}
+.video-player:fullscreen .video-screen video {
+  max-height: none;
+}
+
+/* Botón grande de "Reproducir" en el centro */
+.video-bigplay {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  padding: 12px;
+  background-color: var(--win98-bg);
+  border: 2px solid;
+  border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+  box-shadow: inset -1px -1px 0px var(--win98-dark-gray), 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+.video-bigplay svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--win98-fg);
+}
+.video-bigplay:active {
+  border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+}
+
+.video-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 12px;
+  color: #00ff00;
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+}
+.video-error.hidden {
+  display: none;
+}
+
+/* Barra de controles */
+.video-controls {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 2px 2px;
+  background-color: var(--win98-bg);
+}
+
+.video-btn {
+  flex-shrink: 0;
+  width: 24px;
+  height: 22px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--win98-fg);
+  background-color: var(--win98-bg);
+  border: 2px solid;
+  border-color: var(--win98-white) var(--win98-gray) var(--win98-gray) var(--win98-white);
+  box-shadow: inset -1px -1px 0px var(--win98-dark-gray);
+}
+.video-btn svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+.video-btn:active,
+.video-btn.active {
+  border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+  box-shadow: inset 1px 1px 0px var(--win98-fg);
+  background-color: #d4d4d4;
+}
+
+/* Barra de progreso con "perilla" */
+.video-seek {
+  position: relative;
+  flex: 1;
+  min-width: 40px;
+  height: 14px;
+  background-color: var(--win98-white);
+  touch-action: none;
+  cursor: url('assets/svg/cursor-accion.svg') 0 0, pointer !important;
+}
+.video-seek-fill {
+  height: 100%;
+  width: 0;
+  background-color: var(--win98-blue);
+}
+.video-seek-thumb {
+  position: absolute;
+  top: -4px;
+  left: -5px;
+  width: 10px;
+  height: 18px;
+  background-color: var(--win98-bg);
+  border: 2px solid;
+  border-color: var(--win98-white) var(--win98-dark-gray) var(--win98-dark-gray) var(--win98-white);
+}
+
+/* Contador de tiempo tipo pantalla LCD */
+.video-time {
+  flex-shrink: 0;
+  padding: 0 5px;
+  height: 20px;
+  line-height: 20px;
+  background-color: #000;
+  color: #00ff00;
+  font-family: 'VT323', monospace;
+  font-size: 15px;
+  border: 2px solid;
+  border-color: var(--win98-gray) var(--win98-white) var(--win98-white) var(--win98-gray);
+}
+
+/* Etiqueta "VIDEO" sobre las miniaturas de la galería */
+.thumb-video-badge {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  padding: 0 4px;
+  background-color: var(--win98-blue);
+  color: var(--win98-white);
+  font-family: 'VT323', monospace;
+  font-size: 12px;
+  line-height: 14px;
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .video-time {
+    font-size: 13px;
+    padding: 0 3px;
+  }
+}
+
+.video-bigplay.hidden {
+  display: none;
+}
