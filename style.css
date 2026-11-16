@@ -24,6 +24,23 @@
   --deep-red: #67191F;
   --midnight: #121212;
   --black: #000;
+
+  /* Diagramación: estos valores los puede cambiar el editor (pestaña "Diseño")
+     escribiendo diseno.css, que se carga después de este archivo. */
+  --font-display: 'VT323', monospace;   /* títulos, logo, etiquetas */
+  --font-text: 'Roboto Mono', monospace; /* texto general */
+  --text-scale: 1;                      /* escala del texto general (1 = 100%) */
+  --font-logo: 42px;
+  --font-title: 32px;
+  --font-statement: 22px;
+  --sidebar-width: 250px;
+  --page-max: 1600px;
+  --layout-padding: 20px;
+  --section-gap: 50px;
+  --border-width: 4px;
+  --carousel-height: 400px;
+  --ring-height: 460px;
+  --detail-height: 420px;
 }
 
 html {
@@ -32,8 +49,8 @@ html {
 
 body {
   background-color: var(--midnight);
-  font-family: 'Roboto Mono', monospace;
-  font-size: 14px;
+  font-family: var(--font-text);
+  font-size: calc(14px * var(--text-scale));
   color: var(--cream);
   margin: 0;
   padding: 0;
@@ -44,7 +61,7 @@ body {
 
 h1.logo, .section-title, .thumbnail-placeholder, .carousel-title,
 .sidebar-title, .modal-title, .doc-name, .doc-heading {
-  font-family: 'VT323', monospace;
+  font-family: var(--font-display);
 }
 
 a {
@@ -60,13 +77,13 @@ a {
 /* ---------- 2. Contenedor y cabecera ---------- */
 .wrapper {
   width: 95%;
-  max-width: 1600px;
+  max-width: var(--page-max);
   margin: 20px 0;
   background: var(--midnight);
-  border-top: 4px solid var(--scarlet);
-  border-left: 4px solid var(--scarlet);
-  border-bottom: 4px solid var(--deep-red);
-  border-right: 4px solid var(--deep-red);
+  border-top: var(--border-width) solid var(--scarlet);
+  border-left: var(--border-width) solid var(--scarlet);
+  border-bottom: var(--border-width) solid var(--deep-red);
+  border-right: var(--border-width) solid var(--deep-red);
   box-shadow: 8px 8px 0px var(--black);
 }
 
@@ -75,7 +92,7 @@ header {
   top: 0;
   z-index: 1000;
   background: var(--midnight);
-  border-bottom: 4px solid var(--scarlet);
+  border-bottom: var(--border-width) solid var(--scarlet);
   padding: 30px 40px;
   display: flex;
   justify-content: space-between;
@@ -85,7 +102,7 @@ header {
 }
 
 h1.logo {
-  font-size: 42px;
+  font-size: var(--font-logo);
   margin: 0;
   text-shadow: 2px 2px 0px var(--black);
 }
@@ -105,14 +122,14 @@ h1.logo a {
   background: var(--midnight);
   color: var(--cream);
   padding: 8px 20px;
-  font-family: 'Roboto Mono', monospace;
+  font-family: var(--font-text);
   font-weight: bold;
   text-decoration: none;
   border-top: 2px solid var(--scarlet);
   border-left: 2px solid var(--scarlet);
   border-bottom: 2px solid var(--black);
   border-right: 2px solid var(--black);
-  font-size: 14px;
+  font-size: calc(14px * var(--text-scale));
   text-transform: uppercase;
   transition: background 0.2s;
   cursor: pointer;
@@ -128,12 +145,12 @@ h1.logo a {
 .main-layout {
   display: flex;
   align-items: flex-start;
-  padding: 20px;
+  padding: var(--layout-padding);
   gap: 30px;
 }
 
 .sidebar {
-  width: 250px;
+  width: var(--sidebar-width);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -148,12 +165,13 @@ h1.logo a {
 .sidebar-title {
   background: var(--scarlet);
   color: var(--cream);
-  font-size: 22px;
+  font-size: calc(22px * var(--text-scale));
   font-weight: normal;
   padding: 5px 10px;
   border-bottom: 2px solid var(--black);
   margin: 0;
   letter-spacing: 1px;
+  overflow-wrap: anywhere; /* fuentes anchas: el título se parte en vez de salirse */
 }
 
 .sidebar-list {
@@ -164,7 +182,7 @@ h1.logo a {
 
 .sidebar-list li {
   margin-bottom: 8px;
-  font-size: 12px;
+  font-size: calc(12px * var(--text-scale));
 }
 
 .sidebar-list li:last-child {
@@ -193,7 +211,7 @@ h1.logo a {
 }
 
 .sidebar-contact-content p {
-  font-size: 12px;
+  font-size: calc(12px * var(--text-scale));
   margin-top: 0;
   margin-bottom: 15px;
   line-height: 1.4;
@@ -214,7 +232,7 @@ h1.logo a {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: calc(10px * var(--text-scale));
   border: 2px solid var(--scarlet);
   text-decoration: none;
   font-weight: bold;
@@ -244,7 +262,7 @@ h1.logo a {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: var(--section-gap);
 }
 
 
@@ -261,7 +279,7 @@ section:last-child {
 }
 
 .section-title {
-  font-size: 32px;
+  font-size: var(--font-title);
   font-weight: normal;
   color: var(--scarlet);
   margin-top: 0;
@@ -272,7 +290,7 @@ section:last-child {
 }
 
 .section-desc {
-  font-size: 16px;
+  font-size: calc(16px * var(--text-scale));
   line-height: 1.6;
   margin-bottom: 30px;
 }
@@ -283,7 +301,7 @@ section:last-child {
   background: var(--black);
   text-align: center;
   padding: 80px 40px;
-  border: 4px solid var(--scarlet);
+  border: var(--border-width) solid var(--scarlet);
   min-height: 350px;
   display: flex;
   flex-direction: column;
@@ -293,7 +311,7 @@ section:last-child {
 }
 
 #statement p {
-  font-size: 22px;
+  font-size: var(--font-statement);
   margin: 0 auto;
   line-height: 1.8;
   max-width: 900px;
@@ -320,7 +338,7 @@ section:last-child {
 /* ---------- 6. Carrusel de proyectos ---------- */
 .carousel-container {
   background: var(--midnight);
-  border: 4px solid var(--scarlet);
+  border: var(--border-width) solid var(--scarlet);
   padding: 15px;
   margin-bottom: 30px;
   position: relative;
@@ -328,7 +346,7 @@ section:last-child {
 
 .carousel-display {
   position: relative;
-  height: 400px;
+  height: var(--carousel-height);
   background: var(--black);
   border: 2px solid var(--deep-red);
   display: flex;
@@ -354,7 +372,7 @@ section:last-child {
 
 .thumbnail-placeholder {
   color: var(--scarlet);
-  font-size: 28px;
+  font-size: calc(28px * var(--text-scale));
   text-align: center;
   padding: 0 20px;
   text-shadow: 2px 2px 0px var(--deep-red);
@@ -366,7 +384,7 @@ section:last-child {
   left: 10px;
   background: var(--black);
   color: var(--cream);
-  font-size: 12px;
+  font-size: calc(12px * var(--text-scale));
   padding: 2px 8px;
   border: 1px solid var(--deep-red);
 }
@@ -384,7 +402,7 @@ section:last-child {
 
 .carousel-title {
   color: var(--cream);
-  font-size: 24px;
+  font-size: calc(24px * var(--text-scale));
   font-weight: normal;
   margin: 0;
   letter-spacing: 1px;
@@ -401,8 +419,8 @@ section:last-child {
 .btn-retro {
   background: var(--scarlet);
   color: var(--cream);
-  font-family: 'Roboto Mono', monospace;
-  font-size: 14px;
+  font-family: var(--font-text);
+  font-size: calc(14px * var(--text-scale));
   font-weight: bold;
   text-align: center;
   text-decoration: none;
@@ -427,7 +445,7 @@ section:last-child {
 }
 
 .btn-large {
-  font-size: 18px;
+  font-size: calc(18px * var(--text-scale));
   padding: 12px 30px;
   display: block;
   width: fit-content;
@@ -449,7 +467,7 @@ section:last-child {
   width: 220px;
   height: 220px;
   background: var(--black);
-  border: 4px solid var(--scarlet);
+  border: var(--border-width) solid var(--scarlet);
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -459,7 +477,7 @@ section:last-child {
 
 .bio {
   line-height: 1.6;
-  font-size: 16px;
+  font-size: calc(16px * var(--text-scale));
 }
 
 .bio-actions {
@@ -470,13 +488,13 @@ section:last-child {
 .doc-header {
   text-align: center;
   background: var(--black);
-  border: 4px solid var(--scarlet);
+  border: var(--border-width) solid var(--scarlet);
   padding: 30px 20px;
   margin-bottom: 40px;
 }
 
 .doc-name {
-  font-size: 40px;
+  font-size: calc(40px * var(--text-scale));
   font-weight: normal;
   color: var(--scarlet);
   margin: 0;
@@ -485,7 +503,7 @@ section:last-child {
 
 .doc-tagline {
   margin: 10px 0 0;
-  font-size: 14px;
+  font-size: calc(14px * var(--text-scale));
 }
 
 .doc-block {
@@ -493,7 +511,7 @@ section:last-child {
 }
 
 .doc-heading {
-  font-size: 28px;
+  font-size: calc(28px * var(--text-scale));
   font-weight: normal;
   color: var(--scarlet);
   border-bottom: 2px solid var(--deep-red);
@@ -502,13 +520,13 @@ section:last-child {
 }
 
 .doc-block p {
-  font-size: 15px;
+  font-size: calc(15px * var(--text-scale));
   line-height: 1.7;
   margin: 0 0 15px;
 }
 
 .doc-note {
-  font-size: 12px !important;
+  font-size: calc(12px * var(--text-scale)) !important;
   opacity: 0.8;
 }
 
@@ -517,7 +535,7 @@ section:last-child {
 }
 
 .skill-name {
-  font-size: 13px;
+  font-size: calc(13px * var(--text-scale));
   margin-bottom: 5px;
 }
 
@@ -543,28 +561,28 @@ section:last-child {
 }
 
 .doc-signature .doc-date {
-  font-size: 12px;
+  font-size: calc(12px * var(--text-scale));
   opacity: 0.8;
 }
 
 .doc-signature .doc-sign {
   font-weight: bold;
   color: var(--scarlet);
-  font-size: 16px;
+  font-size: calc(16px * var(--text-scale));
 }
 
 
 /* ---------- 9. Página en mantención ---------- */
 .maintenance {
   background: var(--black);
-  border: 4px solid var(--scarlet);
+  border: var(--border-width) solid var(--scarlet);
   padding: 80px 20px;
   text-align: center;
 }
 
 .maintenance p {
-  font-family: 'VT323', monospace;
-  font-size: 40px;
+  font-family: var(--font-display);
+  font-size: calc(40px * var(--text-scale));
   color: var(--scarlet);
   margin: 0;
   text-shadow: 2px 2px 0px var(--deep-red);
@@ -574,9 +592,9 @@ section:last-child {
 /* ---------- 9b. Anillo 3D de proyectos (proyectos.html) ---------- */
 .ring-stage {
   position: relative;
-  height: 460px;
+  height: var(--ring-height);
   background: var(--black);
-  border: 4px solid var(--scarlet);
+  border: var(--border-width) solid var(--scarlet);
   overflow: hidden;
   cursor: grab;
   touch-action: none; /* el dedo gira el anillo y rota la lata en cualquier dirección */
@@ -611,7 +629,7 @@ section:last-child {
   left: 10px;
   background: var(--black);
   color: var(--scarlet);
-  font-size: 11px;
+  font-size: calc(11px * var(--text-scale));
   font-weight: bold;
   padding: 2px 8px;
   border: 1px dotted var(--scarlet);
@@ -625,8 +643,8 @@ section:last-child {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'VT323', monospace;
-  font-size: 28px;
+  font-family: var(--font-display);
+  font-size: calc(28px * var(--text-scale));
   color: var(--scarlet);
 }
 
@@ -636,7 +654,7 @@ section:last-child {
 
 .project-card {
   margin-top: 20px;
-  border: 4px solid var(--scarlet);
+  border: var(--border-width) solid var(--scarlet);
   background: var(--midnight);
 }
 
@@ -651,8 +669,8 @@ section:last-child {
 }
 
 .project-card-title {
-  font-family: 'VT323', monospace;
-  font-size: 26px;
+  font-family: var(--font-display);
+  font-size: calc(26px * var(--text-scale));
   font-weight: normal;
   margin: 0;
   letter-spacing: 1px;
@@ -660,7 +678,7 @@ section:last-child {
 
 .project-card-counter {
   align-self: center;
-  font-size: 12px;
+  font-size: calc(12px * var(--text-scale));
   font-weight: bold;
   padding: 0 5px;
 }
@@ -679,8 +697,8 @@ section:last-child {
 }
 
 .project-card-label {
-  font-family: 'VT323', monospace;
-  font-size: 20px;
+  font-family: var(--font-display);
+  font-size: calc(20px * var(--text-scale));
   font-weight: normal;
   color: var(--scarlet);
   margin: 0 0 10px;
@@ -691,7 +709,7 @@ section:last-child {
   grid-template-columns: max-content 1fr;
   gap: 8px 15px;
   margin: 0;
-  font-size: 13px;
+  font-size: calc(13px * var(--text-scale));
   line-height: 1.5;
 }
 
@@ -718,7 +736,7 @@ section:last-child {
   padding: 12px 15px;
   margin-bottom: 20px;
   background: var(--deep-red);
-  border: 4px solid var(--scarlet);
+  border: var(--border-width) solid var(--scarlet);
 }
 
 .detail-media {
@@ -729,7 +747,7 @@ section:last-child {
 }
 
 .detail-panel {
-  border: 4px solid var(--scarlet);
+  border: var(--border-width) solid var(--scarlet);
   background: var(--black);
   display: flex;
   flex-direction: column;
@@ -739,7 +757,7 @@ section:last-child {
 .detail-stage {
   position: relative;
   flex: 1;
-  min-height: 420px;
+  min-height: var(--detail-height);
   cursor: grab;
   touch-action: none;
 }
@@ -750,8 +768,8 @@ section:last-child {
 
 .detail-main {
   flex: 1;
-  min-height: 420px;
-  height: 420px;
+  min-height: var(--detail-height);
+  height: var(--detail-height);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -785,13 +803,13 @@ section:last-child {
   gap: 10px;
   min-height: 34px;
   padding: 6px 10px;
-  font-size: 12px;
+  font-size: calc(12px * var(--text-scale));
   background: var(--deep-red);
   border-top: 2px solid var(--black);
 }
 
 .detail-caption .btn-retro {
-  font-size: 11px;
+  font-size: calc(11px * var(--text-scale));
   padding: 4px 8px;
 }
 
@@ -827,7 +845,7 @@ section:last-child {
   position: absolute;
   left: 2px;
   bottom: 2px;
-  font-size: 10px;
+  font-size: calc(10px * var(--text-scale));
   padding: 0 3px;
   background: var(--black);
   color: var(--cream);
@@ -843,8 +861,8 @@ section:last-child {
 }
 
 .detail-heading {
-  font-family: 'VT323', monospace;
-  font-size: 34px;
+  font-family: var(--font-display);
+  font-size: calc(34px * var(--text-scale));
   font-weight: normal;
   color: var(--scarlet);
   margin: 0 0 5px;
@@ -852,7 +870,7 @@ section:last-child {
 
 .detail-subtitle {
   margin: 0 0 12px;
-  font-size: 14px;
+  font-size: calc(14px * var(--text-scale));
   opacity: 0.85;
 }
 
@@ -863,7 +881,7 @@ section:last-child {
 }
 
 .tag {
-  font-size: 11px;
+  font-size: calc(11px * var(--text-scale));
   font-weight: bold;
   padding: 2px 8px;
   border: 1px solid var(--scarlet);
@@ -881,13 +899,13 @@ section:last-child {
 }
 
 .detail-text p {
-  font-size: 14px;
+  font-size: calc(14px * var(--text-scale));
   line-height: 1.7;
   margin: 0 0 15px;
 }
 
 .detail-note {
-  font-size: 12px;
+  font-size: calc(12px * var(--text-scale));
   margin: 6px 0 0;
   opacity: 0.85;
 }
@@ -898,7 +916,7 @@ section:last-child {
   padding: 0;
   display: grid;
   gap: 6px;
-  font-size: 13px;
+  font-size: calc(13px * var(--text-scale));
 }
 
 .lightbox-window {
@@ -931,7 +949,7 @@ section:last-child {
 
 /* ---------- 10. Paint ---------- */
 .paint {
-  border: 4px solid var(--scarlet);
+  border: var(--border-width) solid var(--scarlet);
   background: var(--midnight);
 }
 
@@ -946,7 +964,7 @@ section:last-child {
 }
 
 .paint-toolbar .btn-retro {
-  font-size: 12px;
+  font-size: calc(12px * var(--text-scale));
   padding: 5px 10px;
 }
 
@@ -960,15 +978,15 @@ section:last-child {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: calc(12px * var(--text-scale));
   font-weight: bold;
 }
 
 .paint-size select {
   background: var(--black);
   color: var(--cream);
-  font-family: 'Roboto Mono', monospace;
-  font-size: 12px;
+  font-family: var(--font-text);
+  font-size: calc(12px * var(--text-scale));
   border: 2px solid var(--scarlet);
   padding: 3px;
 }
@@ -1081,7 +1099,7 @@ section:last-child {
   justify-content: space-between;
   gap: 10px;
   padding: 6px 10px;
-  font-size: 12px;
+  font-size: calc(12px * var(--text-scale));
   background: var(--deep-red);
   border-top: 2px solid var(--black);
 }
@@ -1104,7 +1122,7 @@ section:last-child {
 
 .modal-window {
   background: var(--midnight);
-  border: 4px solid var(--scarlet);
+  border: var(--border-width) solid var(--scarlet);
   width: 450px;
   max-width: 90%;
   box-shadow: 10px 10px 0px var(--black);
@@ -1121,7 +1139,7 @@ section:last-child {
 }
 
 .modal-title {
-  font-size: 24px;
+  font-size: calc(24px * var(--text-scale));
   margin: 0;
 }
 
@@ -1132,9 +1150,9 @@ section:last-child {
   border-left: 2px solid var(--cream);
   border-bottom: 2px solid var(--black);
   border-right: 2px solid var(--black);
-  font-family: 'Roboto Mono', monospace;
+  font-family: var(--font-text);
   font-weight: bold;
-  font-size: 16px;
+  font-size: calc(16px * var(--text-scale));
   cursor: pointer;
   padding: 2px 10px;
 }
@@ -1159,7 +1177,7 @@ section:last-child {
 .modal-body p {
   margin-top: 0;
   margin-bottom: 25px;
-  font-size: 16px;
+  font-size: calc(16px * var(--text-scale));
   line-height: 1.5;
 }
 
@@ -1172,7 +1190,7 @@ section:last-child {
 
 .contact-list li {
   margin-bottom: 12px;
-  font-size: 14px;
+  font-size: calc(14px * var(--text-scale));
   overflow-wrap: anywhere;
 }
 
@@ -1180,7 +1198,7 @@ section:last-child {
   display: block;
   color: var(--scarlet);
   font-weight: bold;
-  font-size: 12px;
+  font-size: calc(12px * var(--text-scale));
 }
 
 .contact-list a:hover {
@@ -1188,7 +1206,7 @@ section:last-child {
 }
 
 .modal-note {
-  font-size: 11px !important;
+  font-size: calc(11px * var(--text-scale)) !important;
   opacity: 0.7;
   margin: 20px 0 0 !important;
 }
@@ -1200,8 +1218,8 @@ footer {
   color: var(--scarlet);
   text-align: center;
   padding: 15px;
-  font-size: 12px;
-  border-top: 4px solid var(--deep-red);
+  font-size: calc(12px * var(--text-scale));
+  border-top: var(--border-width) solid var(--deep-red);
   font-weight: bold;
 }
 
@@ -1219,7 +1237,7 @@ footer {
   }
   .nav-links a {
     padding: 6px 12px;
-    font-size: 12px;
+    font-size: calc(12px * var(--text-scale));
   }
   .main-layout {
     flex-direction: column;
@@ -1232,7 +1250,7 @@ footer {
     flex-direction: column;
   }
   .carousel-display {
-    height: 280px;
+    height: min(var(--carousel-height), 280px);
   }
   .carousel-info {
     flex-direction: column;
@@ -1246,10 +1264,10 @@ footer {
     min-height: 0;
   }
   #statement p {
-    font-size: 18px;
+    font-size: calc(var(--font-statement) * 0.82);
   }
   .ring-stage {
-    height: 320px;
+    height: min(var(--ring-height), 320px);
   }
   .project-card-header {
     flex-direction: column;
@@ -1268,7 +1286,7 @@ footer {
   }
   .detail-stage,
   .detail-main {
-    min-height: 300px;
-    height: 300px;
+    min-height: min(var(--detail-height), 300px);
+    height: min(var(--detail-height), 300px);
   }
 }

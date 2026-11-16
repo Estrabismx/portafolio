@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <!-- Ajustes de diagramación del editor (pestaña "Diseño") -->
+  <link rel="stylesheet" href="diseno.css">
 </head>
 <body data-page="paint">
 
@@ -28,13 +30,13 @@
          BARRA LATERAL
          ================================================================= -->
     <aside class="sidebar">
-      <div class="sidebar-module">
+      <div class="sidebar-module" data-module="browse">
         <h3 class="sidebar-title">BROWSE BY TYPE</h3>
         <!-- Se llena con los tipos de proyectos.js -->
         <ul class="sidebar-list" id="typeList"></ul>
       </div>
 
-      <div class="sidebar-module">
+      <div class="sidebar-module" data-module="links">
         <h3 class="sidebar-title">QUICK LINKS</h3>
         <ul class="sidebar-list">
           <li><a href="https://github.com/estrabismx" target="_blank" rel="noopener">> GitHub</a></li>
@@ -44,7 +46,7 @@
         </ul>
       </div>
 
-      <div class="sidebar-module">
+      <div class="sidebar-module" data-module="status">
         <h3 class="sidebar-title">SYSTEM STATUS</h3>
         <ul class="sidebar-list">
           <li>USER: Estrabismx</li>
@@ -53,7 +55,7 @@
         </ul>
       </div>
 
-      <div class="sidebar-module" id="contact">
+      <div class="sidebar-module" id="contact" data-module="contact">
         <h3 class="sidebar-title">ESTABLECER_CONEXION</h3>
         <div class="sidebar-contact-content">
           <p>Haz clic en los enlaces para abrir de forma externa.</p>

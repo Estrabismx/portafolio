@@ -10,6 +10,7 @@ sin tocar código.
     ordenados (proyecto_07a.jpg, proyecto_07b.mp4, ...).
   - Reduce automáticamente las fotos pesadas.
   - Convierte modelos 3D .stl / .stp a .glb low poly (ver modelo3d.py).
+  - Ajusta el diseño del sitio (colores, tamaños, orden) en diseno.css (ver diseno.py).
   - NO sube nada a GitHub: el commit lo haces tú (por ejemplo con GitHub Desktop).
 
 Cómo abrirlo: doble clic en  abrir_editor.bat  (en esta misma carpeta).
@@ -42,6 +43,8 @@ except ImportError:
         'python -m pip install -r requirements.txt')
     sys.exit(1)
 
+import diseno as dis
+
 try:
     from modelo3d import EXT_MODELO, NIVELES, NIVEL_POR_DEFECTO, convertir as convertir_modelo
 except ImportError:
@@ -65,6 +68,7 @@ except ImportError:
 
 RAIZ = Path(__file__).resolve().parent.parent      # carpeta del sitio
 ARCHIVO_DATOS = RAIZ / 'proyectos.js'
+ARCHIVO_DISENO = RAIZ / 'diseno.css'
 ASSETS = RAIZ / 'assets'
 
 EXT_IMAGEN = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
@@ -422,6 +426,7 @@ class Editor:
             return
         for p in self.proyectos:
             self.preparar_en_memoria(p)
+        self.diseno = dis.leer_diseno(ARCHIVO_DISENO)
 
         self.construir_interfaz()
         self.refrescar_lista()
@@ -515,6 +520,7 @@ class Editor:
         self.construir_especificaciones()
         self.construir_galeria()
         self.construir_modelo3d()
+        self.construir_diseno()
 
         # --- Barra inferior ---
         inferior = ttk.Frame(root, padding=(8, 0, 8, 8))
@@ -828,6 +834,237 @@ class Editor:
         ttk.Label(f, text='Al convertir, el modelo se centra y se ajusta al tamaño de la lata. Los archivos CAD '
                           'vienen con Z hacia arriba: se giran para que queden de pie en la web.',
                   style='Ayuda.TLabel', wraplength=640).grid(row=14, column=0, columnspan=3, sticky='w', pady=(14, 0))
+
+    # Pestaña Diseño (afecta a todo el sitio, no a un proyecto)
+    def construir_diseno(self):
+        exterior = ttk.Frame(self.pestanas)
+        self.pestanas.add(exterior, text='  Diseño del sitio  ')
+
+        # Contenido con barra de desplazamiento (son muchos controles)
+        lienzo = tk.Canvas(exterior, highlightthickness=0)
+        barra = ttk.Scrollbar(exterior, command=lienzo.yview)
+        lienzo.configure(yscrollcommand=barra.set)
+        barra.pack(side='right', fill='y')
+        lienzo.pack(side='left', fill='both', expand=True)
+        f = ttk.Frame(lienzo, padding=10)
+        ventana = lienzo.create_window((0, 0), window=f, anchor='nw')
+        f.bind('<Configure>', lambda e: lienzo.configure(scrollregion=lienzo.bbox('all')))
+        lienzo.bind('<Configure>', lambda e: lienzo.itemconfigure(ventana, width=e.width))
+        rueda = lambda e: lienzo.yview_scroll(int(-e.delta / 120), 'units')
+        lienzo.bind('<Enter>', lambda e: lienzo.bind_all('<MouseWheel>', rueda))
+        lienzo.bind('<Leave>', lambda e: lienzo.unbind_all('<MouseWheel>'))
+        f.columnconfigure(1, weight=1)
+
+        self.vars_diseno = {}
+        self.cargando_diseno = False
+        fila = 0
+
+        def titulo(texto, ayuda=''):
+            nonlocal fila
+            ttk.Label(f, text=texto, style='Titulo.TLabel').grid(row=fila, column=0, sticky='w', pady=(14, 2))
+            if ayuda:
+                ttk.Label(f, text=ayuda, style='Ayuda.TLabel').grid(row=fila, column=1, columnspan=2,
+                                                                    sticky='w', pady=(14, 2))
+            fila += 1
+
+        def deslizador(clave):
+            nonlocal fila
+            nombre, minimo, maximo, unidad = dis.RANGOS[clave]
+            ttk.Label(f, text=nombre).grid(row=fila, column=0, sticky='w', pady=2, padx=(0, 10))
+            marco = ttk.Frame(f)
+            marco.grid(row=fila, column=1, sticky='w', pady=2)
+            var = tk.IntVar()
+            etiqueta = ttk.Label(marco, width=8)
+
+            def al_mover(valor):
+                entero = int(round(float(valor)))
+                var.set(entero)
+                etiqueta.config(text=f'{entero} {unidad}')
+                self.al_cambiar_diseno(clave, entero)
+            ttk.Scale(marco, from_=minimo, to=maximo, length=300, variable=var, command=al_mover).pack(side='left')
+            etiqueta.pack(side='left', padx=6)
+            self.vars_diseno[clave] = (var, lambda v: etiqueta.config(text=f'{v} {unidad}'))
+            fila += 1
+
+        ttk.Label(f, text='Diseño del sitio', style='Titulo.TLabel').grid(row=fila, column=0, sticky='w')
+        ttk.Label(f, text='Afecta a todas las páginas. Se guarda en diseno.css con el botón Guardar.',
+                  style='Ayuda.TLabel').grid(row=fila, column=1, columnspan=2, sticky='w')
+        fila += 1
+
+        # Colores
+        titulo('Colores')
+        self.muestras_diseno = {}
+        for clave, nombre in dis.NOMBRES_COLORES.items():
+            ttk.Label(f, text=nombre).grid(row=fila, column=0, sticky='w', pady=2)
+            marco = ttk.Frame(f)
+            marco.grid(row=fila, column=1, sticky='w', pady=2)
+            muestra = tk.Label(marco, width=3, relief='sunken')
+            muestra.pack(side='left')
+            var = tk.StringVar()
+            ttk.Entry(marco, textvariable=var, width=10).pack(side='left', padx=6)
+            ttk.Button(marco, text='Elegir…', command=lambda c=clave: self.elegir_color_diseno(c)).pack(side='left')
+            var.trace_add('write', lambda *_, c=clave: self.al_cambiar_color_diseno(c))
+            self.vars_diseno['color_' + clave] = (var, None)
+            self.muestras_diseno[clave] = muestra
+            fila += 1
+
+        # Tipografías
+        titulo('Tipografías', 'Fuentes de Google: se cargan solas en la web.')
+        for clave, nombre, fuentes in (('fuente_titulos', 'Títulos y logo', dis.FUENTES_TITULOS),
+                                       ('fuente_texto', 'Texto general', dis.FUENTES_TEXTO)):
+            ttk.Label(f, text=nombre).grid(row=fila, column=0, sticky='w', pady=2)
+            var = tk.StringVar()
+            combo = ttk.Combobox(f, textvariable=var, state='readonly', width=24, values=list(fuentes))
+            combo.grid(row=fila, column=1, sticky='w', pady=2)
+            combo.bind('<<ComboboxSelected>>', lambda e, c=clave, v=var: self.al_cambiar_diseno(c, v.get()))
+            self.vars_diseno[clave] = (var, None)
+            fila += 1
+
+        # Tamaños de letra
+        titulo('Tamaños de letra')
+        for clave in ('escala_texto', 'tam_titulos', 'tam_logo', 'tam_statement'):
+            deslizador(clave)
+
+        # Barra lateral
+        titulo('Barra lateral', 'En celular siempre va arriba del contenido.')
+        ttk.Label(f, text='Posición').grid(row=fila, column=0, sticky='w', pady=2)
+        self.lados_sidebar = {'izquierda': 'Izquierda', 'derecha': 'Derecha', 'oculta': 'Oculta'}
+        var_lado = tk.StringVar()
+        combo_lado = ttk.Combobox(f, textvariable=var_lado, state='readonly', width=24,
+                                  values=list(self.lados_sidebar.values()))
+        combo_lado.grid(row=fila, column=1, sticky='w', pady=2)
+        combo_lado.bind('<<ComboboxSelected>>', lambda e: self.al_cambiar_diseno(
+            'sidebar_lado', next(k for k, v in self.lados_sidebar.items() if v == var_lado.get())))
+        self.vars_diseno['sidebar_lado'] = (var_lado, None)
+        fila += 1
+        deslizador('sidebar_ancho')
+
+        # Orden y visibilidad
+        titulo('Orden y visibilidad', 'Selecciona un elemento y usa los botones.')
+        self.listas_orden = {}
+        for orden, ocultos, nombre, nombres in (
+                ('orden_sidebar', 'ocultos_sidebar', 'Módulos de la barra lateral', dis.NOMBRES_SIDEBAR),
+                ('orden_portada', 'ocultos_portada', 'Secciones de la portada', dis.NOMBRES_PORTADA)):
+            ttk.Label(f, text=nombre).grid(row=fila, column=0, sticky='nw', pady=4)
+            marco = ttk.Frame(f)
+            marco.grid(row=fila, column=1, sticky='w', pady=4)
+            lista = tk.Listbox(marco, height=len(nombres), width=32, activestyle='none', exportselection=False,
+                               font=('Segoe UI', 10), selectbackground='#000080')
+            lista.pack(side='left')
+            botones = ttk.Frame(marco)
+            botones.pack(side='left', padx=6)
+            ttk.Button(botones, text='▲ Subir', command=lambda o=orden: self.mover_en_orden(o, -1)).pack(fill='x')
+            ttk.Button(botones, text='▼ Bajar', command=lambda o=orden: self.mover_en_orden(o, 1)).pack(fill='x')
+            ttk.Button(botones, text='Mostrar / ocultar',
+                       command=lambda o=orden, x=ocultos: self.alternar_visible(o, x)).pack(fill='x', pady=(4, 0))
+            self.listas_orden[orden] = (lista, ocultos, nombres)
+            fila += 1
+
+        # Alturas
+        titulo('Alturas')
+        for clave in ('alto_carrusel', 'alto_anillo', 'alto_visor'):
+            deslizador(clave)
+
+        # Espaciado y bordes
+        titulo('Espaciado y bordes')
+        for clave in ('espacio_secciones', 'margen_interior', 'grosor_bordes', 'ancho_maximo'):
+            deslizador(clave)
+
+        ttk.Button(f, text='Restablecer el diseño original', command=self.restablecer_diseno).grid(
+            row=fila, column=1, sticky='w', pady=(16, 6))
+        self.refrescar_diseno()
+
+    # ---------------- Diseño ----------------
+
+    def refrescar_diseno(self):
+        d = self.diseno
+        self.cargando_diseno = True
+        try:
+            for clave, (var, mostrar) in self.vars_diseno.items():
+                if clave.startswith('color_'):
+                    var.set(d['colores'][clave[6:]])
+                elif clave == 'sidebar_lado':
+                    var.set(self.lados_sidebar.get(d[clave], 'Izquierda'))
+                else:
+                    var.set(d[clave])
+                    if mostrar:
+                        mostrar(d[clave])
+        finally:
+            self.cargando_diseno = False
+        for clave in self.muestras_diseno:
+            self.refrescar_muestra_diseno(clave)
+        for orden in self.listas_orden:
+            self.refrescar_lista_orden(orden)
+
+    def al_cambiar_diseno(self, clave, valor):
+        if self.cargando_diseno or self.diseno.get(clave) == valor:
+            return
+        self.diseno[clave] = valor
+        self.marcar_sucio()
+
+    def refrescar_muestra_diseno(self, clave):
+        color = self.vars_diseno['color_' + clave][0].get().strip()
+        if re.fullmatch(r'#[0-9a-fA-F]{6}', color):
+            self.muestras_diseno[clave].config(bg=color)
+            return color
+        return None
+
+    def al_cambiar_color_diseno(self, clave):
+        color = self.refrescar_muestra_diseno(clave)
+        if color and not self.cargando_diseno and self.diseno['colores'][clave].lower() != color.lower():
+            self.diseno['colores'][clave] = color
+            self.marcar_sucio()
+
+    def elegir_color_diseno(self, clave):
+        var = self.vars_diseno['color_' + clave][0]
+        _, hexa = colorchooser.askcolor(color=var.get(), title=dis.NOMBRES_COLORES[clave])
+        if hexa:
+            var.set(hexa)
+
+    def refrescar_lista_orden(self, orden, seleccion=None):
+        lista, ocultos, nombres = self.listas_orden[orden]
+        lista.delete(0, 'end')
+        for clave in self.diseno[orden]:
+            oculto = clave in self.diseno[ocultos]
+            lista.insert('end', f'  {"✖" if oculto else "✔"}  {nombres[clave]}' + ('  (oculto)' if oculto else ''))
+            if oculto:
+                lista.itemconfig('end', foreground='#888888')
+        if seleccion is not None:
+            lista.selection_set(seleccion)
+
+    def mover_en_orden(self, orden, direccion):
+        lista = self.listas_orden[orden][0]
+        seleccion = lista.curselection()
+        if not seleccion:
+            return
+        i = seleccion[0]
+        elementos = self.diseno[orden]
+        if not 0 <= i + direccion < len(elementos):
+            return
+        elementos[i], elementos[i + direccion] = elementos[i + direccion], elementos[i]
+        self.marcar_sucio()
+        self.refrescar_lista_orden(orden, i + direccion)
+
+    def alternar_visible(self, orden, ocultos):
+        lista = self.listas_orden[orden][0]
+        seleccion = lista.curselection()
+        if not seleccion:
+            return
+        clave = self.diseno[orden][seleccion[0]]
+        if clave in self.diseno[ocultos]:
+            self.diseno[ocultos].remove(clave)
+        else:
+            self.diseno[ocultos].append(clave)
+        self.marcar_sucio()
+        self.refrescar_lista_orden(orden, seleccion[0])
+
+    def restablecer_diseno(self):
+        if not messagebox.askyesno('Restablecer diseño',
+                                   '¿Volver a los colores, tamaños y orden originales del sitio?'):
+            return
+        self.diseno = dis.completar(None)
+        self.marcar_sucio()
+        self.refrescar_diseno()
 
     # ---------------- Modelo 3D ----------------
 
@@ -1921,6 +2158,7 @@ class Editor:
                 shutil.rmtree(carpeta, ignore_errors=True)
             self.carpetas_a_borrar = []
             escribir_proyectos([limpiar_para_guardar(p) for p in self.proyectos])
+            dis.escribir_diseno(ARCHIVO_DISENO, self.diseno)
         except Exception as error:
             self.root.config(cursor='')
             messagebox.showerror('Error al guardar', f'{error}')
