@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sobre Mí - Camila Ramírez "Estrabismx"</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="sobre-mi">
+
+<div class="wrapper">
+  <header>
+    <h1 class="logo"><a href="index.html">ESTRABISMX</a></h1>
+    <nav class="nav-links">
+      <a href="index.html#projects">Proyectos</a>
+      <a href="index.html#about">Sobre Mí</a>
+      <a href="paint.html">Paint</a>
+      <a href="#contacto" data-open-modal="contactModal">Contacto</a>
+    </nav>
+  </header>
+
+  <div class="main-layout">
+
+    <!-- =================================================================
+         BARRA LATERAL
+         ================================================================= -->
+    <aside class="sidebar">
+      <div class="sidebar-module">
+        <h3 class="sidebar-title">BROWSE BY TYPE</h3>
+        <!-- Se llena con los tipos de proyectos.js -->
+        <ul class="sidebar-list" id="typeList"></ul>
+      </div>
+
+      <div class="sidebar-module">
+        <h3 class="sidebar-title">QUICK LINKS</h3>
+        <ul class="sidebar-list">
+          <li><a href="https://github.com/estrabismx" target="_blank" rel="noopener">> GitHub</a></li>
+          <li><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener">> Instagram</a></li>
+          <li><a href="mailto:camila.ramirez2@mail.udp.cl">> E-mail</a></li>
+          <li><a href="paint.html">> Paint</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-module">
+        <h3 class="sidebar-title">SYSTEM STATUS</h3>
+        <ul class="sidebar-list">
+          <li>USER: Estrabismx</li>
+          <li>NOMBRE: Camila Ramírez</li>
+          <li>LOC: Santiago, Chile</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-module" id="contact">
+        <h3 class="sidebar-title">ESTABLECER_CONEXION</h3>
+        <div class="sidebar-contact-content">
+          <p>Haz clic en los enlaces para abrir de forma externa.</p>
+          <div class="badges">
+            <a href="https://github.com/estrabismx" target="_blank" rel="noopener" class="badge">GITHUB</a>
+            <a href="mailto:camila.ramirez2@mail.udp.cl" class="badge">E-MAIL</a>
+            <a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener" class="badge">INSTAGRAM</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- =================================================================
+         CONTENIDO
+         ================================================================= -->
+    <main class="content-area">
+      <section id="about">
+        <h2 class="section-title">/// ABOUT_USER.DAT</h2>
+
+        <div class="doc-header">
+          <h3 class="doc-name">Camila Ramírez "Estrabismx"</h3>
+          <p class="doc-tagline">Diseñadorx interdisciplinar, fan del trabajo artesanal y digital</p>
+        </div>
+
+        <div class="doc-block">
+          <h3 class="doc-heading">I. Perfil</h3>
+          <p>Diseñadorx de Santiago de Chile, trabajando bajo el seudónimo <b>"Estrabismx"</b>. Especialista en la fabricación digital, además del trabajo artesanal y manual. Aprendiendo y capacitandose en el área de la electrónica y la programación.</p>
+          <p>Mi especialidad se centra en el trabajo modular, optimizando materiales, recursos y tiempos, buscando así la manera más efectiva de llevar a cabo un proyecto. Realizo trabajos no solo enfocado en busqueda de soluciones, además busco la manera de poder experimentar nuevas técnicas, procesos y metodos de conceptualización.</p>
+        </div>
+
+        <!-- Para cambiar una habilidad: edita el nombre y el porcentaje (width) -->
+        <div class="doc-block">
+          <h3 class="doc-heading">II. Habilidades técnicas</h3>
+          <div class="skill">
+            <div class="skill-name">Fabricación Digital</div>
+            <div class="skill-bar"><div class="skill-fill" style="width: 100%;"></div></div>
+          </div>
+          <div class="skill">
+            <div class="skill-name">Diseño de productos</div>
+            <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
+          </div>
+          <div class="skill">
+            <div class="skill-name">Prototipado</div>
+            <div class="skill-bar"><div class="skill-fill" style="width: 80%;"></div></div>
+          </div>
+        </div>
+
+        <div class="doc-block">
+          <h3 class="doc-heading">III. Habilidades en software</h3>
+          <p class="doc-note">*Estos programas no son los únicos que manejo, solamente los más representativos</p>
+          <div class="skill">
+            <div class="skill-name">Autocad</div>
+            <div class="skill-bar"><div class="skill-fill" style="width: 100%;"></div></div>
+          </div>
+          <div class="skill">
+            <div class="skill-name">Rhino 8</div>
+            <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
+          </div>
+          <div class="skill">
+            <div class="skill-name">Inventor</div>
+            <div class="skill-bar"><div class="skill-fill" style="width: 85%;"></div></div>
+          </div>
+          <div class="skill">
+            <div class="skill-name">Illustrator</div>
+            <div class="skill-bar"><div class="skill-fill" style="width: 75%;"></div></div>
+          </div>
+          <div class="skill">
+            <div class="skill-name">KiCad</div>
+            <div class="skill-bar"><div class="skill-fill" style="width: 65%;"></div></div>
+          </div>
+        </div>
+
+        <!-- Experiencia laboral (DESACTIVADA HASTA QUE TENGA EXPERIENCIA xddd)
+        <div class="doc-block">
+          <h3 class="doc-heading">IV. Historial de Versiones</h3>
+          <p><b>Diseñadora de Marca Independiente (Freelancer)</b><br>
+          <span class="doc-note">Versión 2.0 (2023 - Presente)</span><br>
+          Desarrollo de proyectos de branding para emprendedores y empresas digitales, abarcando desde la dirección de arte hasta la entrega de guías de marca.</p>
+          <p><b>Diseñadora Gráfica Junior - Agencia Pixel</b><br>
+          <span class="doc-note">Versión 1.0 (2021 - 2023)</span><br>
+          Maquetación editorial, diseño de anuncios digitales e ilustración isométrica para campañas interactivas.</p>
+        </div>
+        -->
+
+        <div class="doc-signature">
+          <p class="doc-date">Actualizado hasta el: 14 de Julio de 2026</p>
+          <p class="doc-sign">Camila Ramírez P.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p>© 2026 Camila Ramírez "Estrabismx"</p>
+  </footer>
+</div>
+
+<!-- =====================================================================
+     VENTANA EMERGENTE: CONTACTO
+     ===================================================================== -->
+<div id="contactModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+  <div class="modal-window">
+    <div class="modal-header">
+      <span class="modal-title" id="contactTitle">INFORMACION_CONTACTO.EXE</span>
+      <button type="button" class="modal-close" aria-label="Cerrar">X</button>
+    </div>
+    <div class="modal-body">
+      <p><strong>/// DATOS DEL DISEÑADOR</strong></p>
+      <ul class="contact-list">
+        <li><span>E-mail:</span><a href="mailto:camila.ramirez2@mail.udp.cl">camila.ramirez2@mail.udp.cl</a></li>
+        <li><span>Instagram:</span><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener">@n.arkotikk</a></li>
+        <li><span>GitHub:</span><a href="https://github.com/estrabismx" target="_blank" rel="noopener">github.com/estrabismx</a></li>
+      </ul>
+      <div class="badges">
+        <a href="https://github.com/estrabismx" target="_blank" rel="noopener" class="badge">GITHUB</a>
+        <a href="mailto:camila.ramirez2@mail.udp.cl" class="badge">E-MAIL</a>
+        <a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener" class="badge">INSTAGRAM</a>
+      </div>
+      <p class="modal-note">Haz clic en los enlaces para abrir de forma externa.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Datos de los proyectos (edita este archivo para agregar proyectos) -->
+<script src="proyectos.js"></script>
+<!-- Lógica del sitio -->
+<script src="main.js"></script>
+</body>
+</html>

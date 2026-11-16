@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyectos - Camila Ramírez "Estrabismx"</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="proyectos">
+
+<div class="wrapper">
+  <header>
+    <h1 class="logo"><a href="index.html">ESTRABISMX</a></h1>
+    <nav class="nav-links">
+      <a href="index.html#projects">Proyectos</a>
+      <a href="index.html#about">Sobre Mí</a>
+      <a href="paint.html">Paint</a>
+      <a href="#contacto" data-open-modal="contactModal">Contacto</a>
+    </nav>
+  </header>
+
+  <div class="main-layout">
+
+    <!-- =================================================================
+         BARRA LATERAL
+         ================================================================= -->
+    <aside class="sidebar">
+      <div class="sidebar-module">
+        <h3 class="sidebar-title">BROWSE BY TYPE</h3>
+        <!-- Se llena con los tipos de proyectos.js -->
+        <ul class="sidebar-list" id="typeList"></ul>
+      </div>
+
+      <div class="sidebar-module">
+        <h3 class="sidebar-title">QUICK LINKS</h3>
+        <ul class="sidebar-list">
+          <li><a href="https://github.com/estrabismx" target="_blank" rel="noopener">> GitHub</a></li>
+          <li><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener">> Instagram</a></li>
+          <li><a href="mailto:camila.ramirez2@mail.udp.cl">> E-mail</a></li>
+          <li><a href="paint.html">> Paint</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-module">
+        <h3 class="sidebar-title">SYSTEM STATUS</h3>
+        <ul class="sidebar-list">
+          <li>USER: Estrabismx</li>
+          <li>NOMBRE: Camila Ramírez</li>
+          <li>LOC: Santiago, Chile</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-module" id="contact">
+        <h3 class="sidebar-title">ESTABLECER_CONEXION</h3>
+        <div class="sidebar-contact-content">
+          <p>Haz clic en los enlaces para abrir de forma externa.</p>
+          <div class="badges">
+            <a href="https://github.com/estrabismx" target="_blank" rel="noopener" class="badge">GITHUB</a>
+            <a href="mailto:camila.ramirez2@mail.udp.cl" class="badge">E-MAIL</a>
+            <a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener" class="badge">INSTAGRAM</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- =================================================================
+         CONTENIDO
+         ================================================================= -->
+    <main class="content-area">
+      <section id="projects">
+        <h2 class="section-title">/// PROYECTOS.EXE</h2>
+
+        <!-- =============== VISTA 1: ANILLO + TARJETA =============== -->
+        <div id="ringView">
+        <p class="section-desc">
+          Arrastra el espacio vacío o usa la rueda del mouse para girar el anillo. Arrastra la lata del centro para rotarla en 360° y haz clic en ella para ver el proyecto.
+        </p>
+
+        <!-- Anillo 3D (prueba): una lata placeholder por proyecto de proyectos.js -->
+        <div class="ring-stage" id="ringStage" tabindex="0" aria-label="Anillo 3D de proyectos. Flechas para girar, Enter para abrir el proyecto">
+          <canvas id="ringCanvas"></canvas>
+          <span class="ring-badge">[ PRUEBA 3D ]</span>
+          <p class="ring-fallback" id="ringFallback" hidden>[ VISOR 3D NO DISPONIBLE ]</p>
+        </div>
+
+        <!-- Tarjeta que se actualiza con el proyecto del centro -->
+        <article class="project-card" id="projectCard" aria-live="polite">
+          <div class="project-card-header">
+            <h3 class="project-card-title" id="cardTitle"></h3>
+            <div class="carousel-controls">
+              <span class="project-card-counter" id="cardCounter"></span>
+              <button type="button" class="btn-retro" id="ringPrev" aria-label="Proyecto anterior">[ &lt; ]</button>
+              <button type="button" class="btn-retro" id="ringNext" aria-label="Proyecto siguiente">[ &gt; ]</button>
+              <button type="button" class="btn-retro" id="cardOpen">VER PROYECTO</button>
+            </div>
+          </div>
+          <div class="project-card-body">
+            <div class="project-card-block">
+              <h4 class="project-card-label">/// INFO</h4>
+              <dl class="project-card-data" id="cardInfo"></dl>
+            </div>
+            <div class="project-card-block">
+              <h4 class="project-card-label">/// DATOS_TECNICOS</h4>
+              <dl class="project-card-data" id="cardTech"></dl>
+            </div>
+          </div>
+        </article>
+        </div>
+
+        <!-- =============== VISTA 2: PROYECTO (se llena con main.js) =============== -->
+        <div id="detailView" class="detail-view" hidden>
+          <div class="detail-toolbar">
+            <button type="button" class="btn-retro" id="detailBack">[ &lt; VOLVER AL ANILLO ]</button>
+            <h3 class="project-card-title" id="detailTitle"></h3>
+          </div>
+
+          <div class="detail-media">
+            <!-- Visor 3D: arrastrar rota en 360°, la rueda acerca y aleja -->
+            <div class="detail-panel">
+              <div class="detail-stage" id="detailStage" aria-label="Modelo 3D del proyecto">
+                <canvas id="detailCanvas"></canvas>
+                <span class="ring-badge">[ 3D // ARRASTRA: ROTAR · RUEDA: ZOOM ]</span>
+                <p class="ring-fallback" id="detailFallback" hidden>[ VISOR 3D NO DISPONIBLE ]</p>
+              </div>
+              <div class="detail-caption">
+                <span id="detailModelName"></span>
+                <button type="button" class="btn-retro" id="detailReset">RESET VISTA</button>
+              </div>
+            </div>
+
+            <!-- Galería: imagen grande + miniaturas -->
+            <div class="detail-panel">
+              <div class="detail-main" id="detailMain"></div>
+              <div class="detail-caption"><span id="detailCaption"></span></div>
+              <div class="detail-thumbs" id="detailThumbs"></div>
+            </div>
+          </div>
+
+          <div id="detailBody"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p>© 2026 Camila Ramírez "Estrabismx"</p>
+  </footer>
+</div>
+
+<!-- =====================================================================
+     VENTANA EMERGENTE: CONTACTO
+     ===================================================================== -->
+<div id="contactModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+  <div class="modal-window">
+    <div class="modal-header">
+      <span class="modal-title" id="contactTitle">INFORMACION_CONTACTO.EXE</span>
+      <button type="button" class="modal-close" aria-label="Cerrar">X</button>
+    </div>
+    <div class="modal-body">
+      <p><strong>/// DATOS DEL DISEÑADOR</strong></p>
+      <ul class="contact-list">
+        <li><span>E-mail:</span><a href="mailto:camila.ramirez2@mail.udp.cl">camila.ramirez2@mail.udp.cl</a></li>
+        <li><span>Instagram:</span><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener">@n.arkotikk</a></li>
+        <li><span>GitHub:</span><a href="https://github.com/estrabismx" target="_blank" rel="noopener">github.com/estrabismx</a></li>
+      </ul>
+      <div class="badges">
+        <a href="https://github.com/estrabismx" target="_blank" rel="noopener" class="badge">GITHUB</a>
+        <a href="mailto:camila.ramirez2@mail.udp.cl" class="badge">E-MAIL</a>
+        <a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener" class="badge">INSTAGRAM</a>
+      </div>
+      <p class="modal-note">Haz clic en los enlaces para abrir de forma externa.</p>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================================
+     VENTANA EMERGENTE: IMAGEN AMPLIADA (vista del proyecto)
+     ===================================================================== -->
+<div id="lightboxModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle">
+  <div class="modal-window lightbox-window">
+    <div class="modal-header">
+      <span class="modal-title" id="lightboxTitle"></span>
+      <button type="button" class="modal-close" aria-label="Cerrar">X</button>
+    </div>
+    <div class="lightbox-media" id="lightboxMedia"></div>
+  </div>
+</div>
+
+<!-- Datos de los proyectos (edita este archivo para agregar proyectos) -->
+<script src="proyectos.js"></script>
+<!-- Three.js para el anillo 3D -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- Cargador de modelos .glb (misma versión de Three.js) -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<!-- Lógica del sitio -->
+<script src="main.js"></script>
+</body>
+</html>

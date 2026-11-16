@@ -1,19 +1,17 @@
 /* =====================================================================
-   LÓGICA DEL PORTAFOLIO — Estrabismx 98
+   LÓGICA DEL PORTAFOLIO — Estrabismx
+   Este archivo lo usan todas las páginas; cada parte solo se activa
+   si la página tiene los elementos que necesita.
    Índice:
      1. Utilidades
-     2. Reloj
-     3. Menú Inicio
-     4. Sistema de ventanas (abrir, cerrar, enfocar, arrastrar, barra de tareas)
-     5. Explorador de proyectos
-     6. Ventana de proyecto (pestañas, galería, visor)
-     7. WordPad (Sobre Mí)
-     8. Paint
-     9. Alertas
-    10. Inicio de la página y enlaces directos (#proyecto-01, #sobre-mi ...)
+     2. Enlaces antiguos (index.html#proyecto-01 → proyectos.html)
+     3. Ventanas emergentes (contacto y alertas)
+     4. Barra lateral: BROWSE BY TYPE
+     5. Carrusel de proyectos (index.html)
+     6. Paint (paint.html)
+     7. Inicio de la página
 
-   Los datos de los proyectos están en proyectos.js — normalmente no
-   necesitas tocar este archivo para agregar un proyecto.
+   Los datos de los proyectos están en proyectos.js.
    ===================================================================== */
 
 
@@ -21,631 +19,1006 @@
 
 const $ = (id) => document.getElementById(id);
 
-// Quita etiquetas HTML (ej: "<i>Mimus</i>" → "Mimus") para títulos de texto plano
-function stripHtml(html) {
-  const tmp = document.createElement('div');
-  tmp.innerHTML = html;
-  return tmp.textContent.trim();
-}
+const PROJECTS = typeof PROYECTOS !== 'undefined' ? PROYECTOS : [];
 
-function projectFolder(p) {
-  return `assets/proyecto-${p.id}/`;
-}
-
-// Icono del proyecto en la carpeta (por defecto proyecto_XX.svg)
-function projectIcon(p) {
-  return projectFolder(p) + (p.icono || `proyecto_${p.id}.svg`);
-}
-
-// Archivos de la galería que se muestran con el reproductor de video
 const VIDEO_EXTENSIONS = ['mp4', 'webm', 'mov', 'm4v', 'ogv'];
 
 function isVideo(archivo) {
   return VIDEO_EXTENSIONS.includes(archivo.split('.').pop().toLowerCase());
 }
 
-function pauseVideosIn(element) {
-  if (element) element.querySelectorAll('video').forEach((v) => v.pause());
+function projectFolder(p) {
+  return `assets/proyecto-${p.id}/`;
 }
 
-// Las "animaciones" (GIF convertidos a video) se reproducen solas: se reanudan al volver a verse
-function playAnimationsIn(element) {
-  if (element) element.querySelectorAll('video[data-animacion]').forEach((v) => v.play().catch(() => {}));
+// Primera imagen de la galería (los videos no sirven de portada)
+function projectCover(p) {
+  const img = (p.galeria || []).find((item) => !isVideo(item.archivo));
+  return img ? projectFolder(p) + img.archivo : null;
 }
 
-// Video con reproductor (no las animaciones, que se comportan como imágenes)
-function isPlayerVideo(item) {
-  return isVideo(item.archivo) && !item.animacion;
-}
-
-function findProject(id) {
-  return PROYECTOS.find((p) => p.id === id);
-}
-
-
-/* ---------- 2. Reloj ---------- */
-
-function updateClock() {
-  const date = new Date();
-  let hours = date.getHours();
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12 || 12;
-  $('system-clock').textContent = `${hours}:${minutes} ${ampm}`;
+// Quita etiquetas HTML (ej: "<i>Mimus</i>" → "Mimus")
+function stripHtml(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent.trim();
 }
 
 
-/* ---------- 3. Menú Inicio ---------- */
+/* ---------- 2. Enlaces antiguos ---------- */
 
-function toggleStartMenu(forceClose) {
-  const menu = $('start-menu');
-  const btn = $('start-btn');
-  const open = forceClose ? false : menu.style.display !== 'flex';
-  menu.style.display = open ? 'flex' : 'none';
-  btn.classList.toggle('win98-inset', open);
-}
-
-function openFromStart(id) {
-  openWindow(id);
-  toggleStartMenu(true);
+// El editor abre index.html#proyecto-XX: ahora los proyectos viven en proyectos.html
+function redirectOldProjectLinks() {
+  if (document.body.dataset.page !== 'index') return false;
+  if (!location.hash.startsWith('#proyecto-')) return false;
+  location.replace('proyectos.html' + location.hash);
+  return true;
 }
 
 
-/* ---------- 4. Sistema de ventanas ---------- */
+/* ---------- 3. Ventanas emergentes ---------- */
 
-let maxZIndex = 100;
-let cascadeOffset = 0;
-
-function isVisible(win) {
-  return win && win.style.display !== 'none';
+function openModal(id) {
+  const modal = $(id);
+  if (!modal) return;
+  modal.classList.add('open');
+  const close = modal.querySelector('.modal-close');
+  if (close) close.focus();
 }
 
-function isFocused(win) {
-  return isVisible(win) && parseInt(win.style.zIndex, 10) === maxZIndex;
+function closeModal(id) {
+  const modal = $(id);
+  if (modal) modal.classList.remove('open');
 }
 
-// La primera vez que se abre una ventana, se centra y se ajusta al tamaño de pantalla
-function placeWindow(win) {
-  if (win.dataset.placed) return;
-  win.dataset.placed = 'true';
+function initModals() {
+  // Cualquier enlace o botón con data-open-modal="id" abre esa ventana
+  document.querySelectorAll('[data-open-modal]').forEach((trigger) => {
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal(trigger.dataset.openModal);
+    });
+  });
 
-  const vw = window.innerWidth;
-  const vh = window.innerHeight - 40; // menos la barra de tareas
-  const width = Math.min(parseInt(win.dataset.width, 10) || 440, vw - 16);
-  win.style.width = width + 'px';
+  document.querySelectorAll('.modal-overlay').forEach((modal) => {
+    // Cerrar con la "X" o con botones marcados con data-close-modal
+    modal.querySelectorAll('.modal-close, [data-close-modal]').forEach((btn) => {
+      btn.addEventListener('click', () => closeModal(modal.id));
+    });
+    // Cerrar al hacer clic en el fondo oscuro
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal(modal.id);
+    });
+  });
 
-  if (win.dataset.height) {
-    const height = Math.min(parseInt(win.dataset.height, 10), vh - 16);
-    win.style.height = height + 'px';
+  // Cerrar con la tecla ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('.modal-overlay.open').forEach((m) => closeModal(m.id));
+  });
+}
+
+function showAlert(text) {
+  const box = $('alertText');
+  if (!box) return;
+  box.textContent = text;
+  openModal('alertModal');
+}
+
+
+/* ---------- 4. Barra lateral: BROWSE BY TYPE ---------- */
+
+// Tipos únicos de los proyectos, en el orden en que aparecen en proyectos.js
+function projectTypes() {
+  return [...new Set(PROJECTS.map((p) => p.tipo).filter(Boolean))];
+}
+
+function renderTypeList() {
+  const list = $('typeList');
+  if (!list) return;
+
+  const items = [{ label: 'Todos', tipo: '' }, ...projectTypes().map((t) => ({ label: t, tipo: t }))];
+  list.innerHTML = '';
+
+  items.forEach(({ label, tipo }) => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = tipo ? `index.html?tipo=${encodeURIComponent(tipo)}#projects` : 'index.html#projects';
+    a.dataset.tipo = tipo;
+    a.textContent = `> ${label}`;
+
+    // En index.html se filtra el carrusel sin recargar la página
+    if ($('carouselDisplay')) {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        setCarouselFilter(tipo);
+        history.replaceState(null, '', a.getAttribute('href'));
+        $('projects').scrollIntoView();
+      });
+    }
+
+    li.appendChild(a);
+    list.appendChild(li);
+  });
+
+  markActiveType(new URLSearchParams(location.search).get('tipo') || '');
+}
+
+function markActiveType(tipo) {
+  document.querySelectorAll('#typeList a').forEach((a) => {
+    a.classList.toggle('active', a.dataset.tipo === tipo);
+  });
+}
+
+
+/* ---------- 5. Carrusel de proyectos ---------- */
+
+let carouselItems = [];
+let carouselIndex = 0;
+
+function setCarouselFilter(tipo) {
+  carouselItems = tipo ? PROJECTS.filter((p) => p.tipo === tipo) : PROJECTS.slice();
+  if (!carouselItems.length) carouselItems = PROJECTS.slice(); // tipo desconocido en la URL
+  carouselIndex = 0;
+  markActiveType(carouselItems.length === PROJECTS.length ? '' : tipo);
+  updateCarousel();
+}
+
+function updateCarousel() {
+  const display = $('carouselDisplay');
+  const title = $('carouselTitle');
+  const counter = $('carouselCounter');
+  const p = carouselItems[carouselIndex];
+
+  if (!p) {
+    title.textContent = 'SIN PROYECTOS';
+    counter.textContent = '0/0';
+    display.querySelector('.carousel-media').innerHTML =
+      '<div class="thumbnail-placeholder">[ SIN PROYECTOS ]</div>';
+    return;
   }
 
-  const height = win.offsetHeight || 300;
-  const left = Math.max(8, (vw - width) / 2 + cascadeOffset);
-  const top = Math.max(8, Math.min((vh - height) / 2 + cascadeOffset, vh - height - 8));
-  win.style.left = left + 'px';
-  win.style.top = top + 'px';
-  cascadeOffset = (cascadeOffset + 24) % 120;
-}
+  title.innerHTML = `SYS_${p.id}: ${p.titulo}`;
+  counter.textContent = `${carouselIndex + 1}/${carouselItems.length}`;
 
-function focusWindow(id) {
-  const win = $(id);
-  if (!win) return;
+  const media = display.querySelector('.carousel-media');
+  const cover = projectCover(p);
+  media.innerHTML = '';
 
-  document.querySelectorAll('.window .win98-titlebar').forEach((t) => t.classList.add('inactive'));
-  maxZIndex++;
-  win.style.zIndex = maxZIndex;
-  win.querySelector('.win98-titlebar').classList.remove('inactive');
-
-  updateTaskbar();
-}
-
-function openWindow(id) {
-  const win = $(id);
-  if (!win) return;
-  win.style.display = 'flex';
-  placeWindow(win);
-  focusWindow(id);
-  playAnimationsIn(win);
-}
-
-function closeWindow(id) {
-  const win = $(id);
-  if (!win) return;
-  pauseVideosIn(win);
-  win.style.display = 'none';
-  delete win.dataset.minimized;
-  updateTaskbar();
-}
-
-// Minimizar = ocultar, pero el botón queda en la barra de tareas
-function minimizeWindow(id) {
-  const win = $(id);
-  if (!win) return;
-  pauseVideosIn(win);
-  win.style.display = 'none';
-  win.dataset.minimized = 'true';
-  updateTaskbar();
-}
-
-// Abrir si está cerrada, traer al frente si está detrás, minimizar si ya está al frente
-function toggleWindow(id) {
-  const win = $(id);
-  if (!win) return;
-  if (!isVisible(win)) openWindow(id);
-  else if (!isFocused(win)) focusWindow(id);
-  else minimizeWindow(id);
-}
-
-function maximizeWindow(id) {
-  const win = $(id);
-  if (win) win.classList.toggle('maximized');
-}
-
-function updateTaskbar() {
-  const container = $('taskbar-apps');
-  container.innerHTML = '';
-
-  document.querySelectorAll('.window').forEach((win) => {
-    const open = isVisible(win);
-    if (open) delete win.dataset.minimized;
-    if (!open && !win.dataset.minimized) return;
-
-    const btn = document.createElement('button');
-    btn.className = 'win98-button taskbar-btn text-xs font-semibold flex items-center gap-1.5 flex-shrink-0';
-    btn.style.height = '28px';
-    if (isFocused(win)) btn.classList.add('win98-inset');
-
-    btn.innerHTML = `<img src="${win.dataset.icon}" alt="" class="w-4 h-4 pointer-events-none"> <span class="ml-1"></span>`;
-    btn.querySelector('span').textContent = win.dataset.title;
-    btn.onclick = () => toggleWindow(win.id);
-    container.appendChild(btn);
-  });
-}
-
-// Arrastrar ventanas desde su barra de título (mouse y touch)
-function makeDraggable(win) {
-  const handle = win.querySelector('.win98-titlebar');
-  let startX, startY, startLeft, startTop;
-
-  handle.addEventListener('pointerdown', (e) => {
-    if (e.target.closest('button') || win.classList.contains('maximized')) return;
-    startX = e.clientX;
-    startY = e.clientY;
-    startLeft = win.offsetLeft;
-    startTop = win.offsetTop;
-    handle.setPointerCapture(e.pointerId);
-    handle.addEventListener('pointermove', onMove);
-    handle.addEventListener('pointerup', onUp, { once: true });
-  });
-
-  function onMove(e) {
-    const left = Math.max(0, startLeft + e.clientX - startX);
-    const top = Math.max(0, startTop + e.clientY - startY);
-    win.style.left = left + 'px';
-    win.style.top = top + 'px';
+  if (cover) {
+    const img = document.createElement('img');
+    img.src = cover;
+    img.alt = stripHtml(p.titulo);
+    img.onerror = () => {
+      media.innerHTML = '<div class="thumbnail-placeholder">[ IMAGEN NO DISPONIBLE ]</div>';
+    };
+    media.appendChild(img);
+  } else {
+    media.innerHTML = '<div class="thumbnail-placeholder">[ SIN IMAGEN ]</div>';
   }
 
-  function onUp() {
-    handle.removeEventListener('pointermove', onMove);
-  }
+  // Precarga la portada siguiente para que el cambio sea inmediato
+  const next = carouselItems[(carouselIndex + 1) % carouselItems.length];
+  const nextCover = next && projectCover(next);
+  if (nextCover) new Image().src = nextCover;
+}
 
-  handle.addEventListener('dblclick', (e) => {
-    if (!e.target.closest('button') && win.dataset.height) maximizeWindow(win.id);
-  });
+function nextSlide() {
+  if (!carouselItems.length) return;
+  carouselIndex = (carouselIndex + 1) % carouselItems.length;
+  updateCarousel();
+}
+
+function prevSlide() {
+  if (!carouselItems.length) return;
+  carouselIndex = (carouselIndex - 1 + carouselItems.length) % carouselItems.length;
+  updateCarousel();
+}
+
+function initCarousel() {
+  if (!$('carouselDisplay')) return;
+  $('carouselPrev').addEventListener('click', prevSlide);
+  $('carouselNext').addEventListener('click', nextSlide);
+  setCarouselFilter(new URLSearchParams(location.search).get('tipo') || '');
 }
 
 
-/* ---------- 5. Explorador de proyectos ---------- */
+/* ---------- 5b. Anillo 3D de proyectos (proyectos.html) — PRUEBA ----------
+   Cada proyecto de proyectos.js es una lata low poly (placeholder) sobre un
+   anillo que gira. La tarjeta de abajo muestra el proyecto que queda al centro.
+   - Arrastrar el espacio vacío o usar la rueda: gira el anillo.
+   - Arrastrar la lata del centro: la rota en 360°.
+   - Clic en la lata del centro: abre la vista del proyecto.
+   - Clic en otra lata: la trae al centro.
+   Los valores del anillo siguen la guía de ejemplo.json. */
 
-function renderExplorer() {
-  const files = $('explorer-files');
-  files.innerHTML = '';
-
-  PROYECTOS.forEach((p) => {
-    const icon = document.createElement('div');
-    icon.className = 'file-icon flex flex-col items-center';
-    icon.tabIndex = 0;
-    icon.dataset.id = p.id;
-    icon.innerHTML = `
-      <img src="${projectIcon(p)}" class="w-20 h-20 mb-1 object-contain pointer-events-none" alt="">
-      <span class="icon-text px-1 truncate w-full">${p.titulo}</span>`;
-    icon.onclick = () => selectProject(p.id);
-    icon.ondblclick = () => openProject(p.id);
-    icon.onkeydown = (e) => { if (e.key === 'Enter') openProject(p.id); };
-    files.appendChild(icon);
-  });
-
-  $('explorer-status-right').textContent = `${PROYECTOS.length} archivo(s) (1.44 MB)`;
-}
-
-function selectProject(id) {
-  const p = findProject(id);
-  if (!p) return;
-
-  document.querySelectorAll('.file-icon').forEach((el) => el.classList.toggle('selected', el.dataset.id === id));
-  $('explorer-status-left').textContent = `Seleccionado: ${stripHtml(p.titulo)}${p.tamano ? ` (${p.tamano})` : ''}`;
-
-  const etiquetas = (p.etiquetas || [])
-    .map((t) => `<span class="bg-gray-200 text-gray-800 px-1 border border-gray-400 text-[9px]">${t}</span>`)
-    .join('');
-
-  $('explorer-preview').innerHTML = `
-    <div class="flex flex-col h-full justify-between font-mono text-xs">
-      <div>
-        <h2 class="text-base font-bold text-[#000080] border-b-2 border-[#000080] pb-1 uppercase truncate">${p.titulo}</h2>
-        <div class="border-2 border-inset p-1 my-3 flex items-center justify-center overflow-hidden h-32">
-          <img src="${projectIcon(p)}" alt="" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/400x150/c0c0c0/000000?text=Vista+Previa'">
-        </div>
-        <p class="font-bold text-[#000080] mb-1">${p.subtitulo || p.encabezado || p.titulo}</p>
-        <p class="text-gray-700 leading-tight mb-3 text-[11px]">${p.resumen || ''}</p>
-        <div class="flex flex-wrap gap-1 mb-3">${etiquetas}</div>
-      </div>
-      <div class="flex flex-col gap-2">
-        <button class="win98-button w-full text-xs font-bold font-sans" onclick="openProject('${p.id}')">Visualizar</button>
-        <div class="border border-dashed border-gray-400 p-2 bg-gray-200">
-          ${p.anio ? `<span class="text-[10px] block text-gray-500">Año: ${p.anio}</span>` : ''}
-          ${p.curso ? `<span class="text-[10px] block text-gray-500">Tipo: ${p.curso}</span>` : ''}
-          ${p.tamano ? `<span class="text-[10px] block text-gray-500">Tamaño en disco: ${p.tamano}</span>` : ''}
-        </div>
-      </div>
-    </div>`;
-}
-
-
-/* ---------- 6. Ventana de proyecto ---------- */
-
-let currentProject = null;
-let currentImageIndex = 0;
-
-function openProject(id) {
-  const p = findProject(id);
-  if (!p) return;
-  currentProject = p;
-
-  const titulo = stripHtml(p.titulo);
-  const win = $('window-proyecto');
-  win.dataset.title = titulo;
-  win.dataset.icon = projectIcon(p);
-  $('proyecto-titlebar').textContent = `Propiedades: ${titulo}`;
-  $('proyecto-archivo').textContent = `Archivo: C:\\Mis Documentos\\Proyectos\\Proyecto_${p.id}.3dm`;
-  document.title = `${titulo} - Estrabismx`;
-
-  // Recuadro de datos bajo la imagen
-  const info = [['TIPO', p.tipo], ['OBJETIVO', p.objetivo], ['DESAFÍO', p.desafio]]
-    .filter(([, valor]) => valor)
-    .map(([etiqueta, valor]) => `<span class="block text-gray-500">• ${etiqueta}: ${valor}</span>`)
-    .join('');
-  $('proyecto-info').innerHTML = info;
-  $('proyecto-info').classList.toggle('hidden', !info);
-
-  // Pestaña General
-  const parrafos = (p.descripcion || [])
-    .map((txt) => `<p class="text-xs text-gray-700 leading-relaxed font-mono mb-4">${txt}</p>`)
-    .join('');
-  const colores = (p.colores || [])
-    .map((c) => `<div class="w-6 h-6 border" style="background-color: ${c.hex};" title="${c.nombre || c.hex}"></div>`)
-    .join('');
-  $('content-desc').innerHTML = `
-    <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">${p.encabezado || p.titulo}</h1>
-    ${parrafos}
-    ${colores ? `
-      <div class="mt-auto pt-4">
-        <span class="font-bold text-xs block mb-1">Paletas de Colores Utilizadas:</span>
-        <div class="flex gap-2">${colores}</div>
-      </div>` : ''}`;
-
-  // Pestaña Especificaciones
-  const filas = Object.entries(p.ficha || {})
-    .map(([nombre, valor]) => `
-      <tr class="border-b border-gray-200">
-        <td class="py-2 pr-2 font-bold text-gray-600 align-top">${nombre}:</td>
-        <td class="py-2">${valor}</td>
-      </tr>`)
-    .join('');
-  const dif = p.dificultad;
-  $('content-specs').innerHTML = `
-    <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">FICHA TÉCNICA DEL DESARROLLO</h1>
-    <table class="w-full text-xs font-mono text-left border-collapse"><tbody>${filas}</tbody></table>
-    ${dif ? `
-      <div class="mt-6">
-        <span class="font-bold text-xs block mb-1 text-gray-700">Dificultad:</span>
-        <div class="h-5 bg-gray-200 border border-[#808080] relative">
-          <div class="h-full bg-blue-800" style="width: ${dif.porcentaje}%;"></div>
-          <span class="absolute inset-0 flex items-center justify-center text-[10px] text-white font-bold">${dif.texto || ''}</span>
-        </div>
-      </div>` : ''}`;
-
-  // Pestaña Galería
-  const galeria = $('proyecto-galeria');
-  galeria.innerHTML = '';
-  (p.galeria || []).forEach((img, index) => {
-    const src = projectFolder(p) + img.archivo;
-    const miniatura = isVideo(img.archivo)
-      ? `<video src="${src}#t=0.5" muted preload="metadata" playsinline class="w-full h-full object-cover pointer-events-none"></video>
-         <span class="thumb-video-badge">${img.animacion ? '∞ ANIM' : '▶ VIDEO'}</span>`
-      : `<img src="${src}" alt="${img.nombre || ''}" loading="lazy" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://placehold.co/150x80/c0c0c0/000000?text=${encodeURIComponent(img.archivo)}'">`;
-
-    const thumb = document.createElement('div');
-    thumb.className = 'border p-1 bg-gray-100 hover:bg-blue-100 cursor-pointer flex flex-col h-28 justify-between';
-    thumb.innerHTML = `
-      <div class="w-full h-20 bg-black flex items-center justify-center overflow-hidden relative">${miniatura}</div>
-      <div class="text-[9px] font-mono text-center mt-1 text-gray-600 truncate">${img.archivo}</div>`;
-    thumb.onclick = () => showImage(index);
-    thumb.ondblclick = () => { showImage(index); openImageViewer(); };
-    galeria.appendChild(thumb);
-  });
-
-  showImage(0);
-  switchTab('desc');
-  history.replaceState(null, '', `#proyecto-${p.id}`);
-  openWindow('window-proyecto');
-}
-
-// "Aceptar", "Cancelar" y "X": cierra el proyecto y vuelve a la carpeta Proyectos
-function closeProject() {
-  closeWindow('window-proyecto');
-  closeImageViewer();
-  history.replaceState(null, '', location.pathname + location.search);
-  document.title = 'Portafolio Diseño - Camila Ramírez "Estrabismx"';
-  openWindow('window-proyectos');
-}
-
-function switchTab(tabId) {
-  document.querySelectorAll('#window-proyecto .win98-tab').forEach((tab) => {
-    tab.classList.toggle('active', tab.dataset.tab === tabId);
-  });
-  document.querySelectorAll('#window-proyecto .tab-content').forEach((content) => {
-    content.classList.toggle('hidden', content.id !== `content-${tabId}`);
-  });
-}
-
-// Crea el elemento a mostrar: una imagen, una animación o el reproductor de video
-function createMedia(src, item, imgClass) {
-  const { archivo, nombre } = item;
-  if (isPlayerVideo(item)) return createVideoPlayer(src);
-
-  if (isVideo(archivo)) {
-    // Animación: como un GIF, pero mucho más liviana
-    const anim = document.createElement('video');
-    anim.src = src;
-    anim.muted = true;
-    anim.loop = true;
-    anim.autoplay = true;
-    anim.playsInline = true;
-    anim.setAttribute('playsinline', '');
-    anim.dataset.animacion = 'true';
-    anim.className = imgClass;
-    anim.setAttribute('aria-label', nombre || archivo);
-    return anim;
-  }
-
-  const img = document.createElement('img');
-  img.src = src;
-  img.alt = nombre || archivo;
-  img.className = imgClass;
-  img.onerror = () => { img.onerror = null; img.src =`https://placehold.co/600x400/000000/00ff00?text=${encodeURIComponent(archivo)}`; };
-  return img;
-}
-
-// Muestra el archivo número "index" de la galería en la vista previa y en el visor
-function showImage(index) {
-  const imagenes = (currentProject && currentProject.galeria) || [];
-  if (!imagenes.length) return;
-
-  currentImageIndex = (index + imagenes.length) % imagenes.length; // da la vuelta al llegar al final
-  const img = imagenes[currentImageIndex];
-  const src = projectFolder(currentProject) + img.archivo;
-  const video = isPlayerVideo(img);
-  const tipo = video ? 'VIDEO' : (img.animacion ? 'ANIMACIÓN' : 'IMAGEN');
-  const etiqueta = img.nombre ? `${img.nombre} — ${img.archivo}` : img.archivo;
-  const viewerOpen = !$('image-viewer-window').classList.contains('hidden');
-
-  pauseVideosIn($('preview-media'));
-  pauseVideosIn($('viewer-media'));
-  $('preview-media').replaceChildren(createMedia(src, img, 'max-w-full max-h-full object-contain'));
-  $('viewer-media').replaceChildren(createMedia(src, img, 'max-w-full max-h-[70vh] object-contain border border-gray-700'));
-  // Solo se anima lo que está a la vista (ahorra batería y procesador)
-  pauseVideosIn(viewerOpen ? $('preview-media') : $('viewer-media'));
-
-  $('preview-box').classList.toggle('cursor-pointer', !video);
-  $('preview-zoom-hint').classList.toggle('hidden', video);
-  $('preview-caption').textContent = `• ${tipo} ${currentImageIndex + 1}/${imagenes.length}: ${etiqueta}`;
-  $('viewer-title').textContent = `${video ? 'Reproductor de Video' : 'Visor de Imágenes'} - [${img.archivo}]`;
-  $('viewer-caption').textContent = `${currentImageIndex + 1} / ${imagenes.length}  ${img.nombre || ''}`;
-}
-
-// Clic en la vista previa: amplía las imágenes (los videos usan sus propios controles)
-function onPreviewClick() {
-  const img = currentProject && currentProject.galeria[currentImageIndex];
-  if (img && !isPlayerVideo(img)) openImageViewer();
-}
-
-function navigateViewer(direction) {
-  showImage(currentImageIndex + direction);
-}
-
-function openImageViewer() {
-  if (!currentProject) return;
-  // Si el video de la vista previa estaba sonando, sigue en el visor desde el mismo punto
-  const previewVideo = $('preview-media').querySelector('video:not([data-animacion])');
-  const viewerVideo = $('viewer-media').querySelector('video:not([data-animacion])');
-  if (previewVideo && viewerVideo) {
-    viewerVideo.currentTime = previewVideo.currentTime;
-    if (!previewVideo.paused) viewerVideo.play();
-  }
-  pauseVideosIn($('preview-media'));
-  playAnimationsIn($('viewer-media'));
-  $('image-viewer-window').classList.remove('hidden');
-}
-
-function closeImageViewer() {
-  pauseVideosIn($('viewer-media'));
-  $('image-viewer-window').classList.add('hidden');
-  playAnimationsIn($('preview-media'));
-}
-
-
-/* ---------- 6b. Reproductor de video estilo Windows 98 ---------- */
-
-const PLAYER_ICONS = {
-  play: '<svg viewBox="0 0 10 10"><path d="M2 1 L9 5 L2 9 Z"/></svg>',
-  pause: '<svg viewBox="0 0 10 10"><rect x="2" y="1" width="2" height="8"/><rect x="6" y="1" width="2" height="8"/></svg>',
-  stop: '<svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6"/></svg>',
-  sound: '<svg viewBox="0 0 12 10"><path d="M1 3 H3 L6 0.5 V9.5 L3 7 H1 Z"/><path d="M8 3 Q9.5 5 8 7 M9.5 1.5 Q12 5 9.5 8.5" fill="none" stroke="currentColor" stroke-width="1"/></svg>',
-  muted: '<svg viewBox="0 0 12 10"><path d="M1 3 H3 L6 0.5 V9.5 L3 7 H1 Z"/><path d="M8 3 L11 7 M11 3 L8 7" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>',
-  full: '<svg viewBox="0 0 10 10"><path d="M1 4 V1 H4 M6 1 H9 V4 M9 6 V9 H6 M4 9 H1 V6" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>',
+const RING_SETTINGS = {
+  ringRadius: 6.5,
+  snapToCenter: true,
+  scrollFriction: 0.92,
+  cameraZPosition: 10,
+  dragSensitivity: 0.002,   // radianes de giro del anillo por píxel arrastrado
+  wheelSensitivity: 0.0002, // radianes por unidad de rueda
+  maxVelocity: 0.08,        // velocidad máxima de giro por cuadro
+  modelSensitivity: 0.01,   // radianes de giro de la lata por píxel arrastrado
+  clickTolerance: 5,        // píxeles: menos que esto cuenta como clic y no arrastre
+  pixelSize: 3,             // 1 píxel de render = 3 píxeles de pantalla (look low-res)
+  radialSegments: 10,       // caras de la lata (low poly)
 };
 
-function formatTime(seconds) {
-  if (!isFinite(seconds)) return '00:00';
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+// Valores 3D por defecto. Un proyecto puede cambiarlos con un campo opcional
+// "modelo3d": { "archivo", "escala", "rotacion", "material": {...} } (aún no está en el editor)
+const MODELO_POR_DEFECTO = {
+  archivo: null,
+  escala: [1, 1, 1],
+  rotacion: [0, 0, 0],
+  material: { tipo: 'MeshStandardMaterial', color: '#b8bcc4', metalness: 0.9, roughness: 0.35 },
+};
+
+function modelSettings(p) {
+  const m = p.modelo3d || {};
+  return {
+    archivo: m.archivo || null,
+    triangulos: m.triangulos || null,
+    escala: m.escala || MODELO_POR_DEFECTO.escala,
+    rotacion: m.rotacion || MODELO_POR_DEFECTO.rotacion,
+    material: { ...MODELO_POR_DEFECTO.material, ...(m.material || {}) },
+  };
 }
 
-function createVideoPlayer(src) {
-  const player = document.createElement('div');
-  player.className = 'video-player win98-outset';
-  player.innerHTML = `
-    <div class="video-screen">
-      <video preload="metadata" playsinline></video>
-      <button class="video-bigplay" title="Reproducir">${PLAYER_ICONS.play}</button>
-      <p class="video-error hidden">No se pudo reproducir este video.<br>Formato no compatible con el navegador.</p>
+// Color de la etiqueta de la lata: el primero de la paleta del proyecto
+function labelColor(p) {
+  return (p.colores && p.colores[0] && p.colores[0].hex) || '#AB3130';
+}
+
+const isEmpty = (value) => value === '' || value == null;
+
+function fillDataList(dl, rows, hideEmpty = false) {
+  dl.innerHTML = rows
+    .filter(([, value]) => !(hideEmpty && isEmpty(value)))
+    .map(([label, value]) => `<dt>${label}</dt><dd>${isEmpty(value) ? '—' : value}</dd>`)
+    .join('');
+}
+
+function infoRows(p) {
+  return [
+    ['ID', `proyecto-${p.id}`],
+    ['FABRICACIÓN', p.tipo],
+    ['FECHA', p.anio],
+    ['DESCRIPCIÓN', p.resumen],
+  ];
+}
+
+function techRows(p) {
+  const m = modelSettings(p);
+  const mat = m.material;
+  return [
+    ['MODELO', modelLabel(p)],
+    ['TRIÁNGULOS', m.archivo ? m.triangulos : null],
+    ['MATERIAL', mat.tipo],
+    ['COLOR', `<span class="swatch" style="background:${mat.color}"></span>${mat.color}`],
+    ['METALNESS', mat.metalness],
+    ['ROUGHNESS', mat.roughness],
+    ['ESCALA', m.escala.join(' × ')],
+    ['ROTACIÓN', `${m.rotacion.join(', ')} rad`],
+    ['LUZ', lightPreset(p).nombre],
+  ];
+}
+
+function updateProjectCard(index) {
+  const p = PROJECTS[index];
+  if (!p) {
+    $('cardTitle').textContent = 'SIN PROYECTOS';
+    $('cardCounter').textContent = '0/0';
+    fillDataList($('cardInfo'), []);
+    fillDataList($('cardTech'), []);
+    return;
+  }
+
+  $('cardTitle').innerHTML = `SYS_${p.id}: ${p.titulo}`;
+  $('cardCounter').textContent = `${index + 1}/${PROJECTS.length}`;
+  fillDataList($('cardInfo'), infoRows(p));
+  fillDataList($('cardTech'), techRows(p));
+
+  // Enlace directo al proyecto (lo usa también el editor: proyectos.html#proyecto-XX)
+  history.replaceState(null, '', `#proyecto-${p.id}`);
+}
+
+function initialRingIndex() {
+  const id = location.hash.replace('#proyecto-', '');
+  const i = PROJECTS.findIndex((p) => p.id === id);
+  return i >= 0 ? i : 0;
+}
+
+// Lata de aluminio low poly hecha con un perfil girado (LatheGeometry)
+function buildCan(p) {
+  const m = modelSettings(p);
+  const mat = m.material;
+  const Material = THREE[mat.tipo] || THREE.MeshStandardMaterial;
+  const group = new THREE.Group();
+
+  const perfil = [
+    [0, -1.2], [0.5, -1.2], [0.6, -1.12], [0.66, -0.98], [0.66, 0.95],
+    [0.6, 1.08], [0.52, 1.16], [0.53, 1.22], [0.47, 1.2], [0, 1.17],
+  ].map(([x, y]) => new THREE.Vector2(x, y));
+
+  group.add(new THREE.Mesh(
+    new THREE.LatheGeometry(perfil, RING_SETTINGS.radialSegments),
+    new Material({ color: mat.color, metalness: mat.metalness, roughness: mat.roughness, flatShading: true })
+  ));
+
+  const label = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.668, 0.668, 1.15, RING_SETTINGS.radialSegments, 1, true),
+    new THREE.MeshStandardMaterial({ color: labelColor(p), metalness: 0.2, roughness: 0.6, flatShading: true })
+  );
+  label.position.y = -0.05;
+  group.add(label);
+
+  const tab = new THREE.Mesh(
+    new THREE.BoxGeometry(0.3, 0.03, 0.16),
+    new THREE.MeshStandardMaterial({ color: '#d0d0d0', metalness: 0.9, roughness: 0.3, flatShading: true })
+  );
+  tab.position.set(0, 1.21, 0.12);
+  group.add(tab);
+
+  // "pivot" recibe la escala y rotación inicial del proyecto; "spinner" es lo que se rota
+  const pivot = new THREE.Group();
+  pivot.add(group);
+  pivot.scale.set(...m.escala);
+  pivot.rotation.set(...m.rotacion);
+  pivot.userData.spinner = group;
+  return pivot;
+}
+
+function modelLabel(p) {
+  const m = modelSettings(p);
+  return m.archivo ? `${m.archivo} (low poly)` : 'Placeholder (lata low poly)';
+}
+
+// Los .glb se descargan una sola vez aunque los usen el anillo y el visor grande
+const modelCache = new Map();
+
+function loadModelGeometries(url) {
+  if (!modelCache.has(url)) {
+    modelCache.set(url, new Promise((resolve, reject) => {
+      new THREE.GLTFLoader().load(url, (gltf) => {
+        const geometries = [];
+        gltf.scene.updateMatrixWorld(true);
+        gltf.scene.traverse((child) => {
+          if (child.isMesh) geometries.push(child.geometry.clone().applyMatrix4(child.matrixWorld));
+        });
+        geometries.length ? resolve(geometries) : reject(new Error('El modelo no tiene mallas'));
+      }, undefined, reject);
+    }));
+  }
+  return modelCache.get(url);
+}
+
+// Modelo del proyecto: muestra la lata y, si hay .glb, la reemplaza cuando termina de cargar.
+// Si el archivo falla (o se abre el sitio sin servidor), se queda la lata.
+function buildModel(p) {
+  const pivot = buildCan(p);
+  const m = modelSettings(p);
+  if (!m.archivo || typeof THREE.GLTFLoader === 'undefined') return pivot;
+
+  const Material = THREE[m.material.tipo] || THREE.MeshStandardMaterial;
+  loadModelGeometries(projectFolder(p) + m.archivo)
+    .then((geometries) => {
+      const spinner = pivot.userData.spinner;
+      const material = new Material({
+        color: m.material.color, metalness: m.material.metalness, roughness: m.material.roughness,
+        flatShading: true, side: THREE.DoubleSide,
+      });
+      disposeObject(spinner);
+      while (spinner.children.length) spinner.remove(spinner.children[0]);
+      geometries.forEach((geometry) => {
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.userData.shared = true; // la geometría es del caché: no se libera al cerrar el visor
+        spinner.add(mesh);
+      });
+      pivot.userData.loaded = true;
+    })
+    .catch((err) => console.warn(`No se pudo cargar ${m.archivo}; se muestra la lata.`, err));
+  return pivot;
+}
+
+function disposeObject(object) {
+  object.traverse((child) => {
+    if (child.geometry && !child.userData.shared) child.geometry.dispose();
+    if (child.material) child.material.dispose();
+  });
+}
+
+// Entorno simple con los colores del sitio para que el metal tenga reflejos
+function buildEnvironment(renderer) {
+  const envScene = new THREE.Scene();
+  const colores = ['#EEDBBF', '#121212', '#EEDBBF', '#000000', '#AB3130', '#67191F'];
+  envScene.add(new THREE.Mesh(
+    new THREE.BoxGeometry(10, 10, 10),
+    colores.map((c) => new THREE.MeshBasicMaterial({ color: c, side: THREE.BackSide }))
+  ));
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const texture = pmrem.fromScene(envScene, 0.04).texture;
+  pmrem.dispose();
+  return texture;
+}
+
+// Renderer + escena + luces comunes al anillo y al visor del proyecto
+function createViewer(canvas, stage, camera) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+  renderer.setPixelRatio(1);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.setClearColor('#000000');
+
+  const scene = new THREE.Scene();
+  scene.environment = buildEnvironment(renderer);
+
+  // Tres luces cuyos valores vienen del estilo de luz (LUCES): ambiente, principal y contraluz
+  const lights = {
+    hemi: new THREE.HemisphereLight('#ffffff', '#000000', 0),
+    key: new THREE.DirectionalLight('#ffffff', 0),
+    rim: new THREE.DirectionalLight('#ffffff', 0),
+  };
+  Object.values(lights).forEach((light) => scene.add(light));
+
+  // Se dibuja a baja resolución y el CSS lo agranda pixelado
+  function resize() {
+    const w = stage.clientWidth;
+    const h = stage.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(Math.ceil(w / RING_SETTINGS.pixelSize), Math.ceil(h / RING_SETTINGS.pixelSize), false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(stage);
+  resize();
+
+  const viewer = { renderer, scene, lights, envIntensity: 1 };
+  applyLight(viewer, LUCES[LUZ_POR_DEFECTO], null, 1);
+  return viewer;
+}
+
+/* Estilos de luz predefinidos. Cada proyecto elige uno en el editor ("modelo3d.luz").
+   Las claves deben coincidir con LUCES en editor/editor_portafolio.py */
+const LUZ_POR_DEFECTO = 'estudio';
+const LUCES = {
+  estudio: {
+    nombre: 'Estudio',
+    ambiente: { cielo: '#EEDBBF', suelo: '#67191F', intensidad: 0.6 },
+    principal: { color: '#ffffff', intensidad: 1.2, posicion: [3, 5, 8] },
+    contraluz: { color: '#ffffff', intensidad: 0, posicion: [0, 3, -8] },
+    reflejos: 1,
+  },
+  atardecer: {
+    nombre: 'Atardecer',
+    ambiente: { cielo: '#ffb27a', suelo: '#2a1030', intensidad: 0.5 },
+    principal: { color: '#ff8a3d', intensidad: 1.6, posicion: [-6, 2, 5] },
+    contraluz: { color: '#6a5cff', intensidad: 0.7, posicion: [5, 3, -6] },
+    reflejos: 0.6,
+  },
+  neon_rojo: {
+    nombre: 'Neón rojo',
+    ambiente: { cielo: '#330000', suelo: '#000000', intensidad: 0.35 },
+    principal: { color: '#ff2a2a', intensidad: 1.8, posicion: [0, 4, 6] },
+    contraluz: { color: '#ff00aa', intensidad: 1.3, posicion: [-5, 2, -4] },
+    reflejos: 0.35,
+  },
+  contraluz: {
+    nombre: 'Contraluz',
+    ambiente: { cielo: '#222222', suelo: '#000000', intensidad: 0.25 },
+    principal: { color: '#ffffff', intensidad: 0.35, posicion: [2, 3, 8] },
+    contraluz: { color: '#EEDBBF', intensidad: 2.6, posicion: [0, 3, -8] },
+    reflejos: 0.5,
+  },
+  noche: {
+    nombre: 'Noche',
+    ambiente: { cielo: '#20306a', suelo: '#05050f', intensidad: 0.45 },
+    principal: { color: '#8fb4ff', intensidad: 0.7, posicion: [-3, 6, 4] },
+    contraluz: { color: '#3050ff', intensidad: 0.7, posicion: [4, 2, -6] },
+    reflejos: 0.3,
+  },
+};
+
+function lightPreset(p) {
+  return LUCES[(p && p.modelo3d && p.modelo3d.luz) || LUZ_POR_DEFECTO] || LUCES[LUZ_POR_DEFECTO];
+}
+
+// Lleva las luces del visor hacia el estilo indicado. t = 1 cambia de golpe; t < 1 hace una transición suave.
+// "root" son los objetos a los que se les ajusta la intensidad de los reflejos del entorno.
+function applyLight(viewer, preset, root, t) {
+  const { hemi, key, rim } = viewer.lights;
+  const lerp = (a, b) => a + (b - a) * t;
+  const mix = (color, hex) => color.lerp(new THREE.Color(hex), t);
+
+  mix(hemi.color, preset.ambiente.cielo);
+  mix(hemi.groundColor, preset.ambiente.suelo);
+  hemi.intensity = lerp(hemi.intensity, preset.ambiente.intensidad);
+
+  [[key, preset.principal], [rim, preset.contraluz]].forEach(([light, valores]) => {
+    mix(light.color, valores.color);
+    light.intensity = lerp(light.intensity, valores.intensidad);
+    light.position.lerp(new THREE.Vector3(...valores.posicion), t);
+  });
+
+  viewer.envIntensity = lerp(viewer.envIntensity, preset.reflejos);
+  if (root) {
+    root.traverse((child) => {
+      if (child.material) child.material.envMapIntensity = viewer.envIntensity;
+    });
+  }
+}
+
+// Gira un objeto según el arrastre del mouse: horizontal = eje Y, vertical = eje X (360° libre)
+function rotateByDrag(object, dx, dy) {
+  const k = RING_SETTINGS.modelSensitivity;
+  const qy = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), dx * k);
+  const qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), dy * k);
+  object.quaternion.premultiply(qy).premultiply(qx);
+}
+
+// Punto del puntero en coordenadas de la escena (-1 a 1)
+function pointerToNdc(e, element) {
+  const rect = element.getBoundingClientRect();
+  return new THREE.Vector2(
+    ((e.clientX - rect.left) / rect.width) * 2 - 1,
+    -((e.clientY - rect.top) / rect.height) * 2 + 1
+  );
+}
+
+function pauseMediaIn(element) {
+  element.querySelectorAll('video').forEach((v) => v.pause());
+}
+
+
+/* ----- Vista del proyecto (reemplaza al anillo dentro de la sección) ----- */
+
+let detailViewer = null;   // visor 3D grande, se crea la primera vez que se abre
+let detailProject = null;
+let detailMediaIndex = 0;
+let closeDetailHandler = null;
+
+function detailSection(title, html) {
+  return `<div class="detail-block"><h4 class="project-card-label">/// ${title}</h4>${html}</div>`;
+}
+
+function renderDetailBody(p) {
+  const etiquetas = (p.etiquetas || []).map((t) => `<span class="tag">${t}</span>`).join('');
+
+  const parrafos = (p.descripcion && p.descripcion.length ? p.descripcion : [p.resumen])
+    .filter(Boolean)
+    .map((t) => `<p>${t}</p>`)
+    .join('');
+
+  const info = [
+    ['TIPO', p.tipo], ['CURSO', p.curso], ['AÑO', p.anio],
+    ['OBJETIVO', p.objetivo], ['DESAFÍO', p.desafio], ['TAMAÑO', p.tamano],
+  ];
+  // Igual que en el editor: las filas sin valor no se muestran
+  const ficha = Object.entries(p.ficha || {}).filter(([, v]) => !isEmpty(v));
+
+  const dif = p.dificultad;
+  const dificultad = dif && dif.porcentaje != null ? `
+    <div class="skill-bar difficulty"><div class="skill-fill" style="width:${dif.porcentaje}%"></div></div>
+    <p class="detail-note">${dif.texto || ''} (${dif.porcentaje}%)</p>` : '';
+
+  const colores = (p.colores || []).map((c) => `
+    <li><span class="swatch" style="background:${c.hex}"></span>${c.nombre ? `${c.nombre} — ` : ''}${c.hex}</li>`).join('');
+
+  const dl = (rows) => {
+    const tmp = document.createElement('dl');
+    tmp.className = 'project-card-data';
+    fillDataList(tmp, rows, true);
+    return tmp.outerHTML;
+  };
+
+  $('detailBody').innerHTML = `
+    <div class="detail-header">
+      <h3 class="detail-heading">${p.encabezado || p.titulo}</h3>
+      ${p.subtitulo ? `<p class="detail-subtitle">${p.subtitulo}</p>` : ''}
+      ${etiquetas ? `<div class="tags">${etiquetas}</div>` : ''}
     </div>
-    <div class="video-controls">
-      <button class="video-btn" data-action="play" title="Reproducir / Pausa">${PLAYER_ICONS.play}</button>
-      <button class="video-btn" data-action="stop" title="Detener">${PLAYER_ICONS.stop}</button>
-      <div class="video-seek win98-inset" title="Buscar"><div class="video-seek-fill"></div><div class="video-seek-thumb"></div></div>
-      <span class="video-time">00:00 / 00:00</span>
-      <button class="video-btn" data-action="mute" title="Silenciar">${PLAYER_ICONS.sound}</button>
-      <button class="video-btn" data-action="full" title="Pantalla completa">${PLAYER_ICONS.full}</button>
+    <div class="detail-columns">
+      <div>
+        ${parrafos ? detailSection('DESCRIPCIÓN', `<div class="detail-text">${parrafos}</div>`) : ''}
+        ${colores ? detailSection('PALETA_DE_COLORES', `<ul class="palette-list">${colores}</ul>`) : ''}
+      </div>
+      <div>
+        ${detailSection('INFO', dl(info))}
+        ${ficha.length ? detailSection('FICHA_TECNICA', dl(ficha)) : ''}
+        ${dificultad ? detailSection('DIFICULTAD', dificultad) : ''}
+        ${detailSection('DATOS_TECNICOS_MODELO', dl(techRows(p)))}
+      </div>
     </div>`;
+}
 
-  const video = player.querySelector('video');
-  const bigPlay = player.querySelector('.video-bigplay');
-  const playBtn = player.querySelector('[data-action="play"]');
-  const muteBtn = player.querySelector('[data-action="mute"]');
-  const seek = player.querySelector('.video-seek');
-  const fill = player.querySelector('.video-seek-fill');
-  const thumb = player.querySelector('.video-seek-thumb');
-  const time = player.querySelector('.video-time');
-  video.src = src;
+// Muestra un archivo de la galería en el panel grande (imagen, animación o video)
+function showDetailMedia(index) {
+  const galeria = (detailProject && detailProject.galeria) || [];
+  const main = $('detailMain');
+  pauseMediaIn(main);
 
-  const toggle = () => (video.paused || video.ended ? video.play() : video.pause());
-
-  function refresh() {
-    const ratio = video.duration ? video.currentTime / video.duration : 0;
-    fill.style.width = `${ratio * 100}%`;
-    thumb.style.left = `calc(${ratio * 100}% - 5px)`;
-    time.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+  if (!galeria.length) {
+    main.innerHTML = '<div class="thumbnail-placeholder">[ SIN IMÁGENES ]</div>';
+    $('detailCaption').textContent = '';
+    return;
   }
 
-  function seekTo(e) {
-    const rect = seek.getBoundingClientRect();
-    const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
-    if (video.duration) video.currentTime = ratio * video.duration;
+  detailMediaIndex = (index + galeria.length) % galeria.length;
+  const item = galeria[detailMediaIndex];
+  const src = projectFolder(detailProject) + item.archivo;
+
+  if (isVideo(item.archivo)) {
+    main.innerHTML = item.animacion
+      ? `<video src="${src}" autoplay muted loop playsinline></video>`
+      : `<video src="${src}" controls playsinline preload="metadata"></video>`;
+  } else {
+    main.innerHTML = `<button type="button" class="detail-zoom" title="Ampliar"><img src="${src}" alt="${item.nombre || item.archivo}"></button>`;
+    main.querySelector('button').addEventListener('click', () => openLightbox(src, item));
   }
 
-  video.addEventListener('click', toggle);
-  bigPlay.addEventListener('click', toggle);
-  playBtn.addEventListener('click', toggle);
-  player.querySelector('[data-action="stop"]').addEventListener('click', () => {
-    video.pause();
-    video.currentTime = 0;
-  });
-  muteBtn.addEventListener('click', () => {
-    video.muted = !video.muted;
-    muteBtn.innerHTML = video.muted ? PLAYER_ICONS.muted : PLAYER_ICONS.sound;
-    muteBtn.classList.toggle('active', video.muted);
-  });
-  player.querySelector('[data-action="full"]').addEventListener('click', () => {
-    if (document.fullscreenElement) document.exitFullscreen();
-    else if (player.requestFullscreen) player.requestFullscreen();
-    else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen(); // iPhone
-  });
+  $('detailCaption').textContent = `${detailMediaIndex + 1}/${galeria.length} — ${item.nombre || item.archivo}`;
+  document.querySelectorAll('#detailThumbs button').forEach((b, i) => b.classList.toggle('active', i === detailMediaIndex));
+}
 
-  seek.addEventListener('pointerdown', (e) => {
-    seek.setPointerCapture(e.pointerId);
-    seekTo(e);
-    const move = (ev) => seekTo(ev);
-    seek.addEventListener('pointermove', move);
-    seek.addEventListener('pointerup', () => seek.removeEventListener('pointermove', move), { once: true });
+function renderDetailThumbs(p) {
+  const thumbs = $('detailThumbs');
+  thumbs.innerHTML = '';
+  (p.galeria || []).forEach((item, i) => {
+    const src = projectFolder(p) + item.archivo;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'detail-thumb';
+    btn.title = item.nombre || item.archivo;
+    btn.innerHTML = isVideo(item.archivo)
+      ? `<video src="${src}#t=0.5" muted preload="metadata" playsinline></video><span>${item.animacion ? '∞' : '▶'}</span>`
+      : `<img src="${src}" alt="" loading="lazy">`;
+    btn.addEventListener('click', () => showDetailMedia(i));
+    thumbs.appendChild(btn);
   });
+}
 
-  video.addEventListener('play', () => {
-    playBtn.innerHTML = PLAYER_ICONS.pause;
-    playBtn.classList.add('active');
-    bigPlay.classList.add('hidden');
-  });
-  video.addEventListener('pause', () => {
-    playBtn.innerHTML = PLAYER_ICONS.play;
-    playBtn.classList.remove('active');
-    bigPlay.classList.remove('hidden');
-  });
-  video.addEventListener('timeupdate', refresh);
-  video.addEventListener('loadedmetadata', refresh);
-  video.addEventListener('error', () => {
-    player.querySelector('.video-error').classList.remove('hidden');
-    bigPlay.classList.add('hidden');
-  });
+function openLightbox(src, item) {
+  $('lightboxMedia').innerHTML = `<img src="${src}" alt="${item.nombre || item.archivo}">`;
+  $('lightboxTitle').textContent = item.nombre || item.archivo;
+  openModal('lightboxModal');
+}
 
-  // Los clics del reproductor no deben abrir el visor ni otras acciones
-  player.addEventListener('click', (e) => e.stopPropagation());
-  return player;
+// Visor 3D grande: arrastrar rota en 360°, la rueda acerca y aleja
+function initDetailViewer() {
+  if (detailViewer) return detailViewer;
+  if (typeof THREE === 'undefined') {
+    $('detailFallback').hidden = false;
+    return null;
+  }
+  const stage = $('detailStage');
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+  let viewer;
+  try {
+    viewer = createViewer($('detailCanvas'), stage, camera);
+  } catch (err) {
+    $('detailFallback').hidden = false;
+    return null;
+  }
+
+  const ZOOM = { min: 3.5, max: 10, start: 6 };
+  let distance = ZOOM.start;
+  let dragging = false;
+  let last = null;
+
+  detailViewer = { ...viewer, camera, can: null, running: false };
+
+  const placeCamera = () => {
+    camera.position.set(0, 0.6 * (distance / ZOOM.start), distance);
+    camera.lookAt(0, 0, 0);
+  };
+  placeCamera();
+
+  detailViewer.reset = () => {
+    distance = ZOOM.start;
+    placeCamera();
+    if (detailViewer.can) detailViewer.can.userData.spinner.quaternion.identity();
+  };
+
+  stage.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    last = { x: e.clientX, y: e.clientY };
+    stage.setPointerCapture(e.pointerId);
+    stage.classList.add('dragging');
+  });
+  stage.addEventListener('pointermove', (e) => {
+    if (!dragging || !detailViewer.can) return;
+    rotateByDrag(detailViewer.can.userData.spinner, e.clientX - last.x, e.clientY - last.y);
+    last = { x: e.clientX, y: e.clientY };
+  });
+  const release = () => { dragging = false; stage.classList.remove('dragging'); };
+  stage.addEventListener('pointerup', release);
+  stage.addEventListener('pointercancel', release);
+  stage.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    distance = Math.max(ZOOM.min, Math.min(ZOOM.max, distance + e.deltaY * 0.004));
+    placeCamera();
+  }, { passive: false });
+
+  $('detailReset').addEventListener('click', () => detailViewer.reset());
+  return detailViewer;
+}
+
+function startDetailLoop() {
+  if (!detailViewer || detailViewer.running) return;
+  detailViewer.running = true;
+  const loop = () => {
+    if (!detailViewer.running) return;
+    // Se aplica en cada cuadro para que el modelo .glb (que carga después) también reciba los reflejos
+    applyLight(detailViewer, lightPreset(detailProject), detailViewer.can, 0.15);
+    detailViewer.renderer.render(detailViewer.scene, detailViewer.camera);
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+}
+
+function openProjectDetail(index, onClose) {
+  const p = PROJECTS[index];
+  if (!p) return;
+  detailProject = p;
+
+  $('detailTitle').innerHTML = `SYS_${p.id}: ${p.titulo}`;
+  renderDetailBody(p);
+  renderDetailThumbs(p);
+
+  $('ringView').hidden = true;
+  $('detailView').hidden = false;
+  showDetailMedia(0);
+  $('detailModelName').textContent = `${modelLabel(p)} · Luz: ${lightPreset(p).nombre}`;
+
+  const viewer = initDetailViewer();
+  if (viewer) {
+    if (viewer.can) { viewer.scene.remove(viewer.can); disposeObject(viewer.can); }
+    viewer.can = buildModel(p);
+    viewer.scene.add(viewer.can);
+    applyLight(viewer, lightPreset(p), viewer.can, 1);
+    viewer.reset();
+    startDetailLoop();
+  }
+
+  closeDetailHandler = onClose;
+  $('projects').scrollIntoView();
+  $('detailBack').focus({ preventScroll: true });
+}
+
+function closeProjectDetail() {
+  if ($('detailView').hidden) return;
+  pauseMediaIn($('detailView'));
+  if (detailViewer) detailViewer.running = false;
+  $('detailView').hidden = true;
+  $('ringView').hidden = false;
+  if (closeDetailHandler) closeDetailHandler();
+  $('projects').scrollIntoView();
 }
 
 
-/* ---------- 7. WordPad (Sobre Mí) ---------- */
+/* ----- Anillo ----- */
 
-function generateRuler() {
-  const container = $('ruler-container');
-  container.innerHTML = '';
-  const spacing = 15;
-  const totalTicks = Math.ceil(Math.max(window.innerWidth, 1200) / spacing);
+function initProjectRing() {
+  const stage = $('ringStage');
+  if (!stage) return;
 
-  for (let i = 0; i < totalTicks; i++) {
-    const tick = document.createElement('div');
-    tick.className = 'ruler-tick';
-    tick.style.left = `${i * spacing}px`;
+  const count = PROJECTS.length;
+  let currentIndex = initialRingIndex();
+  let ringRunning = true;
+  let startRingLoop = () => {};
 
-    if (i % 5 === 0) {
-      tick.style.height = '12px';
-      if (i > 0) {
-        const num = document.createElement('span');
-        num.className = 'absolute text-[8px] font-mono font-bold text-gray-700';
-        num.style.left = `${i * spacing - 3}px`;
-        num.style.top = '2px';
-        num.innerText = i / 5;
-        container.appendChild(num);
-      }
-    } else {
-      tick.style.height = '6px';
+  // Avanza o retrocede "delta" proyectos (sin 3D solo cambia la tarjeta)
+  let moveBy = (delta) => {
+    if (!count) return;
+    currentIndex = (currentIndex + delta + count) % count;
+    updateProjectCard(currentIndex);
+  };
+
+  const openDetail = () => {
+    ringRunning = false; // el anillo no se dibuja mientras la vista del proyecto está abierta
+    openProjectDetail(currentIndex, () => { ringRunning = true; startRingLoop(); stage.focus({ preventScroll: true }); });
+  };
+
+  $('ringPrev').addEventListener('click', () => moveBy(-1));
+  $('ringNext').addEventListener('click', () => moveBy(1));
+  $('cardOpen').addEventListener('click', openDetail);
+  $('detailBack').addEventListener('click', closeProjectDetail);
+  stage.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); moveBy(-1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); moveBy(1); }
+    if (e.key === 'Enter') { e.preventDefault(); openDetail(); }
+  });
+  // Esc vuelve al anillo (si no hay una ventana emergente abierta)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !document.querySelector('.modal-overlay.open')) closeProjectDetail();
+  });
+
+  updateProjectCard(currentIndex);
+  if (!count) return;
+
+  // Sin Three.js o sin WebGL la tarjeta y la vista del proyecto siguen funcionando
+  let camera;
+  let viewer;
+  try {
+    if (typeof THREE === 'undefined') throw new Error('Three.js no cargó');
+    camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+    viewer = createViewer($('ringCanvas'), stage, camera);
+  } catch (err) {
+    $('ringFallback').hidden = false;
+    return;
+  }
+  const { renderer, scene } = viewer;
+  scene.fog = new THREE.Fog('#000000', 8, 17);
+
+  // Cámara un poco elevada mirando a la lata del frente; el resto del anillo queda detrás
+  camera.position.set(0, 1.6, RING_SETTINGS.cameraZPosition);
+  camera.lookAt(0, -0.35, RING_SETTINGS.ringRadius - 3);
+
+  // Las latas se reparten en el anillo; la del ángulo 0 queda frente a la cámara
+  const ring = new THREE.Group();
+  const step = (Math.PI * 2) / count;
+  const cans = PROJECTS.map((p, i) => {
+    const can = buildModel(p);
+    can.position.set(Math.sin(i * step) * RING_SETTINGS.ringRadius, 0, Math.cos(i * step) * RING_SETTINGS.ringRadius);
+    can.userData.index = i;
+    ring.add(can);
+    return can;
+  });
+  scene.add(ring);
+  applyLight(viewer, lightPreset(PROJECTS[currentIndex]), ring, 1);
+
+  // Estado del giro
+  let rotation = -currentIndex * step;
+  let velocity = 0;
+  let goal = null;          // ángulo al que se está acercando (snap, botones o clic)
+  let drag = null;          // { mode: 'ring' | 'model', startX, startY, lastX, lastY, moved }
+  let lastModelTouch = 0;   // momento en que se rotó la lata a mano (pausa el giro automático)
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const raycaster = new THREE.Raycaster();
+  const POSE_ORIGEN = new THREE.Quaternion(); // sin rotación: la pose con que se cargó el modelo
+
+  const indexAt = (angle) => ((Math.round(-angle / step) % count) + count) % count;
+
+  // Botones y teclado: suman desde el destino pendiente, así varios clics seguidos
+  // avanzan varios proyectos. La tarjeta cambia de inmediato.
+  moveBy = (delta) => {
+    velocity = 0;
+    const base = goal !== null ? goal : -Math.round(-rotation / step) * step;
+    goal = base - delta * step;
+    currentIndex = indexAt(goal);
+    updateProjectCard(currentIndex);
+  };
+
+  // ¿Qué lata hay bajo el puntero? (índice o -1)
+  function canAt(e) {
+    raycaster.setFromCamera(pointerToNdc(e, stage), camera);
+    const hit = raycaster.intersectObjects(cans, true)[0];
+    if (!hit) return -1;
+    let obj = hit.object;
+    while (obj && obj.userData.index === undefined) obj = obj.parent;
+    return obj ? obj.userData.index : -1;
+  }
+
+  // La lata del centro solo cuenta como "seleccionada" cuando el anillo está quieto
+  const isSettled = () => goal === null && Math.abs(velocity) < 0.002;
+
+  stage.addEventListener('pointerdown', (e) => {
+    const hit = canAt(e);
+    const onSelected = hit === currentIndex && hit === indexAt(rotation);
+    drag = { mode: onSelected ? 'model' : 'ring', hit, startX: e.clientX, startY: e.clientY, lastX: e.clientX, lastY: e.clientY, moved: false };
+    if (drag.mode === 'ring') { goal = null; velocity = 0; }
+    stage.setPointerCapture(e.pointerId);
+    stage.classList.add('dragging');
+  });
+
+  stage.addEventListener('pointermove', (e) => {
+    if (!drag) {
+      // Pista visual: la lata del centro se puede rotar y abrir
+      const hit = canAt(e);
+      stage.classList.toggle('over-model', hit === currentIndex && isSettled());
+      stage.classList.toggle('over-can', hit >= 0 && hit !== currentIndex);
+      return;
     }
-    container.appendChild(tick);
+    const dx = e.clientX - drag.lastX;
+    const dy = e.clientY - drag.lastY;
+    drag.lastX = e.clientX;
+    drag.lastY = e.clientY;
+    if (Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY) > RING_SETTINGS.clickTolerance) drag.moved = true;
+    if (!drag.moved) return;
+
+    if (drag.mode === 'model') {
+      rotateByDrag(cans[currentIndex].userData.spinner, dx, dy);
+      lastModelTouch = performance.now();
+    } else {
+      const delta = dx * RING_SETTINGS.dragSensitivity;
+      rotation += delta;
+      velocity = delta;
+    }
+  });
+
+  const release = () => {
+    if (!drag) return;
+    const { mode, hit, moved } = drag;
+    drag = null;
+    stage.classList.remove('dragging');
+    if (moved) return;
+    // Clic sin arrastrar
+    if (mode === 'model') openDetail();
+    else if (hit >= 0) {
+      // Trae al centro la lata clickeada por el camino más corto
+      let delta = hit - currentIndex;
+      if (delta > count / 2) delta -= count;
+      if (delta < -count / 2) delta += count;
+      moveBy(delta);
+    }
+  };
+  stage.addEventListener('pointerup', release);
+  stage.addEventListener('pointercancel', () => { drag = null; stage.classList.remove('dragging'); });
+
+  // Rueda del mouse sobre el anillo
+  stage.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    goal = null;
+    velocity -= (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) * RING_SETTINGS.wheelSensitivity;
+    velocity = Math.max(-RING_SETTINGS.maxVelocity, Math.min(RING_SETTINGS.maxVelocity, velocity));
+  }, { passive: false });
+
+  function frame() {
+    if (!ringRunning) return;
+    const draggingRing = drag && drag.mode === 'ring';
+    if (!draggingRing) {
+      if (goal !== null) {
+        rotation += (goal - rotation) * 0.12;
+        if (Math.abs(goal - rotation) < 0.0005) { rotation = goal; goal = null; }
+      } else if (Math.abs(velocity) > 0.002) {
+        rotation += velocity;
+        velocity *= RING_SETTINGS.scrollFriction;
+      } else if (RING_SETTINGS.snapToCenter) {
+        velocity = 0;
+        const snap = -Math.round(-rotation / step) * step;
+        if (Math.abs(snap - rotation) > 0.0005) goal = snap;
+      }
+    }
+    ring.rotation.y = rotation;
+
+    // Al arrastrar o con la rueda, la tarjeta sigue a la lata del centro
+    const front = indexAt(rotation);
+    if (goal === null && front !== currentIndex) {
+      currentIndex = front;
+      updateProjectCard(currentIndex);
+    }
+
+    // La lata del centro se agranda un poco y gira sola, salvo que se esté rotando a mano
+    const autoSpin = !reduceMotion && performance.now() - lastModelTouch > 3000;
+    cans.forEach((can, i) => {
+      const target = i === front ? 1.1 : 1;
+      const s = can.userData.highlight = (can.userData.highlight || 1) + (target - (can.userData.highlight || 1)) * 0.1;
+      const base = modelSettings(PROJECTS[i]).escala;
+      can.scale.set(base[0] * s, base[1] * s, base[2] * s);
+      const spinner = can.userData.spinner;
+      if (i === front) {
+        if (autoSpin && !(drag && drag.mode === 'model')) {
+          spinner.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0.012));
+        }
+      } else if (spinner.quaternion.angleTo(POSE_ORIGEN) > 0.001) {
+        // Al dejar el centro, el modelo vuelve suavemente a su pose de origen
+        spinner.quaternion.slerp(POSE_ORIGEN, 0.12);
+      } else {
+        spinner.quaternion.identity();
+      }
+    });
+
+    // La luz pasa suavemente al estilo del proyecto del centro
+    applyLight(viewer, lightPreset(PROJECTS[front]), ring, 0.06);
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
   }
+  startRingLoop = () => requestAnimationFrame(frame);
+  startRingLoop();
 }
 
-function changeFontFamily(val) {
-  const content = $('docContent');
-  content.classList.remove('font-sans-serif', 'font-serif', 'font-mono-retro');
-  content.classList.add(val);
-}
-
-function changeFontSize(val) {
-  const content = $('docContent');
-  content.classList.remove('text-xs', 'text-sm', 'text-base', 'text-lg');
-  content.classList.add(val);
-}
-
-function toggleStyle(style) {
-  const clases = { bold: 'font-bold', italic: 'italic', underline: 'underline' };
-  const botones = { bold: 'btnBold', italic: 'btnItalic', underline: 'btnUnderline' };
-  $('docContent').classList.toggle(clases[style]);
-  $(botones[style]).classList.toggle('active');
-}
-
-
-/* ---------- 8. Paint ---------- */
+/* ---------- 6. Paint ---------- */
 
 let canvas, ctx;
 let currentTool = 'pencil';
@@ -658,6 +1031,11 @@ let undoStack = [];
 let redoStack = [];
 const maxHistory = 15;
 
+const TOOL_NAMES = {
+  eraser: 'Borrador', fill: 'Relleno', picker: 'Selector de color', pencil: 'Lápiz',
+  brush: 'Pincel', line: 'Línea', rect: 'Rectángulo', ellipse: 'Elipse',
+};
+
 const classicColors = [
   '#000000', '#808080', '#800000', '#808000', '#008000', '#008080', '#000080', '#800080', '#808040', '#004040', '#0080ff', '#004080', '#400080', '#804000',
   '#ffffff', '#c0c0c0', '#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#ff00ff', '#ffff80', '#00ff80', '#80ffff', '#8080ff', '#ff8000', '#ff8080'
@@ -665,21 +1043,33 @@ const classicColors = [
 
 function initPaint() {
   canvas = $('paintCanvas');
+  if (!canvas) return;
   ctx = canvas.getContext('2d', { willReadFrequently: true });
 
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   saveState();
 
-  const paletteGrid = $('palette-grid');
-  paletteGrid.innerHTML = '';
+  const paletteGrid = $('paletteGrid');
   classicColors.forEach((color) => {
-    const colorBox = document.createElement('div');
-    colorBox.className = 'w-4 h-4 border border-gray-600 cursor-pointer';
-    colorBox.style.backgroundColor = color;
-    colorBox.onclick = () => selectColor(color);
-    paletteGrid.appendChild(colorBox);
+    const box = document.createElement('button');
+    box.type = 'button';
+    box.className = 'palette-color';
+    box.style.backgroundColor = color;
+    box.title = color;
+    box.setAttribute('aria-label', `Color ${color}`);
+    box.addEventListener('click', () => selectColor(color));
+    paletteGrid.appendChild(box);
   });
+
+  document.querySelectorAll('.tool-button').forEach((btn) => {
+    btn.addEventListener('click', () => setTool(btn.dataset.tool));
+  });
+  $('strokeSize').addEventListener('change', (e) => { strokeSize = parseInt(e.target.value, 10); });
+  $('btnNew').addEventListener('click', clearCanvas);
+  $('btnSave').addEventListener('click', downloadImage);
+  $('btnUndo').addEventListener('click', undo);
+  $('btnRedo').addEventListener('click', redo);
 
   canvas.addEventListener('pointerdown', (e) => {
     canvas.setPointerCapture(e.pointerId);
@@ -689,11 +1079,11 @@ function initPaint() {
   canvas.addEventListener('pointerup', stopDrawing);
   canvas.addEventListener('pointercancel', stopDrawing);
 
-  // Ctrl+Z / Ctrl+Y solo cuando Paint está al frente
   document.addEventListener('keydown', (e) => {
-    if (!e.ctrlKey || !isFocused($('window-paint'))) return;
-    if (e.key === 'z') { e.preventDefault(); undo(); }
-    if (e.key === 'y') { e.preventDefault(); redo(); }
+    if (!e.ctrlKey && !e.metaKey) return;
+    const key = e.key.toLowerCase();
+    if (key === 'z') { e.preventDefault(); undo(); }
+    if (key === 'y') { e.preventDefault(); redo(); }
   });
 }
 
@@ -705,19 +1095,17 @@ function saveState() {
 
 function selectColor(color) {
   currentColor = color;
-  $('color-primary').style.backgroundColor = color;
-}
-
-function updateStrokeSize(val) {
-  strokeSize = parseInt(val, 10);
+  $('colorCurrent').style.backgroundColor = color;
 }
 
 function setTool(tool) {
   currentTool = tool;
-  document.querySelectorAll('.tool-button').forEach((btn) => btn.classList.remove('active'));
-  const activeBtn = $(`tool-${tool}`);
-  if (activeBtn) activeBtn.classList.add('active');
-  $('paint-status').textContent = `Herramienta activa: ${tool.toUpperCase()}`;
+  document.querySelectorAll('.tool-button').forEach((btn) => {
+    const active = btn.dataset.tool === tool;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', active);
+  });
+  $('paintStatus').textContent = `Herramienta activa: ${(TOOL_NAMES[tool] || tool).toUpperCase()}`;
 }
 
 function undo() {
@@ -740,15 +1128,15 @@ function redo() {
 }
 
 function clearCanvas() {
-  saveState();
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  $('paint-status').textContent = 'Lienzo limpio.';
+  saveState();
+  $('paintStatus').textContent = 'Lienzo limpio.';
 }
 
 function downloadImage() {
   const link = document.createElement('a');
-  link.download = 'mi-dibujo-paint98.png';
+  link.download = 'mi-dibujo-paint.png';
   link.href = canvas.toDataURL();
   link.click();
 }
@@ -786,7 +1174,7 @@ function startDrawing(e) {
 
 function draw(e) {
   const { x, y } = getCanvasCoords(e);
-  $('paint-coords').textContent = `${x}, ${y}px`;
+  $('paintCoords').textContent = `${x}, ${y}px`;
   if (!isDrawing) return;
 
   if (currentTool === 'pencil' || currentTool === 'brush' || currentTool === 'eraser') {
@@ -892,75 +1280,12 @@ function hexToRgb(hex) {
 }
 
 
-/* ---------- 9. Alertas ---------- */
+/* ---------- 7. Inicio de la página ---------- */
 
-function showAlert(text) {
-  $('sys-alert-text').innerText = text;
-  $('sys-alert').classList.remove('hidden');
-}
-
-function closeAlert() {
-  $('sys-alert').classList.add('hidden');
-}
-
-
-/* ---------- 10. Inicio de la página ---------- */
-
-// Enlaces directos: index.html#proyectos, #sobre-mi, #paint, #contacto o #proyecto-01
-function openFromHash() {
-  const hash = location.hash.replace('#', '');
-  if (!hash) return false;
-
-  if (hash.startsWith('proyecto-')) {
-    const id = hash.replace('proyecto-', '');
-    if (findProject(id)) {
-      openWindow('window-proyectos');
-      selectProject(id);
-      openProject(id);
-      return true;
-    }
-    return false;
-  }
-
-  const win = $(`window-${hash}`);
-  if (win && win.classList.contains('window')) {
-    openWindow(win.id);
-    return true;
-  }
-  return false;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  updateClock();
-  setInterval(updateClock, 1000);
-
-  document.querySelectorAll('.window').forEach((win) => {
-    makeDraggable(win);
-    // Al tocar cualquier parte de una ventana, pasa al frente
-    win.addEventListener('pointerdown', () => {
-      if (!isFocused(win)) focusWindow(win.id);
-    });
-  });
-
-  // Cerrar el menú Inicio al hacer clic fuera de él
-  document.addEventListener('pointerdown', (e) => {
-    if (!e.target.closest('#start-menu') && !e.target.closest('#start-btn')) toggleStartMenu(true);
-  });
-
-  // Teclas del visor de imágenes
-  document.addEventListener('keydown', (e) => {
-    if ($('image-viewer-window').classList.contains('hidden')) return;
-    if (e.key === 'Escape') closeImageViewer();
-    if (e.key === 'ArrowLeft') navigateViewer(-1);
-    if (e.key === 'ArrowRight') navigateViewer(1);
-  });
-
-  window.addEventListener('hashchange', openFromHash);
-
-  renderExplorer();
-  generateRuler();
+if (!redirectOldProjectLinks()) {
+  initModals();
+  renderTypeList();
+  initCarousel();
+  initProjectRing();
   initPaint();
-
-  // Si la URL trae un enlace directo se abre eso; si no, la ventana Mi PC
-  if (!openFromHash()) openWindow('window-pc');
-});
+}

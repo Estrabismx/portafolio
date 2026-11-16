@@ -4,707 +4,156 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portafolio Diseño - Camila Ramírez "Estrabismx"</title>
-
-  <!-- Tailwind CSS para utilidades de diseño -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Fuente pixelada VT323 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="retro-cursor h-screen w-screen relative overflow-hidden flex flex-col justify-between">
+<body data-page="index">
 
-  <!-- =====================================================================
-       ESCRITORIO
-       ===================================================================== -->
-  <div id="desktop" class="flex-1 w-full relative p-4 flex flex-col flex-wrap content-start items-start justify-start z-10">
+<div class="wrapper">
+  <header>
+    <h1 class="logo"><a href="index.html">ESTRABISMX</a></h1>
+    <nav class="nav-links">
+      <a href="index.html#projects">Proyectos</a>
+      <a href="index.html#about">Sobre Mí</a>
+      <a href="paint.html">Paint</a>
+      <a href="#contacto" data-open-modal="contactModal">Contacto</a>
+    </nav>
+  </header>
 
-    <div class="desktop-icon flex flex-col items-center" tabindex="0" onclick="toggleWindow('window-pc')">
-      <img src="assets/svg/mipc.svg" alt="Mi PC" class="w-16 h-16 mb-1 pointer-events-none">
-      <span class="icon-text px-1">Mi PC</span>
-    </div>
+  <div class="main-layout">
 
-    <div class="desktop-icon flex flex-col items-center" tabindex="0" onclick="toggleWindow('window-proyectos')">
-      <img src="assets/svg/proyectos.svg" alt="Proyectos" class="w-16 h-16 mb-1 pointer-events-none">
-      <span class="icon-text px-1">Proyectos</span>
-    </div>
-
-    <div class="desktop-icon flex flex-col items-center" tabindex="0" onclick="toggleWindow('window-sobre-mi')">
-      <img src="assets/svg/sobre-mi.svg" alt="Sobre Mí" class="w-16 h-16 mb-1 pointer-events-none">
-      <span class="icon-text px-1">Sobre Mí</span>
-    </div>
-
-    <div class="desktop-icon flex flex-col items-center" tabindex="0" onclick="toggleWindow('window-contacto')">
-      <img src="assets/svg/contacto.svg" alt="Contacto" class="w-16 h-16 mb-1 pointer-events-none">
-      <span class="icon-text px-1">Contacto</span>
-    </div>
-
-    <div class="desktop-icon flex flex-col items-center" tabindex="0" onclick="toggleWindow('window-paint')">
-      <img src="assets/svg/paint.svg" alt="Paint" class="w-16 h-16 mb-1 pointer-events-none">
-      <span class="icon-text px-2">Paint</span>
-    </div>
-
-  </div>
-
-
-  <!-- =====================================================================
-       VENTANA: MI PC (menú de navegación)
-       ===================================================================== -->
-  <div id="window-pc" class="window win98-outset" style="display: none;"
-       data-title="Mi PC" data-icon="assets/svg/mipc.svg" data-width="440">
-    <div class="win98-titlebar">
-      <div class="flex items-center gap-1.5 min-w-0">
-        <img src="assets/svg/mipc.svg" alt="Mi PC" class="w-4 h-4 pointer-events-none">
-        <span class="titlebar-text">Mi PC - Menú de Navegación</span>
-      </div>
-      <div class="flex gap-1">
-        <button class="win98-window-btn" onclick="minimizeWindow('window-pc')">_</button>
-        <button class="win98-window-btn" onclick="maximizeWindow('window-pc')">⬛</button>
-        <button class="win98-window-btn" onclick="closeWindow('window-pc')">X</button>
-      </div>
-    </div>
-
-    <div class="flex gap-3 px-2 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-[#000000] select-none">
-      <span><u>A</u>rchivo</span>
-      <span><u>E</u>dición</span>
-      <span><u>V</u>er</span>
-      <span>A<u>y</u>uda</span>
-    </div>
-
-    <div class="p-4 bg-white flex-1 overflow-auto win98-inset m-1" style="min-height: 200px;">
-      <p class="text-xs text-gray-600 mb-4 font-mono">Haz clic en un elemento para ingresar a la sección deseada del portafolio:</p>
-
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="openWindow('window-proyectos')">
-          <img src="assets/svg/proyectos.svg" alt="Proyectos" class="w-10 h-10 pointer-events-none">
-          <span class="text-xs mt-2 text-center">Proyectos</span>
-        </div>
-        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="openWindow('window-sobre-mi')">
-          <img src="assets/svg/sobre-mi.svg" alt="Sobre Mí" class="w-10 h-10 pointer-events-none">
-          <span class="text-xs mt-2 text-center">Sobre Mí</span>
-        </div>
-        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="openWindow('window-contacto')">
-          <img src="assets/svg/contacto.svg" alt="Contacto" class="w-10 h-10 pointer-events-none">
-          <span class="text-xs mt-2 text-center">Contacto</span>
-        </div>
-        <div class="flex flex-col items-center p-2 hover:bg-blue-100 hover:outline-dotted hover:outline-1 hover:outline-blue-500 rounded cursor-pointer" onclick="openWindow('window-paint')">
-          <img src="assets/svg/paint.svg" alt="Paint" class="w-10 h-10 pointer-events-none">
-          <span class="text-xs mt-2 text-center">Paint</span>
-        </div>
+    <!-- =================================================================
+         BARRA LATERAL
+         ================================================================= -->
+    <aside class="sidebar">
+      <div class="sidebar-module">
+        <h3 class="sidebar-title">BROWSE BY TYPE</h3>
+        <!-- Se llena con los tipos de proyectos.js -->
+        <ul class="sidebar-list" id="typeList"></ul>
       </div>
 
-      <div class="mt-8 border-t pt-2 border-dashed border-gray-400 font-mono text-[15px] text-gray-600">
-        <p>• Portafolio de Diseño</p>
-        <p>• Diseñadore: Camila Ramírez "Estrabismx"</p>
+      <div class="sidebar-module">
+        <h3 class="sidebar-title">QUICK LINKS</h3>
+        <ul class="sidebar-list">
+          <li><a href="https://github.com/estrabismx" target="_blank" rel="noopener">> GitHub</a></li>
+          <li><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener">> Instagram</a></li>
+          <li><a href="mailto:camila.ramirez2@mail.udp.cl">> E-mail</a></li>
+          <li><a href="paint.html">> Paint</a></li>
+        </ul>
       </div>
-    </div>
 
-    <div class="bg-[#c0c0c0] px-2 py-1 text-xs flex justify-between border-t border-white">
-      <span>4 elemento(s) de navegación</span>
-      <span class="border-l border-white pl-2">Mi PC</span>
-    </div>
-  </div>
-
-
-  <!-- =====================================================================
-       VENTANA: CONTACTO
-       ===================================================================== -->
-  <div id="window-contacto" class="window win98-outset" style="display: none;"
-       data-title="Contacto" data-icon="assets/svg/contacto.svg" data-width="320">
-    <div class="win98-titlebar">
-      <div class="flex items-center gap-1.5 min-w-0">
-        <img src="assets/svg/contacto.svg" alt="Contacto" class="w-4 h-4 pointer-events-none">
-        <span class="titlebar-text">Informacion_Contacto</span>
+      <div class="sidebar-module">
+        <h3 class="sidebar-title">SYSTEM STATUS</h3>
+        <ul class="sidebar-list">
+          <li>USER: Estrabismx</li>
+          <li>NOMBRE: Camila Ramírez</li>
+          <li>LOC: Santiago, Chile</li>
+        </ul>
       </div>
-      <div class="flex gap-1">
-        <button class="win98-window-btn" onclick="minimizeWindow('window-contacto')">_</button>
-        <button class="win98-window-btn" onclick="closeWindow('window-contacto')">X</button>
-      </div>
-    </div>
 
-    <div class="p-4 bg-white flex-1 overflow-auto win98-inset m-1 font-mono text-xs select-text">
-      <p class="font-bold text-[#000080] border-b pb-1 mb-3 uppercase">Datos del Diseñador</p>
-      <div class="space-y-3">
-        <div>
-          <span class="font-bold text-gray-600 block">E-mail:</span>
-          <a href="mailto:camila.ramirez2@mail.udp.cl" class="text-blue-800 hover:underline cursor-pointer">camila.ramirez2@mail.udp.cl</a>
-        </div>
-        <div>
-          <span class="font-bold text-gray-600 block">Instagram:</span>
-          <a href="https://instagram.com/n.arkotikk" target="_blank" class="text-blue-800 hover:underline cursor-pointer">@n.arkotikk</a>
-        </div>
-        <div>
-          <span class="font-bold text-gray-600 block">GitHub:</span>
-          <a href="https://github.com/estrabismx" target="_blank" class="text-blue-800 hover:underline cursor-pointer">github.com/estrabismx</a>
-        </div>
-      </div>
-      <div class="mt-5 pt-3 border-t border-dashed border-gray-400 text-[10px] text-gray-500 text-center">
-        Haga clic en los enlaces para abrir de forma externa.
-      </div>
-    </div>
-
-    <div class="p-2 flex justify-end bg-[#c0c0c0] border-t border-white">
-      <button class="win98-button font-sans" onclick="closeWindow('window-contacto')">Aceptar</button>
-    </div>
-  </div>
-
-
-  <!-- =====================================================================
-       VENTANA: PROYECTOS (explorador de carpetas)
-       Los iconos se generan solos desde proyectos.js
-       ===================================================================== -->
-  <div id="window-proyectos" class="window window-app win98-outset" style="display: none;"
-       data-title="Proyectos" data-icon="assets/svg/proyectos.svg" data-width="960" data-height="620">
-
-    <div class="win98-titlebar select-none">
-      <div class="flex items-center gap-1.5 min-w-0">
-        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2 6V26H30V10H14L10 6H2Z" fill="#ffdf00" stroke="black" stroke-width="2"/>
-        </svg>
-        <span class="titlebar-text">Explorando - C:\Mis Documentos\Proyectos</span>
-      </div>
-      <div class="flex gap-1">
-        <button class="win98-window-btn" onclick="minimizeWindow('window-proyectos')">_</button>
-        <button class="win98-window-btn" onclick="maximizeWindow('window-proyectos')">⬛</button>
-        <button class="win98-window-btn" onclick="closeWindow('window-proyectos')">X</button>
-      </div>
-    </div>
-
-    <div class="flex gap-3 px-2 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-black select-none">
-      <span><u>A</u>rchivo</span>
-      <span><u>E</u>dición</span>
-      <span><u>V</u>er</span>
-      <span><u>F</u>avoritos</span>
-      <span>Herra<u>m</u>ientas</span>
-      <span>A<u>y</u>uda</span>
-    </div>
-
-    <!-- Barra de herramientas -->
-    <div class="flex items-center gap-1 p-1 bg-[#c0c0c0] border-b border-[#808080] select-none flex-wrap">
-      <button class="win98-button flex items-center gap-1" onclick="closeWindow('window-proyectos')">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        <span>Atrás</span>
-      </button>
-      <div class="win98-button-static flex items-center gap-1 opacity-50">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        <span class="text-gray-600">Adelante</span>
-      </div>
-      <div class="win98-button-static">
-        <svg class="w-4 h-4" viewBox="0 0 32 32" fill="none"><path d="M16 4 L6 14 L12 14 L12 28 L20 28 L20 14 L26 14 Z" fill="#808080" stroke="black" stroke-width="1.5"/></svg>
-      </div>
-      <div class="w-[2px] h-6 bg-gray-400 mx-1 border-r border-white"></div>
-      <div class="win98-button-static opacity-70">Cortar</div>
-      <div class="win98-button-static opacity-70">Copiar</div>
-      <div class="w-[2px] h-6 bg-gray-400 mx-1 border-r border-white"></div>
-      <div class="win98-button-static">Vistas</div>
-    </div>
-
-    <!-- Barra de dirección -->
-    <div class="flex items-center gap-2 p-1.5 bg-[#c0c0c0] border-b border-[#808080] text-xs select-none">
-      <span class="text-gray-600 font-semibold">Dirección:</span>
-      <div class="flex-1 bg-white win98-inset px-2 py-0.5 flex items-center font-mono min-w-0">
-        <span class="text-yellow-600 mr-1">📁</span>
-        <span class="text-black overflow-hidden whitespace-nowrap">C:\Mis Documentos\Proyectos</span>
-      </div>
-      <div class="win98-button-static">Ir</div>
-    </div>
-
-    <!-- Panel lateral + cuadrícula de archivos -->
-    <div class="flex-1 min-h-0 flex flex-col md:flex-row bg-white win98-inset m-1 overflow-y-auto md:overflow-hidden">
-
-      <div class="w-full md:w-80 bg-[#f0f0f0] border-b md:border-b-0 md:border-r border-gray-400 p-4 flex flex-col justify-between shrink-0 select-none md:overflow-y-auto">
-        <div id="explorer-preview" class="flex flex-col h-full justify-between">
-          <div>
-            <h2 class="text-lg font-bold text-[#000080] border-b-2 border-[#000080] pb-1 uppercase font-mono">Proyectos</h2>
-            <p class="text-xs text-gray-600 mt-2 font-mono">Selecciona un archivo del directorio para visualizar la información.</p>
-          </div>
-          <div class="mt-4 border border-dashed border-gray-400 p-2 bg-gray-200">
-            <span class="text-[10px] font-mono block text-gray-500">Unidad de Almacenamiento: C:</span>
-            <span class="text-[10px] font-mono block text-gray-500">Tipo: Carpeta del Sistema</span>
-            <span class="text-[10px] font-mono block text-gray-500">Autor: Camila Ramírez</span>
+      <div class="sidebar-module" id="contact">
+        <h3 class="sidebar-title">ESTABLECER_CONEXION</h3>
+        <div class="sidebar-contact-content">
+          <p>Haz clic en los enlaces para abrir de forma externa.</p>
+          <div class="badges">
+            <a href="https://github.com/estrabismx" target="_blank" rel="noopener" class="badge">GITHUB</a>
+            <a href="mailto:camila.ramirez2@mail.udp.cl" class="badge">E-MAIL</a>
+            <a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener" class="badge">INSTAGRAM</a>
           </div>
         </div>
       </div>
+    </aside>
 
-      <!-- Se llena automáticamente con los proyectos de proyectos.js -->
-      <div id="explorer-files" class="flex-1 p-4 md:overflow-y-auto bg-white flex flex-wrap justify-center md:justify-start content-start gap-4"></div>
-    </div>
+    <!-- =================================================================
+         CONTENIDO
+         ================================================================= -->
+    <main class="content-area">
 
-    <div class="bg-[#c0c0c0] px-2 py-0.5 text-xs flex justify-between border-t border-white select-none">
-      <span id="explorer-status-left" class="truncate">Selecciona un elemento para ver su descripción.</span>
-      <span class="border-l border-white pl-2 whitespace-nowrap" id="explorer-status-right"></span>
-    </div>
-  </div>
+      <section id="statement">
+        <p>Diseñadorx interdisciplinar, fan del trabajo artesanal y digital.</p>
+        <div class="statement-separator"></div>
+        <p><span class="highlight">Fabricación digital, trabajo modular y artesanal.</span></p>
+      </section>
 
+      <section id="projects">
+        <h2 class="section-title">/// PREVIEW_PROYECTOS.EXE</h2>
 
-  <!-- =====================================================================
-       VENTANA: PROYECTO (una sola ventana que se llena con el proyecto elegido)
-       ===================================================================== -->
-  <div id="window-proyecto" class="window window-app win98-outset" style="display: none;"
-       data-title="Proyecto" data-icon="assets/svg/proyectos.svg" data-width="1000" data-height="640">
+        <p class="section-desc">
+          Selección de proyectos. Usa [ &lt; ] y [ &gt; ] para recorrerlos o filtra por tipo en BROWSE BY TYPE.
+        </p>
 
-    <div class="win98-titlebar select-none">
-      <div class="flex items-center gap-1.5 min-w-0">
-        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="4" y="4" width="24" height="24" fill="#ffffff" stroke="black" stroke-width="2"/>
-          <path d="M4 10 H28" stroke="black" stroke-width="2"/>
-          <circle cx="10" cy="7" r="1" fill="red"/>
-          <circle cx="14" cy="7" r="1" fill="yellow"/>
-          <circle cx="18" cy="7" r="1" fill="green"/>
-        </svg>
-        <span class="titlebar-text" id="proyecto-titlebar">Propiedades</span>
-      </div>
-      <div class="flex gap-1">
-        <button class="win98-window-btn" onclick="minimizeWindow('window-proyecto')">_</button>
-        <button class="win98-window-btn" onclick="maximizeWindow('window-proyecto')">⬛</button>
-        <button class="win98-window-btn" onclick="closeProject()">X</button>
-      </div>
-    </div>
+        <div class="carousel-container">
+          <div class="carousel-display" id="carouselDisplay">
+            <span class="carousel-counter" id="carouselCounter"></span>
+            <!-- La portada la pone main.js con la primera imagen de la galería -->
+            <div class="carousel-media" aria-live="polite"></div>
+          </div>
 
-    <div class="flex gap-3 px-2 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-[#000000] select-none">
-      <span><u>A</u>rchivo</span>
-      <span><u>E</u>dición</span>
-      <span><u>V</u>er</span>
-      <span>A<u>y</u>uda</span>
-    </div>
-
-    <!-- Pestañas -->
-    <div class="px-2 pt-2 bg-[#c0c0c0] flex select-none">
-      <button class="win98-tab active" data-tab="desc" onclick="switchTab('desc')">General</button>
-      <button class="win98-tab" data-tab="specs" onclick="switchTab('specs')">Especificaciones</button>
-      <button class="win98-tab" data-tab="galeria" onclick="switchTab('galeria')">Galeria</button>
-    </div>
-
-    <div class="flex-1 min-h-0 bg-[#c0c0c0] p-3 border-t-2 border-[#ffffff] overflow-hidden flex flex-col">
-      <div class="flex-1 min-h-0 bg-white win98-inset p-4 flex flex-col md:flex-row gap-6 overflow-y-auto">
-
-        <!-- Izquierda: imagen principal -->
-        <div class="w-full md:w-1/2 flex flex-col justify-between h-auto md:h-full flex-shrink-0">
-          <div id="preview-box" class="border-2 border-inset bg-black p-1 relative cursor-pointer flex-1 min-h-[250px] max-h-[380px] overflow-hidden" onclick="onPreviewClick()">
-            <!-- Imagen o reproductor de video (lo pone main.js) -->
-            <div id="preview-media" class="absolute inset-1 flex items-center justify-center"></div>
-            <div id="preview-zoom-hint" class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white font-mono text-[9px] px-1.5 py-0.5 pointer-events-none rounded border border-gray-400">
-              🔍 CLIC PARA AMPLIAR
+          <div class="carousel-info">
+            <h3 id="carouselTitle" class="carousel-title"></h3>
+            <div class="carousel-controls">
+              <button type="button" class="btn-retro" id="carouselPrev" aria-label="Proyecto anterior">[ &lt; ]</button>
+              <button type="button" class="btn-retro" id="carouselNext" aria-label="Proyecto siguiente">[ &gt; ]</button>
             </div>
           </div>
-          <p id="preview-caption" class="mt-1 text-[10px] font-mono text-gray-500 truncate"></p>
-          <div id="proyecto-info" class="mt-3 border border-dashed border-gray-400 p-2 bg-gray-100 text-[11px] font-mono select-none flex-shrink-0"></div>
         </div>
 
-        <!-- Derecha: contenido según la pestaña -->
-        <div class="flex-1 flex flex-col md:h-full md:overflow-hidden mt-4 md:mt-0">
+        <a href="proyectos.html" class="btn-retro btn-large">&gt;&gt; ACCEDER_A_TODOS_LOS_PROYECTOS.BAT</a>
+      </section>
 
-          <div id="content-desc" class="tab-content flex-1 flex flex-col h-auto md:h-full md:overflow-y-auto pr-1 select-text"></div>
+      <section id="about">
+        <h2 class="section-title">/// ABOUT_USER.DAT</h2>
+        <div class="about-container">
+          <div class="avatar">[ AVATAR ]</div>
+          <div class="bio">
+            <p><strong>Camila Ramírez "Estrabismx"</strong><br>Diseñadorx interdisciplinar, fan del trabajo artesanal y digital.</p>
+            <p>Diseñadorx de Santiago de Chile, trabajando bajo el seudónimo <b>"Estrabismx"</b>. Especialista en la fabricación digital, además del trabajo artesanal y manual. Aprendiendo y capacitandose en el área de la electrónica y la programación.</p>
 
-          <div id="content-specs" class="tab-content hidden flex-1 flex flex-col h-auto md:h-full md:overflow-y-auto pr-1 select-text"></div>
-
-          <div id="content-galeria" class="tab-content hidden flex-1 flex flex-col md:overflow-hidden h-auto md:h-full">
-            <h1 class="text-lg font-bold text-[#000080] border-b pb-1 mb-3">GALERÍA</h1>
-            <p class="text-xs text-gray-600 font-mono mb-2">Haz clic en una miniatura para visualizarla a gran escala. Doble clic para ampliar.</p>
-            <div id="proyecto-galeria" class="grid grid-cols-2 gap-2 flex-1 md:overflow-y-auto pr-1 select-none pb-4 content-start"></div>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center gap-2 mt-3 select-none flex-shrink-0">
-        <span class="text-xs text-gray-600 font-mono truncate" id="proyecto-archivo"></span>
-        <div class="flex gap-2 flex-shrink-0">
-          <button class="win98-button font-bold text-xs" onclick="closeProject()">Aceptar (Volver)</button>
-          <button class="win98-button text-xs" onclick="closeProject()">Cancelar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- =====================================================================
-       VENTANA: SOBRE MÍ (WordPad)
-       ===================================================================== -->
-  <div id="window-sobre-mi" class="window window-app win98-outset" style="display: none;"
-       data-title="Sobre Mí" data-icon="assets/svg/sobre-mi.svg" data-width="820" data-height="640">
-
-    <div class="win98-titlebar select-none">
-      <div class="flex items-center gap-1.5 min-w-0">
-        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="6" y="2" width="20" height="28" fill="#fff" stroke="black" stroke-width="2"/>
-          <rect x="10" y="6" width="12" height="3" fill="#000080"/>
-          <line x1="10" y1="13" x2="22" y2="13" stroke="#808080" stroke-width="2"/>
-          <line x1="10" y1="17" x2="22" y2="17" stroke="#808080" stroke-width="2"/>
-          <line x1="10" y1="21" x2="18" y2="21" stroke="#808080" stroke-width="2"/>
-        </svg>
-        <span class="titlebar-text">Sobre Mí.doc - WordPad</span>
-      </div>
-      <div class="flex gap-1">
-        <button class="win98-window-btn" onclick="minimizeWindow('window-sobre-mi')">_</button>
-        <button class="win98-window-btn" onclick="maximizeWindow('window-sobre-mi')">⬛</button>
-        <button class="win98-window-btn" onclick="closeWindow('window-sobre-mi')">X</button>
-      </div>
-    </div>
-
-    <div class="flex gap-3 px-2 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-black select-none">
-      <span><u>A</u>rchivo</span>
-      <span><u>E</u>dición</span>
-      <span><u>V</u>er</span>
-      <span><u>I</u>nsertar</span>
-      <span><u>F</u>ormato</span>
-      <span>A<u>y</u>uda</span>
-    </div>
-
-    <!-- Barra de herramientas estándar -->
-    <div class="flex items-center gap-1 p-1 bg-[#c0c0c0] border-b border-white select-none flex-wrap">
-      <button class="win98-button flex items-center gap-1" onclick="closeWindow('window-sobre-mi')">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        <span>Atrás</span>
-      </button>
-      <div class="w-[2px] h-6 bg-gray-400 mx-1 border-r border-white"></div>
-      <div class="win98-button-static opacity-60">Nuevo</div>
-      <div class="win98-button-static opacity-60">Abrir</div>
-      <div class="win98-button-static opacity-60">Guardar</div>
-      <div class="w-[2px] h-6 bg-gray-400 mx-1 border-r border-white"></div>
-      <div class="win98-button-static opacity-60">Imprimir</div>
-      <div class="win98-button-static opacity-60">Buscar</div>
-    </div>
-
-    <!-- Barra de formato (funcional) -->
-    <div class="flex items-center gap-2 p-1 bg-[#c0c0c0] border-b border-[#808080] text-xs select-none flex-wrap">
-      <select class="win98-inset p-0.5 bg-white text-black text-xs border border-gray-400 focus:outline-none cursor-pointer" onchange="changeFontFamily(this.value)">
-        <option value="font-sans-serif" selected>MS Sans Serif</option>
-        <option value="font-serif">Times New Roman</option>
-        <option value="font-mono-retro">Retro Monospace</option>
-      </select>
-      <select class="win98-inset p-0.5 bg-white text-black text-xs border border-gray-400 focus:outline-none cursor-pointer" onchange="changeFontSize(this.value)">
-        <option value="text-xs" selected>10</option>
-        <option value="text-sm">12</option>
-        <option value="text-base">14</option>
-        <option value="text-lg">16</option>
-      </select>
-      <div class="w-[2px] h-5 bg-gray-400 mx-0.5 border-r border-white"></div>
-      <button id="btnBold" class="win98-button font-bold text-xs" onclick="toggleStyle('bold')">B</button>
-      <button id="btnItalic" class="win98-button italic text-xs" onclick="toggleStyle('italic')">I</button>
-      <button id="btnUnderline" class="win98-button underline text-xs" onclick="toggleStyle('underline')">U</button>
-      <div class="w-[2px] h-5 bg-gray-400 mx-0.5 border-r border-white"></div>
-      <div class="win98-button-static opacity-70">Izquierda</div>
-      <div class="win98-button-static opacity-70">Centro</div>
-    </div>
-
-    <!-- Regla (los ticks se generan con JS) -->
-    <div class="wordpad-ruler w-full flex items-end select-none overflow-hidden flex-shrink-0" id="ruler-container"></div>
-
-    <!-- Hoja del documento -->
-    <div class="flex-1 min-h-0 bg-gray-600 p-4 overflow-y-auto flex justify-center items-start">
-      <div class="w-full max-w-2xl bg-white text-black shadow-lg p-8 md:p-12 win98-inset select-text">
-        <div id="docContent" class="font-sans-serif text-xs leading-relaxed transition-all duration-150">
-
-          <div class="text-center mb-8 border-b-2 border-gray-300 pb-4">
-            <h1 class="text-[1.55em] font-bold uppercase tracking-wider text-blue-900">Camila Ramírez "Estrabismx"</h1>
-            <p class="text-[0.85em] text-gray-500 font-mono mt-1">Diseñadorx interdisciplinar, fan del trabajo artesanal y digital</p>
-          </div>
-
-          <section class="mb-8">
-            <h2 class="text-[1.15em] font-bold text-blue-800 border-b border-gray-200 pb-0.5 mb-2 uppercase">I. Perfil</h2>
-            <p class="mb-4">
-              Diseñadorx de Santiago de Chile, trabajando bajo el seudónimo <b>"Estrabismx"</b>. Especialista en la fabricación digital, además del trabajo artesanal y manual. Aprendiendo y capacitandose en el área de la electrónica y la programación.
-            </p>
-            <p>
-              Mi especialidad se centra en el trabajo modular, optimizando materiales, recursos y tiempos, buscando así la manera más efectiva de llevar a cabo un proyecto. Realizo trabajos no solo enfocado en busqueda de soluciones, además busco la manera de poder experimentar nuevas técnicas, procesos y metodos de conceptualización.
-            </p>
-          </section>
-
-          <!-- Para cambiar una habilidad: edita el nombre y el porcentaje (width) -->
-          <section class="mb-8">
-            <h2 class="text-[1.15em] font-bold text-blue-800 border-b border-gray-200 pb-0.5 mb-2 uppercase">II. Habilidades técnicas</h2>
-            <div class="space-y-3">
-              <div>
-                <div class="text-[0.85em] font-mono mb-1">Fabricación Digital</div>
-                <div class="h-4 bg-gray-200 border border-gray-600 relative overflow-hidden win98-inset"><div class="h-full bg-blue-900" style="width: 100%;"></div></div>
-              </div>
-              <div>
-                <div class="text-[0.85em] font-mono mb-1">Diseño de productos</div>
-                <div class="h-4 bg-gray-200 border border-gray-600 relative overflow-hidden win98-inset"><div class="h-full bg-blue-900" style="width: 90%;"></div></div>
-              </div>
-              <div>
-                <div class="text-[0.85em] font-mono mb-1">Prototipado</div>
-                <div class="h-4 bg-gray-200 border border-gray-600 relative overflow-hidden win98-inset"><div class="h-full bg-blue-900" style="width: 80%;"></div></div>
-              </div>
+            <div class="bio-actions">
+              <a href="sobre_mi.html" class="btn-retro">&gt;&gt; LEER_PERFIL_COMPLETO.TXT</a>
             </div>
-          </section>
-
-          <section class="mb-8">
-            <h2 class="text-[1.15em] font-bold text-blue-800 border-b border-gray-200 pb-0.5 mb-2 uppercase">III. Habilidades en software</h2>
-            <p class="mb-4"> *Estos programas no son los únicos que manejo, solamente los más representativos </p>
-            <div class="space-y-3">
-              <div>
-                <div class="text-[0.85em] font-mono mb-1">Autocad</div>
-                <div class="h-4 bg-gray-200 border border-gray-600 relative overflow-hidden win98-inset"><div class="h-full bg-blue-900" style="width: 100%;"></div></div>
-              </div>
-              <div>
-                <div class="text-[0.85em] font-mono mb-1">Rhino 8</div>
-                <div class="h-4 bg-gray-200 border border-gray-600 relative overflow-hidden win98-inset"><div class="h-full bg-blue-900" style="width: 90%;"></div></div>
-              </div>
-              <div>
-                <div class="text-[0.85em] font-mono mb-1">Inventor</div>
-                <div class="h-4 bg-gray-200 border border-gray-600 relative overflow-hidden win98-inset"><div class="h-full bg-blue-900" style="width: 85%;"></div></div>
-              </div>
-              <div>
-                <div class="text-[0.85em] font-mono mb-1">Illustrator</div>
-                <div class="h-4 bg-gray-200 border border-gray-600 relative overflow-hidden win98-inset"><div class="h-full bg-blue-900" style="width: 75%;"></div></div>
-              </div>
-              <div>
-                <div class="text-[0.85em] font-mono mb-1">KiCad</div>
-                <div class="h-4 bg-gray-200 border border-gray-600 relative overflow-hidden win98-inset"><div class="h-full bg-blue-900" style="width: 65%;"></div></div>
-              </div>
-            </div>
-          </section>
-
-          <!-- Experiencia laboral (DESACTIVADA HASTA QUE TENGA EXPERIENCIA xddd)
-          <section class="mb-8">
-            <h2 class="text-[1.15em] font-bold text-blue-800 border-b border-gray-200 pb-0.5 mb-2 uppercase">IV. Historial de Versiones</h2>
-            <div class="space-y-4">
-              <div class="border-l-2 border-blue-900 pl-3">
-                <p class="font-bold text-gray-800">Diseñadora de Marca Independiente (Freelancer)</p>
-                <p class="text-[0.85em] text-gray-500 font-mono mb-1">Versión 2.0 (2023 - Presente)</p>
-                <p class="text-[0.95em]">Desarrollo de proyectos de branding para emprendedores y empresas digitales, abarcando desde la dirección de arte hasta la entrega de guías de marca.</p>
-              </div>
-              <div class="border-l-2 border-blue-900 pl-3">
-                <p class="font-bold text-gray-800">Diseñadora Gráfica Junior - Agencia Pixel</p>
-                <p class="text-[0.85em] text-gray-500 font-mono mb-1">Versión 1.0 (2021 - 2023)</p>
-                <p class="text-[0.95em]">Maquetación editorial, diseño de anuncios digitales e ilustración isométrica para campañas interactivas.</p>
-              </div>
-            </div>
-          </section>
-          -->
-
-          <div class="text-right mt-12 border-t pt-4 border-dashed border-gray-300">
-            <p class="font-mono text-[0.85em] text-gray-500">Actualizado hasta el: 14 de Julio de 2026</p>
-            <p class="text-[1.1em] font-bold text-blue-900">Camila Ramírez P.</p>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <div class="bg-[#c0c0c0] px-2 py-0.5 text-xs flex justify-between border-t border-white select-none">
-      <span>Para Ayuda, presione F67</span>
-      <span class="border-l border-white pl-2">Línea 1, Col 1</span>
-    </div>
-  </div>
-
-
-  <!-- =====================================================================
-       VENTANA: PAINT
-       ===================================================================== -->
-  <div id="window-paint" class="window window-app win98-outset" style="display: none;"
-       data-title="Paint" data-icon="assets/svg/paint.svg" data-width="900" data-height="640">
-
-    <div class="win98-titlebar select-none">
-      <div class="flex items-center gap-1.5 min-w-0">
-        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 2 C8 2 2 8 2 16 C2 24 8 30 16 30 C20 30 24 28 26 24 C28 20 30 18 30 14 C30 7 24 2 16 2 Z" fill="#fdf5e6" stroke="black" stroke-width="1.5"/>
-          <circle cx="10" cy="11" r="2" fill="#ff0000"/>
-          <circle cx="16" cy="8" r="2" fill="#00ff00"/>
-          <circle cx="22" cy="11" r="2" fill="#0000ff"/>
-        </svg>
-        <span class="titlebar-text">sin título - Paint</span>
-      </div>
-      <div class="flex gap-1">
-        <button class="win98-window-btn" onclick="minimizeWindow('window-paint')">_</button>
-        <button class="win98-window-btn" onclick="maximizeWindow('window-paint')">⬛</button>
-        <button class="win98-window-btn" onclick="closeWindow('window-paint')">X</button>
-      </div>
-    </div>
-
-    <!-- Menú (Archivo y Edición funcionan) -->
-    <div class="flex gap-4 px-3 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-[#000000] relative z-10">
-      <div class="relative group">
-        <span class="hover:bg-blue-800 hover:text-white px-1 py-0.5 cursor-pointer"><u>A</u>rchivo</span>
-        <div class="hidden group-hover:block absolute left-0 top-full bg-[#c0c0c0] win98-outset z-50 py-1 min-w-[140px]">
-          <button class="w-full text-left px-4 py-1 hover:bg-blue-800 hover:text-white" onclick="clearCanvas()">Nuevo</button>
-          <button class="w-full text-left px-4 py-1 hover:bg-blue-800 hover:text-white" onclick="downloadImage()">Guardar como...</button>
-          <div class="border-t border-gray-400 my-1"></div>
-          <button class="w-full text-left px-4 py-1 hover:bg-blue-800 hover:text-white" onclick="closeWindow('window-paint')">Salir</button>
-        </div>
-      </div>
-      <div class="relative group">
-        <span class="hover:bg-blue-800 hover:text-white px-1 py-0.5 cursor-pointer"><u>E</u>dición</span>
-        <div class="hidden group-hover:block absolute left-0 top-full bg-[#c0c0c0] win98-outset z-50 py-1 min-w-[140px]">
-          <button class="w-full text-left px-4 py-1 hover:bg-blue-800 hover:text-white" onclick="undo()">Deshacer (Ctrl+Z)</button>
-          <button class="w-full text-left px-4 py-1 hover:bg-blue-800 hover:text-white" onclick="redo()">Rehacer (Ctrl+Y)</button>
-        </div>
-      </div>
-      <span class="text-gray-500 select-none"><u>V</u>er</span>
-      <span class="text-gray-500 select-none"><u>I</u>magen</span>
-      <span class="text-gray-500 select-none"><u>O</u>pciones</span>
-      <span class="text-gray-500 select-none">A<u>y</u>uda</span>
-    </div>
-
-    <div class="flex-1 min-h-0 flex overflow-hidden">
-
-      <!-- Caja de herramientas -->
-      <div class="w-14 bg-[#c0c0c0] border-r-2 border-white p-1.5 flex flex-col gap-1 items-center select-none flex-shrink-0">
-        <div class="grid grid-cols-2 gap-1">
-          <button class="tool-button" id="tool-eraser" onclick="setTool('eraser')" title="Borrador">
-            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><rect x="3" y="3" width="10" height="10" fill="pink" stroke="black"/><path d="M3 10 L13 10" stroke="black"/></svg>
-          </button>
-          <button class="tool-button" id="tool-fill" onclick="setTool('fill')" title="Relleno con color">
-            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><path d="M2 12 L10 4 L12 6 L4 14 Z" fill="gray" stroke="black"/><path d="M12 6 L14 8 L11 11 L9 9 Z" fill="red"/><path d="M14 14 C14 14 11 12 11 10 C11 9 12 8 13 8 C14 8 15 9 15 11 C15 13 14 14 14 14 Z" fill="blue"/></svg>
-          </button>
-          <button class="tool-button" id="tool-picker" onclick="setTool('picker')" title="Seleccionar color">
-            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><path d="M2 14 L4 14 L12 6 L10 4 Z" fill="yellow" stroke="black"/><circle cx="13" cy="3" r="2" fill="red"/></svg>
-          </button>
-          <button class="tool-button active" id="tool-pencil" onclick="setTool('pencil')" title="Lápiz">
-            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><path d="M2 14 L4 14 L13 5 L11 3 Z" fill="yellow" stroke="black"/><path d="M2 14 L4 12 L2 12 Z" fill="black"/></svg>
-          </button>
-          <button class="tool-button" id="tool-brush" onclick="setTool('brush')" title="Pincel">
-            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><circle cx="5" cy="11" r="3" fill="brown"/><path d="M5 11 L12 4 L14 6 L7 13 Z" fill="orange" stroke="black"/></svg>
-          </button>
-          <button class="tool-button" id="tool-line" onclick="setTool('line')" title="Línea">
-            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><line x1="2" y1="14" x2="14" y2="2" stroke="black" stroke-width="2"/></svg>
-          </button>
-          <button class="tool-button" id="tool-rect" onclick="setTool('rect')" title="Rectángulo">
-            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><rect x="2" y="3" width="12" height="10" fill="none" stroke="black" stroke-width="2"/></svg>
-          </button>
-          <button class="tool-button" id="tool-ellipse" onclick="setTool('ellipse')" title="Elipse">
-            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="black"><ellipse cx="8" cy="8" rx="6" ry="5" fill="none" stroke="black" stroke-width="2"/></svg>
-          </button>
-        </div>
-
-        <div class="w-full mt-4 flex-1 flex flex-col justify-start items-center">
-          <div class="win98-inset w-10 p-1 flex flex-col gap-2 items-center" style="background-color: var(--win98-bg); height: 80px;">
-            <div class="text-[9px] font-bold text-gray-700 select-none mb-1">TAMAÑO</div>
-            <select class="win98-inset text-[11px] w-full p-0.5 bg-white cursor-pointer" onchange="updateStrokeSize(this.value)">
-              <option value="1">1 px</option>
-              <option value="3" selected>3 px</option>
-              <option value="6">6 px</option>
-              <option value="10">10 px</option>
-              <option value="20">20 px</option>
-            </select>
           </div>
         </div>
-      </div>
-
-      <!-- Lienzo -->
-      <div class="flex-1 min-w-0 canvas-container win98-inset p-4 relative">
-        <canvas id="paintCanvas" width="800" height="600" class="mx-auto"></canvas>
-      </div>
-    </div>
-
-    <!-- Paleta de colores -->
-    <div class="bg-[#c0c0c0] border-t-2 border-white p-2 flex gap-3 items-center select-none">
-      <div class="win98-inset w-10 h-10 relative flex-shrink-0" style="background-color: var(--win98-bg);">
-        <div class="w-6 h-6 border border-gray-600 bg-black absolute top-1 left-1 z-20" id="color-primary"></div>
-        <div class="w-6 h-6 border border-gray-600 bg-white absolute bottom-1 right-1 z-10"></div>
-      </div>
-      <div class="grid grid-rows-2 grid-flow-col gap-1 flex-1 overflow-x-auto pr-2" id="palette-grid"></div>
-    </div>
-
-    <div class="bg-[#c0c0c0] border-t border-white px-3 py-1 flex justify-between text-xs select-none">
-      <span id="paint-status">Para obtener ayuda, haz clic en el Menú superior.</span>
-      <span class="border-l border-white pl-4 font-mono text-gray-700" id="paint-coords">0, 0px</span>
-    </div>
+      </section>
+    </main>
   </div>
 
-
-  <!-- =====================================================================
-       VISOR DE IMÁGENES (se abre desde la ventana de proyecto)
-       ===================================================================== -->
-  <div id="image-viewer-window" class="modal-layer hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4" onclick="if (event.target === this) closeImageViewer()">
-    <div class="win98-outset w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
-      <div class="win98-titlebar select-none">
-        <span class="titlebar-text" id="viewer-title">Visor de Imágenes</span>
-        <button class="win98-window-btn" onclick="closeImageViewer()">X</button>
-      </div>
-      <div class="flex gap-3 px-2 py-1 text-xs border-b border-[#808080] bg-[#c0c0c0] text-[#000000] select-none">
-        <span><u>A</u>rchivo</span>
-        <span><u>V</u>er</span>
-        <span><u>I</u>magen</span>
-        <span><u>H</u>erramientas</span>
-      </div>
-      <!-- Imagen ampliada o reproductor de video (lo pone main.js) -->
-      <div id="viewer-media" class="viewer-media flex-1 bg-gray-900 flex items-center justify-center p-4 overflow-hidden min-h-[350px]"></div>
-      <div class="bg-[#c0c0c0] p-2 flex justify-between items-center gap-2 border-t border-white select-none flex-wrap">
-        <span class="text-xs font-mono truncate" id="viewer-caption"></span>
-        <div class="flex gap-2">
-          <button class="win98-button text-xs font-bold" onclick="navigateViewer(-1)">◀ Anterior</button>
-          <button class="win98-button text-xs font-bold" onclick="navigateViewer(1)">Siguiente ▶</button>
-          <button class="win98-button text-xs font-bold" onclick="closeImageViewer()">Cerrar Visor</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- =====================================================================
-       ALERTA DEL SISTEMA
-       ===================================================================== -->
-  <div id="sys-alert" class="modal-layer hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 win98-outset" style="width: 320px;">
-    <div class="win98-titlebar">
-      <span>Mensaje del Sistema</span>
-      <button class="win98-window-btn" onclick="closeAlert()">X</button>
-    </div>
-    <div class="p-4 flex gap-3 items-center bg-[#c0c0c0]">
-      <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-yellow-400 border-2 border-black rounded-full font-bold text-lg">!</div>
-      <p id="sys-alert-text" class="text-xs font-semibold"></p>
-    </div>
-    <div class="p-2 flex justify-end bg-[#c0c0c0] border-t border-gray-400">
-      <button class="win98-button font-sans" onclick="closeAlert()">Aceptar</button>
-    </div>
-  </div>
-
-
-  <!-- =====================================================================
-       BARRA DE TAREAS
-       ===================================================================== -->
-  <footer class="taskbar w-full flex justify-between items-center gap-1 px-1 relative">
-    <div class="flex items-center gap-1.5 h-full min-w-0">
-      <button class="win98-button font-bold text-sm flex items-center gap-1.5 flex-shrink-0" id="start-btn" onclick="toggleStartMenu()" style="height: 28px;">
-        <span>Inicio</span>
-      </button>
-      <!-- Botones de las ventanas abiertas (se generan con JS) -->
-      <div id="taskbar-apps" class="flex items-center gap-1 min-w-0"></div>
-    </div>
-
-    <div class="win98-inset px-2 py-0.5 flex items-center gap-2 flex-shrink-0" style="background-color: var(--win98-bg); height: 28px;">
-      <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="black"><path d="M11 2 H13 V4 H11 Z M12 6 H14 V8 H12 Z M3 10 H13 V12 H3 Z"/></svg>
-      <span id="system-clock" class="text-xs font-mono font-bold">12:00 PM</span>
-    </div>
+  <footer>
+    <p>© 2026 Camila Ramírez "Estrabismx"</p>
   </footer>
+</div>
 
-
-  <!-- =====================================================================
-       MENÚ INICIO
-       ===================================================================== -->
-  <div class="start-menu win98-outset" id="start-menu">
-    <div class="start-menu-sidebar font-bold flex items-center justify-center">
-      Estrabismx 98
+<!-- =====================================================================
+     VENTANA EMERGENTE: CONTACTO
+     ===================================================================== -->
+<div id="contactModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+  <div class="modal-window">
+    <div class="modal-header">
+      <span class="modal-title" id="contactTitle">INFORMACION_CONTACTO.EXE</span>
+      <button type="button" class="modal-close" aria-label="Cerrar">X</button>
     </div>
-    <div class="flex-1 flex flex-col bg-[#c0c0c0] text-xs py-1 font-sans">
-      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="openFromStart('window-pc')">
-        <span>💻</span> <b>Mi PC (Menú)</b>
+    <div class="modal-body">
+      <p><strong>/// DATOS DEL DISEÑADOR</strong></p>
+      <ul class="contact-list">
+        <li><span>E-mail:</span><a href="mailto:camila.ramirez2@mail.udp.cl">camila.ramirez2@mail.udp.cl</a></li>
+        <li><span>Instagram:</span><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener">@n.arkotikk</a></li>
+        <li><span>GitHub:</span><a href="https://github.com/estrabismx" target="_blank" rel="noopener">github.com/estrabismx</a></li>
+      </ul>
+      <div class="badges">
+        <a href="https://github.com/estrabismx" target="_blank" rel="noopener" class="badge">GITHUB</a>
+        <a href="mailto:camila.ramirez2@mail.udp.cl" class="badge">E-MAIL</a>
+        <a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener" class="badge">INSTAGRAM</a>
       </div>
-      <div class="border-t border-gray-400 my-1"></div>
-      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="openFromStart('window-proyectos')">
-        <span>📁</span> <b>Proyectos</b>
-      </div>
-      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="openFromStart('window-sobre-mi')">
-        <span>📝</span> <b>Sobre Mí</b>
-      </div>
-      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="openFromStart('window-contacto')">
-        <span>✉️</span> <b>Contacto</b>
-      </div>
-      <div class="start-menu-item px-3 py-2 flex items-center gap-2" onclick="openFromStart('window-paint')">
-        <span>🎨</span> <b>Paint</b>
-      </div>
+      <p class="modal-note">Haz clic en los enlaces para abrir de forma externa.</p>
     </div>
   </div>
+</div>
 
-
-  <!-- Datos de los proyectos (edita este archivo para agregar proyectos) -->
-  <script src="proyectos.js"></script>
-  <!-- Lógica del sitio -->
-  <script src="main.js"></script>
+<!-- Datos de los proyectos (edita este archivo para agregar proyectos) -->
+<script src="proyectos.js"></script>
+<!-- Lógica del sitio -->
+<script src="main.js"></script>
 </body>
 </html>

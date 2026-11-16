@@ -310,6 +310,26 @@ const PROYECTOS = [
       "porcentaje": 90,
       "texto": "Complejidad Alta"
     },
+    "modelo3d": {
+      "material": {
+        "color": "#fc2e2e",
+        "metalness": 0.5,
+        "roughness": 0.51
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        0.0,
+        2.3562,
+        0.0
+      ],
+      "detalle": "alto",
+      "archivo": "proyecto_04.glb",
+      "triangulos": 4863
+    },
     "galeria": [
       {
         "archivo": "proyecto_04a.jpg",
@@ -394,6 +414,26 @@ const PROYECTOS = [
     "dificultad": {
       "porcentaje": 60,
       "texto": "Complejidad media"
+    },
+    "modelo3d": {
+      "detalle": "medio",
+      "material": {
+        "color": "#3b3b3b",
+        "metalness": 0.27,
+        "roughness": 0.27
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        0.0,
+        3.1416,
+        0.0
+      ],
+      "archivo": "proyecto_05.glb",
+      "triangulos": 2000
     },
     "galeria": [
       {
@@ -514,5 +554,38 @@ const PROYECTOS = [
         "nombre": "Video Proceso"
       }
     ]
+  },
+  {
+    "id": "07",
+    "titulo": "Sin_Te",
+    "subtitulo": "Electrónica Colaborativa - Sin_Te",
+    "curso": "Taller de Máquinas Electrónicas",
+    "anio": "2026-1",
+    "tamano": "270 KB",
+    "encabezado": "Electrónica Colaborativa - Sin_Te",
+    "tipo": "Electrónica",
+    "objetivo": "Desarrollar sintetizadores modulares en base al contexto chileno",
+    "desafio": "Leer, identificar e integrar esquemas electrónicas realizados por terceros",
+    "ficha": {
+      "Herramientas": "KiCad ",
+      "Tiempo de Desarrollo": "15 Semanas",
+      "Origen": "Taller de Máquinas Electrónicas 2026-1"
+    },
+    "dificultad": {
+      "porcentaje": 95,
+      "texto": "Complejidad alta"
+    }
+  },
+  {
+    "id": "08",
+    "titulo": "Scooter Modular",
+    "subtitulo": "Fabricación Avanzada - Scooter modular ",
+    "curso": "Fabriación Digital Avanzada",
+    "anio": "2026-1",
+    "tamano": "53 MB",
+    "encabezado": "Fabricación Avanzada - Scooter modular ",
+    "tipo": "Fabricación Digital",
+    "objetivo": "Desarrollar modelos 3D de plegado en acero y llevarlos a fabricar",
+    "desafio": "Lograr sintetizar formas complejas a la realidad material"
   }
 ];

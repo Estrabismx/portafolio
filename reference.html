@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrabismx | Portafolio Y2K</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #EEDBBF;
+            --scarlet: #AB3130;
+            --deep-red: #67191F;
+            --midnight: #121212;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--midnight); 
+            font-family: 'Roboto Mono', monospace; 
+            font-size: 14px;
+            color: var(--cream);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Contenedor principal al 95% */
+        .wrapper {
+            width: 95%;
+            max-width: 1600px;
+            margin: 20px 0;
+            background: var(--midnight);
+            border-top: 4px solid var(--scarlet);
+            border-left: 4px solid var(--scarlet);
+            border-bottom: 4px solid var(--deep-red);
+            border-right: 4px solid var(--deep-red);
+            box-shadow: 8px 8px 0px rgba(0,0,0,1);
+        }
+
+        /* Cabecera intacta y fija */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--midnight);
+            border-bottom: 4px solid var(--scarlet); 
+            padding: 30px 40px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.9);
+        }
+
+        h1.logo, .section-title, .tag-new, .thumbnail-placeholder, .carousel-title, .sidebar-title, .modal-title {
+            font-family: 'VT323', monospace;
+        }
+
+        h1.logo {
+            font-size: 42px; 
+            margin: 0;
+            color: var(--scarlet);
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            background: var(--midnight);
+            color: var(--cream);
+            padding: 8px 20px;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: bold;
+            text-decoration: none;
+            border-top: 2px solid var(--scarlet);
+            border-left: 2px solid var(--scarlet);
+            border-bottom: 2px solid #000;
+            border-right: 2px solid #000;
+            font-size: 14px;
+            text-transform: uppercase;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            background: var(--deep-red);
+            color: var(--cream);
+            border-top: 2px solid var(--scarlet);
+            border-left: 2px solid var(--scarlet);
+        }
+
+        /* --- LAYOUT DE 2 COLUMNAS --- */
+        .main-layout {
+            display: flex;
+            align-items: flex-start;
+            padding: 20px;
+            gap: 30px; 
+        }
+
+        /* Barra Lateral Izquierda */
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-module {
+            background: var(--midnight);
+            border: 2px solid var(--deep-red);
+        }
+
+        .sidebar-title {
+            background: var(--scarlet);
+            color: var(--cream);
+            font-size: 22px;
+            padding: 5px 10px;
+            border-bottom: 2px solid #000;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-list {
+            list-style: none;
+            padding: 10px;
+            margin: 0;
+        }
+
+        .sidebar-list li {
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .sidebar-list a {
+            color: var(--cream);
+            text-decoration: none;
+        }
+
+        .sidebar-list a:hover {
+            color: var(--scarlet);
+            text-decoration: underline;
+        }
+
+        .sidebar-contact-content {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .sidebar-contact-content p {
+            font-size: 12px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .badge {
+            width: 88px;
+            height: 31px;
+            background: var(--deep-red);
+            color: var(--cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            border: 2px solid var(--scarlet);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .badge:active {
+            border: 2px inset var(--scarlet);
+        }
+
+        /* Columna Central de Contenido */
+        .content-area {
+            flex-grow: 1;
+            min-width: 0; 
+            display: flex;
+            flex-direction: column;
+            gap: 50px; 
+        }
+
+        section {
+            padding-bottom: 30px;
+            border-bottom: 2px dashed var(--deep-red);
+        }
+
+        section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 32px;
+            color: var(--scarlet);
+            margin-top: 0;
+            border-bottom: 2px solid var(--deep-red);
+            display: inline-block;
+            padding-bottom: 5px;
+            text-shadow: 1px 1px 0px #000;
+        }
+
+        .section-desc {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* Statement Expandido y Dividido */
+        #statement {
+            background: #000;
+            text-align: center;
+            padding: 80px 40px; 
+            border: 4px solid var(--scarlet);
+            min-height: 350px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #statement p {
+            font-size: 22px; 
+            margin: 0 auto;
+            line-height: 1.8;
+            max-width: 900px;
+        }
+
+        .statement-separator {
+            width: 100px;
+            height: 4px;
+            background: repeating-linear-gradient(90deg, var(--scarlet), var(--scarlet) 10px, transparent 10px, transparent 20px);
+            margin: 40px auto; 
+        }
+
+        .highlight {
+            color: var(--scarlet);
+            font-weight: bold;
+            background: #000;
+            padding: 5px 10px;
+            border: 2px dotted var(--scarlet);
+        }
+
+        /* --- Estilos del Carrusel de Proyectos --- */
+        .carousel-container {
+            background: var(--midnight);
+            border: 4px solid var(--scarlet);
+            padding: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .carousel-display {
+            position: relative;
+            height: 400px;
+            background: #000;
+            border: 2px solid var(--deep-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .thumbnail-placeholder {
+            color: var(--scarlet);
+            font-size: 28px;
+            text-shadow: 2px 2px 0px var(--deep-red);
+        }
+
+        .tag-new {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--cream);
+            color: var(--scarlet);
+            font-size: 22px;
+            padding: 2px 10px;
+            border: 2px solid var(--scarlet);
+            transform: rotate(15deg);
+            z-index: 10;
+            box-shadow: 3px 3px 0px rgba(0,0,0,1);
+            display: none; 
+        }
+
+        .carousel-info {
+            background: var(--deep-red);
+            border-bottom: 2px solid #000;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .carousel-title {
+            color: var(--cream);
+            font-size: 24px;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .carousel-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Botones generales */
+        .btn-retro {
+            background: var(--scarlet);
+            color: var(--cream);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-top: 2px solid var(--cream);
+            border-left: 2px solid var(--cream);
+            border-bottom: 2px solid #000;
+            border-right: 2px solid #000;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .btn-retro:hover {
+            background: var(--deep-red);
+        }
+
+        .btn-retro:active {
+            border-top: 2px solid #000;
+            border-left: 2px solid #000;
+            border-bottom: 2px solid var(--cream);
+            border-right: 2px solid var(--cream);
+        }
+
+        .btn-large {
+            font-size: 18px;
+            padding: 12px 30px;
+            display: block;
+            width: fit-content;
+            margin: 0 auto;
+        }
+
+        /* Sobre Mí */
+        .about-container {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .avatar {
+            width: 220px;
+            height: 220px;
+            background: #000;
+            border: 4px solid var(--scarlet);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--scarlet);
+        }
+
+        .bio {
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .bio-actions {
+            margin-top: 20px;
+        }
+
+        /* --- Ventana Emergente (Modal) --- */
+        .modal-overlay {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 18, 18, 0.85); /* Midnight con opacidad */
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-window {
+            background: var(--midnight);
+            border: 4px solid var(--scarlet);
+            width: 450px;
+            max-width: 90%;
+            box-shadow: 10px 10px 0px rgba(0,0,0,1);
+        }
+
+        .modal-header {
+            background: var(--scarlet);
+            color: var(--cream);
+            padding: 8px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #000;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: var(--midnight);
+            color: var(--cream);
+            border-top: 2px solid var(--cream);
+            border-left: 2px solid var(--cream);
+            border-bottom: 2px solid #000;
+            border-right: 2px solid #000;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 2px 10px;
+        }
+
+        .modal-close:hover {
+            background: var(--deep-red);
+        }
+
+        .modal-close:active {
+            border-top: 2px solid #000;
+            border-left: 2px solid #000;
+            border-bottom: 2px solid var(--cream);
+            border-right: 2px solid var(--cream);
+        }
+
+        .modal-body {
+            padding: 30px;
+            text-align: center;
+            background: #000;
+        }
+
+        .modal-body p {
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--midnight);
+            color: var(--scarlet);
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            border-top: 4px solid var(--deep-red);
+            font-weight: bold;
+        }
+
+        @media (max-width: 900px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+            .about-container {
+                flex-direction: column;
+            }
+            .nav-links {
+                display: none; 
+            }
+            .carousel-info {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <header>
+        <h1 class="logo">ESTRABISMX_SYS</h1>
+        <nav class="nav-links">
+            <a href="#projects">Proyectos</a>
+            <a href="#about">Sobre Mí</a>
+            <!-- El enlace contacto ahora abre el Modal mediante su ID -->
+            <a id="openContactModal">Contacto</a>
+        </nav>
+    </header>
+
+    <div class="main-layout">
+        
+        <!-- Barra Lateral Izquierda (Sidebar) -->
+        <aside class="sidebar">
+            <div class="sidebar-module">
+                <h3 class="sidebar-title">BROWSE BY TYPE</h3>
+                <ul class="sidebar-list">
+                    <li><a href="#">> Hardware Analógico</a></li>
+                    <li><a href="#">> Fabricación Digital</a></li>
+                    <li><a href="#">> OpenSCAD Models</a></li>
+                    <li><a href="#">> Interfaces Web</a></li>
+                    <li><a href="#">> Computer Vision</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-module">
+                <h3 class="sidebar-title">QUICK LINKS</h3>
+                <ul class="sidebar-list">
+                    <li><a href="#">> Repositorio GitHub</a></li>
+                    <li><a href="#">> Documentación C++</a></li>
+                    <li><a href="#">> Esquemas PCB</a></li>
+                    <li><a href="#">> Currículum.pdf</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-module">
+                <h3 class="sidebar-title">SYSTEM STATUS</h3>
+                <ul class="sidebar-list">
+                    <li>USER: Estrabismx</li>
+                    <li>LOC: Santiago, Chile</li>
+                    <li>STATUS: ONLINE</li>
+                </ul>
+            </div>
+
+            <!-- Módulo de Contacto en Barra Lateral -->
+            <div class="sidebar-module" id="contact">
+                <h3 class="sidebar-title">ESTABLECER_CONEXION</h3>
+                <div class="sidebar-contact-content">
+                    <p>Colaboraciones, presupuestos de fabricación o dudas sobre código.</p>
+                    <div class="badges">
+                        <a href="#" class="badge">GITHUB</a>
+                        <a href="#" class="badge">E-MAIL</a>
+                        <a href="#" class="badge">O-SOURCE</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Columna Central/Derecha de Contenido -->
+        <main class="content-area">
+            
+            <section id="statement">
+                <p>Diseño industrial, fabricación digital y desarrollo de interfaces.</p>
+                <div class="statement-separator"></div>
+                <p><span class="highlight">Construyendo hardware open-source y sistemas interactivos multimodales.</span></p>
+            </section>
+
+            <section id="projects">
+                <h2 class="section-title">/// PREVIEW_PROYECTOS.EXE</h2>
+                
+                <p class="section-desc">
+                    Registro visual de exploraciones técnicas recientes. Esta terminal muestra una selección rotativa de sistemas interactivos, ensamblaje de hardware analógico y desarrollo web.
+                </p>
+
+                <div class="carousel-container">
+                    <div class="carousel-display">
+                        <div id="carouselTag" class="tag-new">UPDATE!</div>
+                        <div id="carouselImg" class="thumbnail-placeholder">[ IMAGE RENDER OPENCV ]</div>
+                    </div>
+                    
+                    <div class="carousel-info">
+                        <h3 id="carouselTitle" class="carousel-title">SYS_01: OPENCV.JS_WEBCAM</h3>
+                        <div class="carousel-controls">
+                            <button class="btn-retro" onclick="prevSlide()">[ < ]</button>
+                            <button class="btn-retro" onclick="nextSlide()">[ > ]</button>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="proyectos.html" class="btn-retro btn-large">>> ACCEDER_A_TODOS_LOS_PROYECTOS.BAT</a>
+            </section>
+
+            <section id="about">
+                <h2 class="section-title">/// ABOUT_USER.DAT</h2>
+                <div class="about-container">
+                    <div class="avatar">[ AVATAR ]</div>
+                    <div class="bio">
+                        <p><strong>Perfil:</strong> Estudiante de Diseño Industrial y entusiasta de la electrónica. Mi enfoque combina la materialidad física (impresión 3D, fabricación de gabinetes paramétricos en OpenSCAD) con la programación de microcontroladores y el desarrollo de software web.</p>
+                        <p>Creo firmemente en la filosofía open-source y en el flujo de trabajo basado en terminales.</p>
+                        
+                        <div class="bio-actions">
+                            <a href="sobre_mi.html" class="btn-retro">>> LEER_PERFIL_COMPLETO.TXT</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>OPTIMIZED FOR DESKTOP // RES: 1024x768+ // © 2026 ESTRABISMX</p>
+    </footer>
+</div>
+
+<!-- Modal / Ventana Emergente de Contacto -->
+<div id="contactModal" class="modal-overlay">
+    <div class="modal-window">
+        <div class="modal-header">
+            <span class="modal-title">TERMINAL_CONTACTO.EXE</span>
+            <button id="closeModalBtn" class="modal-close">X</button>
+        </div>
+        <div class="modal-body">
+            <p><strong>/// ESTABLECER CONEXIÓN</strong><br><br>¿Necesitas una cotización para un proyecto, discutir esquemas de hardware analógico o colaborar en interfaces web?</p>
+            <div class="badges">
+                <a href="#" class="badge">GITHUB</a>
+                <a href="#" class="badge">E-MAIL</a>
+                <a href="#" class="badge">LINKEDIN</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts (Carrusel y Modal) -->
+<script>
+    /* LÓGICA DEL CARRUSEL */
+    const projects = [
+        {
+            title: "SYS_01: OPENCV.JS_WEBCAM // Motion Blur & MediaPipe",
+            imageText: "[ RENDER OPENCV - MULTIPLE CANVAS ]",
+            tag: "UPDATE!"
+        },
+        {
+            title: "SYS_02: SINTETIZADOR_AUDIO // 555 & 4017",
+            imageText: "[ ESQUEMATICO PCB Y CARCASA 3D ]",
+            tag: "NEW!"
+        },
+        {
+            title: "SYS_03: RPI_PICO_SDK // C++ Audio",
+            imageText: "[ CÓDIGO VS CODE - LIBRERÍAS AUDIO ]",
+            tag: ""
+        }
+    ];
+
+    let currentIndex = 0;
+    const domTitle = document.getElementById('carouselTitle');
+    const domImg = document.getElementById('carouselImg');
+    const domTag = document.getElementById('carouselTag');
+
+    function updateCarousel() {
+        const project = projects[currentIndex];
+        domTitle.textContent = project.title;
+        domImg.textContent = project.imageText; 
+        
+        if(project.tag !== "") {
+            domTag.textContent = project.tag;
+            domTag.style.display = "block";
+        } else {
+            domTag.style.display = "none";
+        }
+    }
+
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % projects.length;
+        updateCarousel();
+    }
+
+    function prevSlide() {
+        currentIndex = (currentIndex - 1 + projects.length) % projects.length;
+        updateCarousel();
+    }
+
+    updateCarousel();
+
+    /* LÓGICA DE LA VENTANA EMERGENTE (MODAL) */
+    const contactModal = document.getElementById('contactModal');
+    const openContactModal = document.getElementById('openContactModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // Abrir Modal
+    openContactModal.addEventListener('click', () => {
+        contactModal.style.display = 'flex';
+    });
+
+    // Cerrar Modal con la "X"
+    closeModalBtn.addEventListener('click', () => {
+        contactModal.style.display = 'none';
+    });
+
+    // Cerrar Modal al hacer clic en el fondo oscuro
+    contactModal.addEventListener('click', (e) => {
+        if (e.target === contactModal) {
+            contactModal.style.display = 'none';
+        }
+    });
+
+    // Cerrar Modal con la tecla ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && contactModal.style.display === 'flex') {
+            contactModal.style.display = 'none';
+        }
+    });
+</script>
+
+</body>
+</html>

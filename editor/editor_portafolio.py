@@ -1,5 +1,5 @@
 """
-EDITOR DE PORTAFOLIO — Estrabismx 98
+EDITOR DE PORTAFOLIO — Estrabismx
 =====================================
 
 Programa con ventanas para cargar y editar los proyectos del portafolio
@@ -9,6 +9,7 @@ sin tocar código.
   - Copia las imágenes y videos a  assets/proyecto-XX/  con nombres
     ordenados (proyecto_07a.jpg, proyecto_07b.mp4, ...).
   - Reduce automáticamente las fotos pesadas.
+  - Convierte modelos 3D .stl / .stp a .glb low poly (ver modelo3d.py).
   - NO sube nada a GitHub: el commit lo haces tú (por ejemplo con GitHub Desktop).
 
 Cómo abrirlo: doble clic en  abrir_editor.bat  (en esta misma carpeta).
@@ -17,6 +18,7 @@ Cómo abrirlo: doble clic en  abrir_editor.bat  (en esta misma carpeta).
 import copy
 import hashlib
 import json
+import math
 import os
 import queue
 import re
@@ -37,6 +39,16 @@ except ImportError:
     messagebox.showerror(
         'Falta Pillow',
         'Falta instalar la librería Pillow.\n\nAbre una terminal en la carpeta "editor" y ejecuta:\n\n'
+        'python -m pip install -r requirements.txt')
+    sys.exit(1)
+
+try:
+    from modelo3d import EXT_MODELO, NIVELES, NIVEL_POR_DEFECTO, convertir as convertir_modelo
+except ImportError:
+    tk.Tk().withdraw()
+    messagebox.showerror(
+        'Falta numpy',
+        'Falta instalar la librería numpy (para los modelos 3D).\n\nAbre una terminal en la carpeta "editor" y ejecuta:\n\n'
         'python -m pip install -r requirements.txt')
     sys.exit(1)
 
@@ -78,6 +90,19 @@ VIDEO_BITRATE_ALTO = 3_000_000       # bits/s: videos por encima de esto se reco
 
 FICHA_INICIAL = {'Herramientas': '', 'Tiempo de Desarrollo': '', 'Materiales': '', 'Origen': ''}
 
+# Modelo 3D: mismos valores por defecto que usa la web (main.js) para la lata
+MATERIAL_INICIAL = {'color': '#b8bcc4', 'metalness': 0.9, 'roughness': 0.35}
+
+# Estilos de luz del modelo 3D. Las claves deben coincidir con LUCES en main.js
+LUCES = {
+    'estudio': 'Estudio (por defecto)',
+    'atardecer': 'Atardecer',
+    'neon_rojo': 'Neón rojo',
+    'contraluz': 'Contraluz',
+    'noche': 'Noche',
+}
+LUZ_INICIAL = 'estudio'
+
 CABECERA = """/* =====================================================================
    PROYECTOS DEL PORTAFOLIO
    Este archivo lo genera el Editor de Portafolio (carpeta editor/).
@@ -89,7 +114,7 @@ CABECERA = """/* ===============================================================
 # Orden de los campos al escribir proyectos.js
 ORDEN_CAMPOS = ['id', 'titulo', 'icono', 'subtitulo', 'resumen', 'etiquetas', 'curso', 'anio', 'tamano',
                 'encabezado', 'tipo', 'objetivo', 'desafio', 'descripcion', 'colores', 'ficha',
-                'dificultad', 'galeria']
+                'dificultad', 'modelo3d', 'galeria']
 
 # Tamaño de las miniaturas de la galería
 CELDA_W, CELDA_H = 156, 150
@@ -337,14 +362,38 @@ def preparar_archivo(origen, carpeta_destino, base, optimizar, progreso=None, pl
     return destino, False, aviso
 
 
+_servidor = None
+
+
+def iniciar_servidor():
+    """Servidor local (solo en este computador) mientras el editor está abierto.
+    Hace falta porque los navegadores no cargan los modelos .glb desde archivos locales."""
+    global _servidor
+    if _servidor is None:
+        import functools
+        import http.server
+
+        class Manejador(http.server.SimpleHTTPRequestHandler):
+            extensions_map = {**http.server.SimpleHTTPRequestHandler.extensions_map,
+                              '.glb': 'model/gltf-binary', '.js': 'text/javascript'}
+
+            def end_headers(self):
+                self.send_header('Cache-Control', 'no-store')   # siempre la versión recién guardada
+                super().end_headers()
+
+            def log_message(self, *args):   # sin consola (pythonw): no escribir registros
+                pass
+
+        _servidor = http.server.ThreadingHTTPServer(
+            ('127.0.0.1', 0), functools.partial(Manejador, directory=str(RAIZ)))
+        threading.Thread(target=_servidor.serve_forever, daemon=True).start()
+    return _servidor.server_address[1]
+
+
 def abrir_en_navegador(proyecto_id=None):
-    """Abre index.html (y el proyecto) en el navegador predeterminado."""
-    destino = (RAIZ / 'index.html').as_uri() + (f'#proyecto-{proyecto_id}' if proyecto_id else '')
-    # Windows pierde el "#proyecto-XX" al abrir archivos locales, por eso se usa una página puente
-    puente = Path(tempfile.gettempdir()) / 'vista_previa_portafolio.html'
-    puente.write_text(f'<meta charset="utf-8"><meta http-equiv="refresh" content="0; url={destino}">',
-                      encoding='utf-8')
-    webbrowser.open(puente.as_uri())
+    """Abre el proyecto en el anillo de proyectos.html (o la portada) usando el servidor local."""
+    pagina = f'proyectos.html#proyecto-{proyecto_id}' if proyecto_id else 'index.html'
+    webbrowser.open(f'http://127.0.0.1:{iniciar_servidor()}/{pagina}')
 
 
 # ---------------------------------------------------------------------------
@@ -403,7 +452,7 @@ class Editor:
             self.actualizar_titulo()
 
     def actualizar_titulo(self):
-        self.root.title(('* ' if self.sucio else '') + 'Editor de Portafolio — Estrabismx 98')
+        self.root.title(('* ' if self.sucio else '') + 'Editor de Portafolio — Estrabismx')
 
     def siguiente_id(self):
         numeros = [int(p['id']) for p in self.proyectos if str(p['id']).isdigit()]
@@ -432,7 +481,7 @@ class Editor:
         izquierda = ttk.Frame(principal)
         izquierda.pack(side='left', fill='y', padx=(0, 8))
         ttk.Label(izquierda, text='Proyectos', style='Titulo.TLabel').pack(anchor='w')
-        ttk.Label(izquierda, text='El orden es el de la carpeta\nProyectos del sitio.',
+        ttk.Label(izquierda, text='El orden es el del carrusel\nde la página principal.',
                   style='Ayuda.TLabel').pack(anchor='w', pady=(0, 4))
 
         self.lista = tk.Listbox(izquierda, width=30, height=20, activestyle='none', exportselection=False,
@@ -465,6 +514,7 @@ class Editor:
         self.construir_carpeta()
         self.construir_especificaciones()
         self.construir_galeria()
+        self.construir_modelo3d()
 
         # --- Barra inferior ---
         inferior = ttk.Frame(root, padding=(8, 0, 8, 8))
@@ -507,9 +557,9 @@ class Editor:
         self.pestanas.add(f, text='  General  ')
         f.columnconfigure(1, weight=1)
 
-        self.campo(f, 0, 'Título corto *', 'titulo', 'Nombre del icono y de la ventana')
-        self.campo(f, 1, 'Encabezado', 'encabezado', 'Título grande de la pestaña General')
-        self.campo(f, 2, 'Tipo', 'tipo')
+        self.campo(f, 0, 'Título corto *', 'titulo', 'Título del proyecto en el carrusel')
+        self.campo(f, 1, 'Encabezado', 'encabezado', 'Título grande del detalle (proyectos.html, en mantención)')
+        self.campo(f, 2, 'Tipo', 'tipo', 'Aparece en el filtro BROWSE BY TYPE')
         self.campo(f, 3, 'Objetivo', 'objetivo')
         self.campo(f, 4, 'Desafío', 'desafio')
 
@@ -535,13 +585,14 @@ class Editor:
         ttk.Button(bc, text='▲', command=lambda: self.mover_color(-1)).pack(fill='x')
         ttk.Button(bc, text='▼', command=lambda: self.mover_color(1)).pack(fill='x')
 
-    # Pestaña Carpeta Proyectos
+    # Pestaña Resumen y datos
     def construir_carpeta(self):
         f = ttk.Frame(self.pestanas, padding=10)
-        self.pestanas.add(f, text='  Vista en carpeta Proyectos  ')
+        self.pestanas.add(f, text='  Resumen y datos  ')
         f.columnconfigure(1, weight=1)
 
-        ttk.Label(f, text='Así se muestra el proyecto al seleccionarlo en la carpeta "Proyectos" del sitio.',
+        ttk.Label(f, text='Datos para la página de proyectos (proyectos.html, hoy en mantención). '
+                          'La web actual todavía no los muestra.',
                   style='Ayuda.TLabel').grid(row=0, column=0, columnspan=3, sticky='w', pady=(0, 6))
         self.campo(f, 1, 'Subtítulo', 'subtitulo')
         ttk.Label(f, text='Resumen').grid(row=2, column=0, sticky='nw', pady=3)
@@ -563,7 +614,7 @@ class Editor:
         self.etiqueta_icono = ttk.Label(lado, text='')
         self.etiqueta_icono.pack(anchor='w')
         ttk.Button(lado, text='Elegir icono…', command=self.elegir_icono).pack(anchor='w', pady=4)
-        ttk.Label(lado, text='SVG recomendado (también PNG o JPG).' +
+        ttk.Label(lado, text='Opcional: la web actual no usa el icono.\nSVG recomendado (también PNG o JPG).' +
                   ('\nTambién puedes arrastrarlo al recuadro.' if HAY_ARRASTRE else ''),
                   style='Ayuda.TLabel').pack(anchor='w')
         if HAY_ARRASTRE:
@@ -627,7 +678,7 @@ class Editor:
         ttk.Button(barra, text='+ Agregar archivos…', command=self.elegir_archivos).pack(side='left')
         ttk.Button(barra, text='◀ Mover', command=lambda: self.mover_archivo(-1)).pack(side='left', padx=(10, 0))
         ttk.Button(barra, text='Mover ▶', command=lambda: self.mover_archivo(1)).pack(side='left')
-        ttk.Button(barra, text='Poner de portada', command=self.poner_portada).pack(side='left', padx=4)
+        ttk.Button(barra, text='Poner de portada (carrusel)', command=self.poner_portada).pack(side='left', padx=4)
         ttk.Button(barra, text='Quitar', command=self.quitar_archivo).pack(side='left')
         ttk.Button(barra, text='Optimizar archivos existentes', command=self.optimizar_existentes).pack(side='right')
 
@@ -673,6 +724,280 @@ class Editor:
         self.casilla_plano.pack(side='left')
         self.info_archivo = ttk.Label(f, text='', style='Ayuda.TLabel')
         self.info_archivo.pack(anchor='w', pady=(4, 0))
+
+    # Pestaña Modelo 3D
+    def construir_modelo3d(self):
+        f = ttk.Frame(self.pestanas, padding=10)
+        self.pestanas.add(f, text='  Modelo 3D  ')
+        f.columnconfigure(1, weight=1)
+
+        ttk.Label(f, text='Modelo 3D del anillo de proyectos', style='Titulo.TLabel').grid(
+            row=0, column=0, columnspan=3, sticky='w')
+        ttk.Label(f, text='Se muestra en proyectos.html. Si el proyecto no tiene modelo, la web muestra la lata.',
+                  style='Ayuda.TLabel').grid(row=1, column=0, columnspan=3, sticky='w', pady=(0, 8))
+
+        # Archivo
+        ttk.Label(f, text='Archivo').grid(row=2, column=0, sticky='nw', pady=3, padx=(0, 8))
+        self.zona_modelo = tk.Label(f, text='', anchor='w', justify='left', relief='sunken', bg='white',
+                                    padx=8, pady=10)
+        self.zona_modelo.grid(row=2, column=1, sticky='ew', pady=3)
+        botones = ttk.Frame(f)
+        botones.grid(row=2, column=2, sticky='nw', padx=6)
+        ttk.Button(botones, text='Elegir .stl / .stp…', command=self.elegir_modelo).pack(fill='x')
+        ttk.Button(botones, text='Quitar modelo', command=self.quitar_modelo).pack(fill='x', pady=(4, 0))
+        if HAY_ARRASTRE:
+            self.zona_modelo.drop_target_register(DND_FILES)
+            self.zona_modelo.dnd_bind('<<Drop>>', self.al_soltar_modelo)
+
+        ttk.Label(f, text='Nivel de detalle').grid(row=3, column=0, sticky='w', pady=3)
+        self.var_detalle = tk.StringVar()
+        self.combo_detalle = ttk.Combobox(f, textvariable=self.var_detalle, state='readonly', width=30,
+                                          values=[nombre for nombre, _ in NIVELES.values()])
+        self.combo_detalle.grid(row=3, column=1, sticky='w', pady=3)
+        self.combo_detalle.bind('<<ComboboxSelected>>', lambda e: self.al_cambiar_detalle())
+        ttk.Label(f, text='Menos triángulos = más low poly. Se aplica al guardar.',
+                  style='Ayuda.TLabel').grid(row=3, column=2, sticky='w', padx=6)
+
+        # Material
+        ttk.Label(f, text='Material', style='Titulo.TLabel').grid(row=4, column=0, sticky='w', pady=(16, 2))
+        ttk.Label(f, text='También se usa en la lata si no hay modelo.',
+                  style='Ayuda.TLabel').grid(row=4, column=1, sticky='w', pady=(16, 2))
+
+        ttk.Label(f, text='Color').grid(row=5, column=0, sticky='w', pady=3)
+        color = ttk.Frame(f)
+        color.grid(row=5, column=1, sticky='w', pady=3)
+        self.muestra_color_modelo = tk.Label(color, width=3, relief='sunken', bg=MATERIAL_INICIAL['color'])
+        self.muestra_color_modelo.pack(side='left')
+        self.var_color_modelo = tk.StringVar()
+        ttk.Entry(color, textvariable=self.var_color_modelo, width=10).pack(side='left', padx=6)
+        ttk.Button(color, text='Elegir…', command=self.elegir_color_modelo).pack(side='left')
+        self.var_color_modelo.trace_add('write', lambda *_: self.al_cambiar_modelo())
+
+        self.vars_material = {}
+        for fila, (clave, nombre, ayuda) in enumerate((
+                ('metalness', 'Metalness', '0 = plástico · 1 = metal'),
+                ('roughness', 'Roughness', '0 = pulido · 1 = mate')), start=6):
+            ttk.Label(f, text=nombre).grid(row=fila, column=0, sticky='w', pady=3)
+            marco = ttk.Frame(f)
+            marco.grid(row=fila, column=1, sticky='w', pady=3)
+            var = tk.DoubleVar()
+            etiqueta = ttk.Label(marco, width=5)
+            ttk.Scale(marco, from_=0, to=1, length=220, variable=var,
+                      command=lambda v, e=etiqueta: (e.config(text=f'{float(v):.2f}'), self.al_cambiar_modelo())
+                      ).pack(side='left')
+            etiqueta.pack(side='left', padx=6)
+            ttk.Label(f, text=ayuda, style='Ayuda.TLabel').grid(row=fila, column=2, sticky='w', padx=6)
+            self.vars_material[clave] = (var, etiqueta)
+
+        # Posición
+        ttk.Label(f, text='Posición', style='Titulo.TLabel').grid(row=8, column=0, sticky='w', pady=(16, 2))
+        ttk.Label(f, text='Escala').grid(row=9, column=0, sticky='w', pady=3)
+        self.var_escala_modelo = tk.StringVar()
+        ttk.Spinbox(f, from_=0.1, to=5, increment=0.1, width=8, textvariable=self.var_escala_modelo).grid(
+            row=9, column=1, sticky='w', pady=3)
+        self.var_escala_modelo.trace_add('write', lambda *_: self.al_cambiar_modelo())
+        ttk.Label(f, text='1 = alto de la lata', style='Ayuda.TLabel').grid(row=9, column=2, sticky='w', padx=6)
+
+        ttk.Label(f, text='Rotación (grados)').grid(row=10, column=0, sticky='w', pady=3)
+        rotacion = ttk.Frame(f)
+        rotacion.grid(row=10, column=1, sticky='w', pady=3)
+        self.vars_rotacion = []
+        for eje in 'XYZ':
+            ttk.Label(rotacion, text=eje).pack(side='left', padx=(0, 3))
+            var = tk.StringVar()
+            ttk.Spinbox(rotacion, from_=-180, to=180, increment=15, width=6, textvariable=var).pack(
+                side='left', padx=(0, 10))
+            var.trace_add('write', lambda *_: self.al_cambiar_modelo())
+            self.vars_rotacion.append(var)
+        ttk.Label(f, text='Posición inicial antes de girar', style='Ayuda.TLabel').grid(
+            row=10, column=2, sticky='w', padx=6)
+
+        # Iluminación
+        ttk.Label(f, text='Iluminación', style='Titulo.TLabel').grid(row=11, column=0, sticky='w', pady=(16, 2))
+        ttk.Label(f, text='Estilo de luz').grid(row=12, column=0, sticky='w', pady=3)
+        self.var_luz = tk.StringVar()
+        combo_luz = ttk.Combobox(f, textvariable=self.var_luz, state='readonly', width=30,
+                                 values=list(LUCES.values()))
+        combo_luz.grid(row=12, column=1, sticky='w', pady=3)
+        combo_luz.bind('<<ComboboxSelected>>', lambda e: self.al_cambiar_luz())
+        ttk.Label(f, text='En el anillo cambia según el proyecto del centro.',
+                  style='Ayuda.TLabel').grid(row=12, column=2, sticky='w', padx=6)
+
+        ttk.Button(f, text='Restablecer material, luz y posición', command=self.restablecer_modelo).grid(
+            row=13, column=1, sticky='w', pady=(10, 0))
+        ttk.Label(f, text='Al convertir, el modelo se centra y se ajusta al tamaño de la lata. Los archivos CAD '
+                          'vienen con Z hacia arriba: se giran para que queden de pie en la web.',
+                  style='Ayuda.TLabel', wraplength=640).grid(row=14, column=0, columnspan=3, sticky='w', pady=(14, 0))
+
+    # ---------------- Modelo 3D ----------------
+
+    def modelo(self, crear=False):
+        """El diccionario 'modelo3d' del proyecto actual (lo crea si hace falta)."""
+        p = self.p()
+        if not p:
+            return {}
+        if crear:
+            if not isinstance(p.get('modelo3d'), dict):
+                p['modelo3d'] = {}
+            return p['modelo3d']
+        return p.get('modelo3d') or {}
+
+    def refrescar_modelo3d(self):
+        p = self.p()
+        m = self.modelo()
+        material = {**MATERIAL_INICIAL, **(m.get('material') or {})}
+        escala = (m.get('escala') or [1, 1, 1])[0]
+        rotacion = m.get('rotacion') or [0, 0, 0]
+        self.cargando = True
+        try:
+            self.var_detalle.set(NIVELES.get(m.get('detalle'), NIVELES[NIVEL_POR_DEFECTO])[0])
+            self.var_luz.set(LUCES.get(m.get('luz'), LUCES[LUZ_INICIAL]))
+            self.var_color_modelo.set(material['color'])
+            for clave, (var, etiqueta) in self.vars_material.items():
+                var.set(float(material[clave]))
+                etiqueta.config(text=f'{float(material[clave]):.2f}')
+            self.var_escala_modelo.set(f'{escala:g}')
+            for var, radianes in zip(self.vars_rotacion, rotacion):
+                var.set(f'{math.degrees(radianes):g}')
+        finally:
+            self.cargando = False
+        self.refrescar_color_modelo()
+
+        arrastrar = '\n(o arrastra aquí un .stl / .stp)' if HAY_ARRASTRE else ''
+        if not p:
+            texto = ''
+        elif p.get('_modelo_origen'):
+            texto = f'{Path(p["_modelo_origen"]).name}\nNuevo: se convertirá a .glb al guardar.'
+        elif m.get('archivo'):
+            ruta = carpeta_de(p) / m['archivo']
+            if ruta.exists():
+                texto = (f'{m["archivo"]}\n{m.get("triangulos", "?")} triángulos · {formato_peso(ruta.stat().st_size)}'
+                         + (' · se copiará al guardar' if p.get('_modelo_copiar') else ''))
+            elif p.get('_modelo_copiar'):
+                texto = f'{m["archivo"]}\nSe copiará del proyecto original al guardar.'
+            else:
+                texto = f'⚠ No se encuentra {m["archivo"]}\nElige el archivo de nuevo.'
+        else:
+            texto = 'Sin modelo: en la web se muestra la lata.' + arrastrar
+        self.zona_modelo.config(text=texto)
+
+    def refrescar_color_modelo(self):
+        color = self.var_color_modelo.get().strip()
+        if re.fullmatch(r'#[0-9a-fA-F]{6}', color):
+            self.muestra_color_modelo.config(bg=color)
+
+    def al_cambiar_modelo(self):
+        """Pasa material, escala y rotación del formulario al proyecto."""
+        self.refrescar_color_modelo()
+        if self.cargando or not self.p():
+            return
+        m = self.modelo(crear=True)
+        material = {**MATERIAL_INICIAL, **(m.get('material') or {})}
+        color = self.var_color_modelo.get().strip()
+        if re.fullmatch(r'#[0-9a-fA-F]{6}', color):
+            material['color'] = color.lower()
+        for clave, (var, _) in self.vars_material.items():
+            material[clave] = round(float(var.get()), 2)
+        m['material'] = material
+        try:
+            escala = min(max(float(self.var_escala_modelo.get().replace(',', '.')), 0.1), 5)
+            m['escala'] = [escala] * 3
+        except ValueError:
+            pass
+        try:
+            m['rotacion'] = [round(math.radians(float(v.get().replace(',', '.'))), 4) for v in self.vars_rotacion]
+        except ValueError:
+            pass
+        self.marcar_cambio()
+
+    def elegir_color_modelo(self):
+        _, hexa = colorchooser.askcolor(color=self.var_color_modelo.get(), title='Color del modelo')
+        if hexa:
+            self.var_color_modelo.set(hexa)
+
+    def restablecer_modelo(self):
+        if not self.p():
+            return
+        m = self.modelo(crear=True)
+        for clave in ('material', 'escala', 'rotacion', 'luz'):
+            m.pop(clave, None)
+        self.marcar_cambio()
+        self.refrescar_modelo3d()
+
+    def al_cambiar_luz(self):
+        if self.cargando or not self.p():
+            return
+        clave = next((k for k, nombre in LUCES.items() if nombre == self.var_luz.get()), LUZ_INICIAL)
+        m = self.modelo(crear=True)
+        if clave == LUZ_INICIAL:
+            m.pop('luz', None)   # el estilo por defecto no hace falta guardarlo
+        else:
+            m['luz'] = clave
+        self.marcar_cambio()
+
+    def poner_modelo(self, ruta):
+        ruta = Path(ruta)
+        if ruta.suffix.lower() not in EXT_MODELO:
+            messagebox.showwarning('Modelo 3D', 'El modelo debe ser .stl, .stp o .step.')
+            return False
+        p = self.p()
+        if not p:
+            return False
+        self.modelo(crear=True)
+        p['_modelo_origen'] = str(ruta)
+        p.pop('_modelo_copiar', None)
+        self.marcar_cambio()
+        self.refrescar_modelo3d()
+        return True
+
+    def elegir_modelo(self):
+        if not self.p():
+            return False
+        ruta = filedialog.askopenfilename(title='Elige el modelo 3D del proyecto',
+                                          filetypes=[('Modelos 3D', '*.stl *.stp *.step')])
+        return bool(ruta) and self.poner_modelo(ruta)
+
+    def al_soltar_modelo(self, evento):
+        rutas = self.root.tk.splitlist(evento.data)
+        if rutas:
+            self.poner_modelo(rutas[0])
+
+    def quitar_modelo(self):
+        p = self.p()
+        m = self.modelo()
+        if not p or not (m.get('archivo') or p.get('_modelo_origen')):
+            return
+        if not messagebox.askyesno('Quitar modelo', '¿Quitar el modelo 3D? En la web se mostrará la lata.'):
+            return
+        if m.get('archivo') and not p.get('_modelo_copiar'):
+            p['_modelo_borrar'] = m['archivo']
+        for clave in ('archivo', 'triangulos'):
+            m.pop(clave, None)
+        p.pop('_modelo_origen', None)
+        p.pop('_modelo_copiar', None)
+        self.marcar_cambio()
+        self.refrescar_modelo3d()
+
+    def al_cambiar_detalle(self):
+        p = self.p()
+        if self.cargando or not p:
+            return
+        m = self.modelo(crear=True)
+        anterior = m.get('detalle', NIVEL_POR_DEFECTO)
+        nuevo = next(k for k, (nombre, _) in NIVELES.items() if nombre == self.var_detalle.get())
+        if nuevo == anterior:
+            return
+        m['detalle'] = nuevo
+        # Para reconvertir hace falta el archivo original (la web solo guarda el .glb)
+        if m.get('archivo') and not p.get('_modelo_origen'):
+            if not (messagebox.askyesno('Nivel de detalle',
+                                        'Para cambiar el nivel de detalle hay que volver a convertir el '
+                                        'archivo original (.stl / .stp).\n\n¿Elegirlo ahora?')
+                    and self.elegir_modelo()):
+                m['detalle'] = anterior
+                self.refrescar_modelo3d()
+                return
+        self.marcar_cambio()
 
     # ---------------- Lista de proyectos ----------------
 
@@ -725,6 +1050,16 @@ class Editor:
             copia['_icono_origen'] = str(icono_actual)
         for g in copia['galeria']:
             g['_nuevo'] = False   # ya están optimizadas: solo se copian
+        # El modelo 3D ya convertido se copia a la carpeta del proyecto nuevo al guardar
+        modelo = copia.get('modelo3d') or {}
+        copia.pop('_modelo_borrar', None)
+        if modelo.get('archivo') and not copia.get('_modelo_origen'):
+            ruta_modelo = carpeta_de(p) / modelo['archivo']
+            if ruta_modelo.exists():
+                copia['_modelo_copiar'] = str(ruta_modelo)
+            else:
+                modelo.pop('archivo', None)
+                modelo.pop('triangulos', None)
         self.proyectos.insert(self.actual + 1, copia)
         self.marcar_sucio()
         self.refrescar_lista()
@@ -800,6 +1135,7 @@ class Editor:
         self.refrescar_colores()
         self.refrescar_ficha()
         self.refrescar_icono()
+        self.refrescar_modelo3d()
         self.seleccionar_archivo(None)
         self.lienzo.yview_moveto(0)
         self.dibujar_galeria()
@@ -985,7 +1321,7 @@ class Editor:
             return
         ruta = self.ruta_icono(p)
         if not ruta.exists():
-            self.etiqueta_icono.config(text='⚠ Falta el icono: elige uno.')
+            self.etiqueta_icono.config(text='Sin icono (opcional).')
             self.vista_icono.config(text='Sin icono\n\n(arrastra aquí)' if HAY_ARRASTRE else 'Sin icono')
             return
         nuevo = ' (nuevo, se copiará al guardar)' if p.get('_icono_origen') else ''
@@ -1397,6 +1733,8 @@ class Editor:
             for g in p.get('galeria', []):
                 if not Path(g['_origen']).exists():
                     errores.append(f'{nombre}: no se encuentra {g["_origen"]}')
+            if p.get('_modelo_origen') and not Path(p['_modelo_origen']).exists():
+                errores.append(f'{nombre}: no se encuentra el modelo 3D {p["_modelo_origen"]}')
         return errores
 
     @staticmethod
@@ -1435,8 +1773,23 @@ class Editor:
             origen = Path(p['_icono_origen'])
             icono = f'proyecto_{p["id"]}{origen.suffix.lower()}'
             shutil.copy2(origen, temporal / icono)
+
+        # Modelo 3D: .stl / .stp → .glb low poly
+        modelo = None
+        nombre_modelo = f'proyecto_{p["id"]}.glb'
+        if p.get('_modelo_origen'):
+            nivel = (p.get('modelo3d') or {}).get('detalle', NIVEL_POR_DEFECTO)
+            modelo = convertir_modelo(
+                p['_modelo_origen'], temporal / nombre_modelo, nivel,
+                avisar=lambda t: avisar(f'Proyecto {p["id"]} · modelo 3D: {t}', None))
+            modelo['archivo'] = nombre_modelo
+        elif p.get('_modelo_copiar'):
+            avisar(f'Proyecto {p["id"]} · copiando modelo 3D', None)
+            shutil.copy2(p['_modelo_copiar'], temporal / nombre_modelo)
+            modelo = {'archivo': nombre_modelo, 'triangulos': (p.get('modelo3d') or {}).get('triangulos')}
+
         return {'carpeta': carpeta, 'temporal': temporal, 'finales': finales,
-                'animaciones': animaciones, 'avisos': avisos, 'icono': icono}
+                'animaciones': animaciones, 'avisos': avisos, 'icono': icono, 'modelo': modelo}
 
     def finalizar_proyecto(self, p, info):
         """Fase 2: reemplaza los archivos antiguos por los nuevos."""
@@ -1444,6 +1797,8 @@ class Editor:
         if p.get('_modificado'):
             for nombre in p.get('_originales', []):
                 (carpeta / nombre).unlink(missing_ok=True)
+        if p.get('_modelo_borrar'):
+            (carpeta / p.pop('_modelo_borrar')).unlink(missing_ok=True)
         for archivo in info['temporal'].iterdir():
             os.replace(archivo, carpeta / archivo.name)
         info['temporal'].rmdir()
@@ -1463,6 +1818,13 @@ class Editor:
         if info['icono']:
             p['icono'] = info['icono']
             p.pop('_icono_origen', None)
+        if info.get('modelo'):
+            m = p.setdefault('modelo3d', {})
+            m['archivo'] = info['modelo']['archivo']
+            if info['modelo'].get('triangulos'):
+                m['triangulos'] = info['modelo']['triangulos']
+            p.pop('_modelo_origen', None)
+            p.pop('_modelo_copiar', None)
 
     def preparar_en_segundo_plano(self, pendientes):
         """Procesa los archivos en otro hilo y muestra una ventana de progreso.
@@ -1479,7 +1841,7 @@ class Editor:
         barra = ttk.Progressbar(dialogo, length=520, mode='indeterminate')
         barra.pack(padx=16, pady=(8, 4))
         barra.start(12)
-        ttk.Label(dialogo, text='Los videos pueden tardar varios minutos. No cierres el editor.',
+        ttk.Label(dialogo, text='Los videos y modelos 3D pueden tardar varios minutos. No cierres el editor.',
                   style='Ayuda.TLabel').pack(anchor='w', padx=16, pady=(0, 14))
         dialogo.update_idletasks()
         x = self.root.winfo_rootx() + (self.root.winfo_width() - dialogo.winfo_width()) // 2
@@ -1534,7 +1896,9 @@ class Editor:
             messagebox.showerror('No se pudo guardar', '\n'.join(errores[:15]))
             return False
 
-        pendientes = [p for p in self.proyectos if p.get('_modificado') or p.get('_icono_origen')]
+        pendientes = [p for p in self.proyectos
+                      if p.get('_modificado') or p.get('_icono_origen') or p.get('_modelo_origen')
+                      or p.get('_modelo_copiar') or p.get('_modelo_borrar')]
         self.guardando = True
         try:
             preparados = self.preparar_en_segundo_plano(pendientes) if pendientes else []
@@ -1569,6 +1933,7 @@ class Editor:
         if self.p():
             self.seleccionar_archivo(self.sel_galeria)
             self.refrescar_icono()
+            self.refrescar_modelo3d()
         self.estado.config(text='✔ Guardado. Recuerda hacer commit en GitHub Desktop para publicarlo.')
         if avisos:
             messagebox.showwarning('Guardado con avisos', '\n\n'.join(avisos))
