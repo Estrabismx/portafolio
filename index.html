@@ -17,10 +17,10 @@
   <header>
     <h1 class="logo"><a href="index.html">ESTRABISMX</a></h1>
     <nav class="nav-links">
-      <a href="index.html#projects">Proyectos</a>
-      <a href="index.html#about">Sobre Mí</a>
-      <a href="paint.html">Paint</a>
-      <a href="#contacto" data-open-modal="contactModal">Contacto</a>
+      <a href="proyectos.html">// proyectos</a>
+      <a href="sobre_mi.html">// sobre_mi</a>
+      <a href="#contacto" data-open-modal="contactModal">// contacto</a>      
+      <a href="paint.html">// pintar</a>
     </nav>
   </header>
 
@@ -31,41 +31,29 @@
          ================================================================= -->
     <aside class="sidebar">
       <div class="sidebar-module" data-module="browse">
-        <h3 class="sidebar-title">BROWSE BY TYPE</h3>
+        <h3 class="sidebar-title">// categorias</h3>
         <!-- Se llena con los tipos de proyectos.js -->
         <ul class="sidebar-list" id="typeList"></ul>
       </div>
 
       <div class="sidebar-module" data-module="links">
-        <h3 class="sidebar-title">QUICK LINKS</h3>
+        <h3 class="sidebar-title">// enlaces</h3>
         <ul class="sidebar-list">
           <li><a href="https://github.com/estrabismx" target="_blank" rel="noopener">> GitHub</a></li>
           <li><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener">> Instagram</a></li>
           <li><a href="mailto:camila.ramirez2@mail.udp.cl">> E-mail</a></li>
-          <li><a href="paint.html">> Paint</a></li>
         </ul>
       </div>
 
       <div class="sidebar-module" data-module="status">
-        <h3 class="sidebar-title">SYSTEM STATUS</h3>
+        <h3 class="sidebar-title">// datos</h3>
         <ul class="sidebar-list">
-          <li>USER: Estrabismx</li>
-          <li>NOMBRE: Camila Ramírez</li>
-          <li>LOC: Santiago, Chile</li>
+          <li><b>usuario:</b> Estrabismx</li>
+          <li><b>nombre:</b> Camila Ramírez</li>
+          <li><b>ubicacion:</b> Santiago, Chile</li>
         </ul>
       </div>
 
-      <div class="sidebar-module" id="contact" data-module="contact">
-        <h3 class="sidebar-title">ESTABLECER_CONEXION</h3>
-        <div class="sidebar-contact-content">
-          <p>Haz clic en los enlaces para abrir de forma externa.</p>
-          <div class="badges">
-            <a href="https://github.com/estrabismx" target="_blank" rel="noopener" class="badge">GITHUB</a>
-            <a href="mailto:camila.ramirez2@mail.udp.cl" class="badge">E-MAIL</a>
-            <a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener" class="badge">INSTAGRAM</a>
-          </div>
-        </div>
-      </div>
     </aside>
 
     <!-- =================================================================
@@ -74,16 +62,18 @@
     <main class="content-area">
 
       <section id="statement">
-        <p>Diseñadorx interdisciplinar, fan del trabajo artesanal y digital.</p>
+        <p>El diseño modular, la cerveza bien fria, la mujeres trans, no lo entenderías...</p>
         <div class="statement-separator"></div>
-        <p><span class="highlight">Fabricación digital, trabajo modular y artesanal.</span></p>
+        <p><span class="highlight">PlaceHolder.</span></p>
       </section>
 
+      <br>
+
       <section id="projects">
-        <h2 class="section-title">/// PREVIEW_PROYECTOS.EXE</h2>
+        <h2 class="section-title">// visualizacion_de_proyectos</h2>
 
         <p class="section-desc">
-          Selección de proyectos. Usa [ &lt; ] y [ &gt; ] para recorrerlos o filtra por tipo en BROWSE BY TYPE.
+          Selección de proyectos. Usa &lt; y &gt; para recorrerlos o filtra por tipo en [categorías].
         </p>
 
         <div class="carousel-container">
@@ -96,25 +86,26 @@
           <div class="carousel-info">
             <h3 id="carouselTitle" class="carousel-title"></h3>
             <div class="carousel-controls">
-              <button type="button" class="btn-retro" id="carouselPrev" aria-label="Proyecto anterior">[ &lt; ]</button>
-              <button type="button" class="btn-retro" id="carouselNext" aria-label="Proyecto siguiente">[ &gt; ]</button>
+              <button type="button" class="btn-retro" id="carouselPrev" aria-label="Proyecto anterior"> &lt; </button>
+              <button type="button" class="btn-retro" id="carouselNext" aria-label="Proyecto siguiente"> &gt; </button>
+              <!-- main.js actualiza el href con el proyecto que se está mostrando -->
+              <a href="proyectos.html" class="btn-retro btn-squiggly" id="carouselOpen"><span>&gt;&gt; ver_proyecto</span></a>
             </div>
           </div>
         </div>
 
-        <a href="proyectos.html" class="btn-retro btn-large">&gt;&gt; ACCEDER_A_TODOS_LOS_PROYECTOS.BAT</a>
+        <a href="proyectos.html" class="btn-retro btn-large btn-squiggly"><span>&gt;&gt; proyectos</span></a>
       </section>
 
       <section id="about">
-        <h2 class="section-title">/// ABOUT_USER.DAT</h2>
+        <h2 class="section-title">// usuario</h2>
         <div class="about-container">
           <div class="avatar">[ AVATAR ]</div>
           <div class="bio">
-            <p><strong>Camila Ramírez "Estrabismx"</strong><br>Diseñadorx interdisciplinar, fan del trabajo artesanal y digital.</p>
-            <p>Diseñadorx de Santiago de Chile, trabajando bajo el seudónimo <b>"Estrabismx"</b>. Especialista en la fabricación digital, además del trabajo artesanal y manual. Aprendiendo y capacitandose en el área de la electrónica y la programación.</p>
+            <p><strong>Camila Ramírez "Estrabismx"</strong><br>[placeholder]</p>
 
             <div class="bio-actions">
-              <a href="sobre_mi.html" class="btn-retro">&gt;&gt; LEER_PERFIL_COMPLETO.TXT</a>
+              <a href="sobre_mi.html" class="btn-retro btn-squiggly"><span>&gt;&gt; perfil_completo</span></a>
             </div>
           </div>
         </div>
@@ -123,7 +114,7 @@
   </div>
 
   <footer>
-    <p>© 2026 Camila Ramírez "Estrabismx"</p>
+    <p>2026 Camila Ramírez "Estrabismx"</p>
   </footer>
 </div>
 
@@ -133,11 +124,11 @@
 <div id="contactModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
   <div class="modal-window">
     <div class="modal-header">
-      <span class="modal-title" id="contactTitle">INFORMACION_CONTACTO.EXE</span>
+      <span class="modal-title" id="contactTitle">// contacto</span>
       <button type="button" class="modal-close" aria-label="Cerrar">X</button>
     </div>
     <div class="modal-body">
-      <p><strong>/// DATOS DEL DISEÑADOR</strong></p>
+      <p><strong>enlaces de contacto</strong></p>
       <ul class="contact-list">
         <li><span>E-mail:</span><a href="mailto:camila.ramirez2@mail.udp.cl">camila.ramirez2@mail.udp.cl</a></li>
         <li><span>Instagram:</span><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener">@n.arkotikk</a></li>
@@ -152,6 +143,17 @@
     </div>
   </div>
 </div>
+
+<!-- Filtros SVG para el efecto "squiggly" de los botones >> (ver .btn-squiggly en style.css) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="squiggly-0"><feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="0"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="6"/></filter>
+    <filter id="squiggly-1"><feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="1"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="8"/></filter>
+    <filter id="squiggly-2"><feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="2"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="6"/></filter>
+    <filter id="squiggly-3"><feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="3"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="8"/></filter>
+    <filter id="squiggly-4"><feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="4"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="6"/></filter>
+  </defs>
+</svg>
 
 <!-- Datos de los proyectos (edita este archivo para agregar proyectos) -->
 <script src="proyectos.js"></script>

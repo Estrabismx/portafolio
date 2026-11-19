@@ -19,6 +19,64 @@
 
 const $ = (id) => document.getElementById(id);
 
+/* Texto "encriptado": los caracteres aparecen como 0 y 1 que cambian
+   y se van revelando de izquierda a derecha
+   (inspirado en ui.aceternity.com/components/encrypted-text).
+   Uso: encryptText(elemento) anima su texto actual;
+        encryptText(elemento, 'nuevo texto') lo cambia y lo anima. */
+const ENCRYPT_TITLES = '.section-title, .sidebar-title, .doc-name, .doc-heading, .project-card-label, .detail-heading, .modal-title';
+const ENCRYPT_DURATION = 1800; // ms máximos para revelar un título completo
+const ENCRYPT_PER_CHAR = 100;  // ms máximos por carácter (títulos cortos)
+const ENCRYPT_FLIP = 50;      // ms entre cada cambio de 0/1
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const encryptTimers = new WeakMap();
+
+function encryptText(el, text) {
+  if (!el) return;
+  const final = text != null ? String(text) : el.dataset.encFinal || el.textContent;
+  clearInterval(encryptTimers.get(el));
+  el.dataset.encFinal = final;
+
+  if (reduceMotion || !final.trim()) {
+    el.textContent = final;
+    return;
+  }
+
+  const chars = [...final];
+  const perChar = Math.min(ENCRYPT_PER_CHAR, ENCRYPT_DURATION / chars.length);
+  const start = performance.now();
+  el.setAttribute('aria-label', final); // los lectores de pantalla leen el texto real
+
+  const tick = () => {
+    const revealed = Math.floor((performance.now() - start) / perChar);
+    if (revealed >= chars.length) {
+      clearInterval(encryptTimers.get(el));
+      el.textContent = final;
+      el.removeAttribute('aria-label');
+      return;
+    }
+    el.textContent = chars
+      .map((c, i) => (i < revealed || /\s/.test(c) ? c : Math.random() < 0.5 ? '0' : '1'))
+      .join('');
+  };
+
+  tick();
+  encryptTimers.set(el, setInterval(tick, ENCRYPT_FLIP));
+}
+
+// Cambia el texto solo si es distinto, y lo anima
+function setEncrypted(el, text) {
+  if (!el || el.dataset.encFinal === text) return;
+  encryptText(el, text);
+}
+
+function encryptAll(selector = ENCRYPT_TITLES, root = document) {
+  root.querySelectorAll(selector).forEach((el) => {
+    // Los títulos de ventanas ocultas se animan al abrirlas (openModal)
+    if (!el.closest('.modal-overlay:not(.open)')) encryptText(el);
+  });
+}
+
 const PROJECTS = typeof PROYECTOS !== 'undefined' ? PROYECTOS : [];
 
 const VIDEO_EXTENSIONS = ['mp4', 'webm', 'mov', 'm4v', 'ogv'];
@@ -62,6 +120,7 @@ function openModal(id) {
   const modal = $(id);
   if (!modal) return;
   modal.classList.add('open');
+  modal.querySelectorAll('.modal-title').forEach((t) => encryptText(t));
   const close = modal.querySelector('.modal-close');
   if (close) close.focus();
 }
@@ -171,15 +230,22 @@ function updateCarousel() {
   const p = carouselItems[carouselIndex];
 
   if (!p) {
-    title.textContent = 'SIN PROYECTOS';
+    setEncrypted(title, 'SIN PROYECTOS');
     counter.textContent = '0/0';
     display.querySelector('.carousel-media').innerHTML =
       '<div class="thumbnail-placeholder">[ SIN PROYECTOS ]</div>';
     return;
   }
 
-  title.innerHTML = `SYS_${p.id}: ${p.titulo}`;
+  setEncrypted(title, `SYS_${p.id}: ${p.titulo}`);
   counter.textContent = `${carouselIndex + 1}/${carouselItems.length}`;
+
+  // Botón ">> ver_proyecto": abre directo la vista de este proyecto en proyectos.html
+  const open = $('carouselOpen');
+  if (open) {
+    open.href = `proyectos.html?ver#proyecto-${p.id}`;
+    open.setAttribute('aria-label', `Ver proyecto ${stripHtml(p.titulo)}`);
+  }
 
   const media = display.querySelector('.carousel-media');
   const cover = projectCover(p);
@@ -308,14 +374,14 @@ function techRows(p) {
 function updateProjectCard(index) {
   const p = PROJECTS[index];
   if (!p) {
-    $('cardTitle').textContent = 'SIN PROYECTOS';
+    setEncrypted($('cardTitle'), 'SIN PROYECTOS');
     $('cardCounter').textContent = '0/0';
     fillDataList($('cardInfo'), []);
     fillDataList($('cardTech'), []);
     return;
   }
 
-  $('cardTitle').innerHTML = `SYS_${p.id}: ${p.titulo}`;
+  setEncrypted($('cardTitle'), `SYS_${p.id}: ${p.titulo}`);
   $('cardCounter').textContent = `${index + 1}/${PROJECTS.length}`;
   fillDataList($('cardInfo'), infoRows(p));
   fillDataList($('cardTech'), techRows(p));
@@ -677,10 +743,110 @@ function renderDetailThumbs(p) {
   });
 }
 
+/* Imagen ampliada como "tarjeta 3D": se inclina siguiendo el mouse
+   (efecto inspirado en ui.aceternity.com/components/3d-card-effect).
+   Con < y > (o las flechas del teclado) se recorren las imágenes del proyecto. */
+let lightboxImages = [];
+let lightboxIndex = 0;
+
 function openLightbox(src, item) {
-  $('lightboxMedia').innerHTML = `<img src="${src}" alt="${item.nombre || item.archivo}">`;
-  $('lightboxTitle').textContent = item.nombre || item.archivo;
+  const galeria = (detailProject && detailProject.galeria) || [];
+  lightboxImages = galeria.filter((g) => !isVideo(g.archivo));
+  lightboxIndex = Math.max(0, lightboxImages.indexOf(item));
+  if (!lightboxImages.length) lightboxImages = [item];
+  showLightboxImage(lightboxIndex);
   openModal('lightboxModal');
+  fitLightboxImage(); // se mide recién con la ventana visible
+}
+
+function showLightboxImage(index) {
+  const total = lightboxImages.length;
+  lightboxIndex = (index + total) % total;
+  const item = lightboxImages[lightboxIndex];
+  const src = projectFolder(detailProject) + item.archivo;
+  const nombre = item.nombre || item.archivo;
+
+  $('lightboxMedia').innerHTML = `
+    <div class="card3d" id="lightboxCard">
+      <img class="card3d-img" src="${src}" alt="${nombre}">
+      <p class="card3d-caption">${nombre}${total > 1 ? ` <span>${lightboxIndex + 1}/${total}</span>` : ''}</p>
+    </div>`;
+  encryptText($('lightboxTitle'), nombre);
+  $('lightboxPrev').hidden = $('lightboxNext').hidden = total < 2;
+
+  const img = $('lightboxMedia').querySelector('.card3d-img');
+  if (img.complete) fitLightboxImage();
+  else img.addEventListener('load', fitLightboxImage, { once: true });
+}
+
+// Escala la imagen al máximo que cabe en la pantalla (agranda también las pequeñas)
+// manteniendo su proporción. Verticales y horizontales usan el mismo alto máximo;
+// solo las muy panorámicas quedan limitadas por el ancho. La ventana y el marco
+// de la tarjeta se ajustan a la imagen.
+function fitLightboxImage() {
+  const win = $('lightboxModal').querySelector('.lightbox-window');
+  const stage = $('lightboxMedia');
+  const card = $('lightboxCard');
+  const img = card && card.querySelector('.card3d-img');
+  if (!img || !img.naturalWidth || !$('lightboxModal').classList.contains('open')) return;
+
+  const px = (v) => parseFloat(v) || 0;
+  const box = (el) => {
+    const s = getComputedStyle(el);
+    return {
+      w: px(s.paddingLeft) + px(s.paddingRight) + px(s.borderLeftWidth) + px(s.borderRightWidth),
+      h: px(s.paddingTop) + px(s.paddingBottom) + px(s.borderTopWidth) + px(s.borderBottomWidth),
+    };
+  };
+  const winBox = box(win);
+  const stageBox = box(stage);
+  const cardBox = box(card);
+  const header = win.querySelector('.modal-header');
+  const controls = win.querySelector('.lightbox-controls');
+  const caption = card.querySelector('.card3d-caption');
+  const captionH = caption ? caption.offsetHeight + px(getComputedStyle(caption).marginTop) : 0;
+
+  // Espacio libre = 96% de la pantalla − bordes/rellenos − encabezado − botones − texto
+  const availW = window.innerWidth * 0.96 - winBox.w - stageBox.w - cardBox.w;
+  const availH = window.innerHeight * 0.96 - winBox.h - (header ? header.offsetHeight : 0)
+    - (controls ? controls.offsetHeight : 0) - stageBox.h - cardBox.h - captionH;
+
+  const scale = Math.min(availW / img.naturalWidth, availH / img.naturalHeight);
+  img.style.width = `${Math.max(0, Math.floor(img.naturalWidth * scale))}px`;
+  img.style.height = `${Math.max(0, Math.floor(img.naturalHeight * scale))}px`;
+}
+
+function initLightbox3D() {
+  const stage = $('lightboxMedia');
+  if (!stage) return;
+
+  window.addEventListener('resize', fitLightboxImage);
+
+  stage.addEventListener('mousemove', (e) => {
+    const card = $('lightboxCard');
+    if (!card) return;
+    const r = stage.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;  // -0.5 … 0.5
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.transform = `rotateY(${x * 20}deg) rotateX(${-y * 20}deg)`;
+    card.classList.add('is-hover');
+  });
+
+  stage.addEventListener('mouseleave', () => {
+    const card = $('lightboxCard');
+    if (!card) return;
+    card.style.transform = '';
+    card.classList.remove('is-hover');
+  });
+
+  $('lightboxPrev').addEventListener('click', () => showLightboxImage(lightboxIndex - 1));
+  $('lightboxNext').addEventListener('click', () => showLightboxImage(lightboxIndex + 1));
+
+  document.addEventListener('keydown', (e) => {
+    if (!$('lightboxModal').classList.contains('open') || lightboxImages.length < 2) return;
+    if (e.key === 'ArrowLeft') showLightboxImage(lightboxIndex - 1);
+    if (e.key === 'ArrowRight') showLightboxImage(lightboxIndex + 1);
+  });
 }
 
 // Visor 3D grande: arrastrar rota en 360°, la rueda acerca y aleja
@@ -761,8 +927,9 @@ function openProjectDetail(index, onClose) {
   if (!p) return;
   detailProject = p;
 
-  $('detailTitle').innerHTML = `SYS_${p.id}: ${p.titulo}`;
+  encryptText($('detailTitle'), `SYS_${p.id}: ${p.titulo}`);
   renderDetailBody(p);
+  encryptAll(ENCRYPT_TITLES, $('detailBody'));
   renderDetailThumbs(p);
 
   $('ringView').hidden = true;
@@ -1284,8 +1451,30 @@ function hexToRgb(hex) {
 
 if (!redirectOldProjectLinks()) {
   initModals();
+  initLightbox3D();
   renderTypeList();
   initCarousel();
   initProjectRing();
   initPaint();
+  encryptAll();
+  openLinkedProject();
+  trackHeaderHeight();
+}
+
+// Guarda la altura real del header en --header-height (la usa la barra lateral fija)
+function trackHeaderHeight() {
+  const header = document.querySelector('header');
+  if (!header) return;
+  const update = () => document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`);
+  update();
+  window.addEventListener('resize', update);
+  if (document.fonts) document.fonts.ready.then(update); // la fuente cambia la altura al cargar
+}
+
+// proyectos.html?ver#proyecto-XX (botón ">> ver_proyecto" del carrusel de index)
+// abre directamente la vista de ese proyecto en vez de dejarlo solo seleccionado en el anillo
+function openLinkedProject() {
+  if (!$('cardOpen') || !new URLSearchParams(location.search).has('ver')) return;
+  history.replaceState(null, '', location.pathname + location.hash); // quita ?ver de la URL
+  $('cardOpen').click();
 }

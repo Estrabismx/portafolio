@@ -41,6 +41,9 @@
   --carousel-height: 400px;
   --ring-height: 460px;
   --detail-height: 420px;
+  /* Alto de la galería y el visor 3D (y máximo del anillo): 85% de la pantalla disponible
+     (pantalla − header fijo; --header-height lo pone main.js) */
+  --media-max-height: calc((100vh - var(--header-height, 110px)) * 0.85);
 }
 
 html {
@@ -149,12 +152,18 @@ h1.logo a {
   gap: 30px;
 }
 
+/* La barra lateral acompaña el scroll igual que el header (queda justo debajo de él).
+   --header-height lo actualiza main.js con la altura real del header. */
 .sidebar {
   width: var(--sidebar-width);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  position: sticky;
+  top: calc(var(--header-height, 110px) + 20px);
+  max-height: calc(100vh - var(--header-height, 110px) - 40px);
+  overflow-y: auto; /* si la barra es más alta que la pantalla, se desplaza por dentro */
 }
 
 .sidebar-module {
@@ -437,6 +446,33 @@ section:last-child {
   background: var(--deep-red);
 }
 
+/* Efecto "squiggly" en los botones >>: el texto tiembla al pasar el mouse.
+   Los filtros #squiggly-0..4 están definidos en un <svg> oculto al final de index.html. */
+.btn-squiggly span {
+  display: inline-block;
+}
+
+.btn-squiggly:hover span,
+.btn-squiggly:focus-visible span {
+  animation: squiggly 0.35s linear infinite;
+}
+
+@keyframes squiggly {
+  0%   { filter: url(#squiggly-0); }
+  20%  { filter: url(#squiggly-1); }
+  40%  { filter: url(#squiggly-2); }
+  60%  { filter: url(#squiggly-3); }
+  80%  { filter: url(#squiggly-4); }
+  100% { filter: url(#squiggly-0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-squiggly:hover span,
+  .btn-squiggly:focus-visible span {
+    animation: none;
+  }
+}
+
 .btn-retro:active {
   border-top: 2px solid var(--black);
   border-left: 2px solid var(--black);
@@ -592,7 +628,8 @@ section:last-child {
 /* ---------- 9b. Anillo 3D de proyectos (proyectos.html) ---------- */
 .ring-stage {
   position: relative;
-  height: var(--ring-height);
+  box-sizing: border-box; /* el límite incluye el borde */
+  height: min(var(--ring-height), var(--media-max-height));
   background: var(--black);
   border: var(--border-width) solid var(--scarlet);
   overflow: hidden;
@@ -614,9 +651,13 @@ section:last-child {
 }
 
 /* Se dibuja a baja resolución y se agranda sin suavizar (look low-res) */
+/* Absoluto: el canvas ocupa el contenedor pero no define su alto
+   (si no, al redimensionarse el visor iba creciendo solo). */
 #ringCanvas,
 #detailCanvas {
   display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   image-rendering: pixelated;
@@ -728,15 +769,31 @@ section:last-child {
   display: none !important;
 }
 
+/* Franja con el nombre del proyecto, arriba dentro de la ventana del modelo 3D */
 .detail-toolbar {
   display: flex;
   align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  padding: 12px 15px;
-  margin-bottom: 20px;
-  background: var(--deep-red);
-  border: var(--border-width) solid var(--scarlet);
+  gap: 10px;
+  flex-shrink: 0;
+  min-height: 34px;
+  padding: 6px 10px;
+  background: var(--black);
+  border-bottom: 2px dashed var(--deep-red);
+}
+
+.detail-toolbar .btn-retro {
+  font-size: calc(12px * var(--text-scale));
+  padding: 2px 9px;
+  flex-shrink: 0;
+}
+
+.detail-toolbar .project-card-title {
+  font-size: calc(22px * var(--text-scale));
+  color: var(--scarlet);
+  min-width: 0;
+  white-space: nowrap;      /* una sola línea; si el nombre es largo termina en "…" */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .detail-media {
@@ -746,18 +803,25 @@ section:last-child {
   margin-bottom: 30px;
 }
 
+/* Galería y visor 3D: ocupan el 85% de la pantalla disponible (pantalla − header fijo).
+   Adentro, la imagen grande y el modelo 3D toman el espacio que dejan los textos y miniaturas. */
 .detail-panel {
   border: var(--border-width) solid var(--scarlet);
   background: var(--black);
   display: flex;
   flex-direction: column;
   min-width: 0;
+  box-sizing: border-box; /* el alto incluye el borde */
+  height: var(--media-max-height);
 }
 
+/* flex "1 1 auto" + height: parte de --detail-height (no del tamaño de la imagen),
+   crece para igualar al panel vecino y se encoge si no cabe en el 70% */
 .detail-stage {
   position: relative;
-  flex: 1;
-  min-height: var(--detail-height);
+  flex: 1 1 auto;
+  min-height: 0;
+  height: var(--detail-height);
   cursor: grab;
   touch-action: none;
 }
@@ -767,8 +831,8 @@ section:last-child {
 }
 
 .detail-main {
-  flex: 1;
-  min-height: var(--detail-height);
+  flex: 1 1 auto;
+  min-height: 0;
   height: var(--detail-height);
   display: flex;
   align-items: center;
@@ -776,10 +840,12 @@ section:last-child {
   overflow: hidden;
 }
 
+/* Imagen o video ocupan todo el panel: si son más chicos que el espacio se agrandan,
+   si son más grandes se achican; object-fit mantiene la proporción sin recortar */
 .detail-main img,
 .detail-main video {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   display: block;
 }
@@ -802,6 +868,7 @@ section:last-child {
   align-items: center;
   gap: 10px;
   min-height: 34px;
+  flex-shrink: 0;
   padding: 6px 10px;
   font-size: calc(12px * var(--text-scale));
   background: var(--deep-red);
@@ -818,6 +885,8 @@ section:last-child {
   gap: 6px;
   padding: 8px;
   overflow-x: auto;
+  overflow-y: hidden;
+  flex-shrink: 0; /* si falta alto, se achica la imagen grande, no las miniaturas */
   border-top: 2px solid var(--deep-red);
 }
 
@@ -919,22 +988,92 @@ section:last-child {
   font-size: calc(13px * var(--text-scale));
 }
 
-.lightbox-window {
-  width: 1100px;
-  max-width: 95%;
+/* La ventana de imagen ampliada se ajusta al tamaño de la imagen (máx. 96% de la pantalla).
+   ".modal-window.lightbox-window" para ganarle a .modal-window { width: 450px } más abajo. */
+.modal-window.lightbox-window {
+  box-sizing: border-box;
+  width: auto;
+  max-width: 96vw;
+  max-height: 96vh;
+  display: flex;
+  flex-direction: column;
 }
 
+/* Escenario con perspectiva: la tarjeta de adentro se inclina según el mouse (main.js → initLightbox3D) */
 .lightbox-media {
   background: var(--black);
   display: flex;
   justify-content: center;
+  align-items: center;
+  padding: 20px;
+  perspective: 1500px;
+  overflow: hidden;
+}
+
+.card3d {
+  position: relative;
+  max-width: 100%;
+  padding: 10px;
+  border: 1px solid var(--scarlet);
+  background: var(--black);
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  animation: card3d-in 0.4s ease-out;
+}
+
+.card3d.is-hover {
+  transition: transform 0.05s linear, box-shadow 0.2s ease-out;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+}
+
+/* El ancho y alto exactos los calcula main.js (fitLightboxImage) según el espacio
+   disponible, así el marco de la tarjeta queda justo alrededor de la imagen. */
+.card3d-img {
+  display: block;
+  max-width: 100%;
+  transition: transform 0.3s ease-out;
+}
+
+.card3d-caption {
+  margin: 8px 0 0;
+  white-space: nowrap;      /* una sola línea: así su alto es fijo al calcular la imagen */
+  width: 0;                 /* no ensancha la tarjeta: toma el ancho de la imagen */
+  min-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: calc(13px * var(--text-scale));
+  transition: transform 0.3s ease-out;
+}
+
+.card3d-caption span {
+  opacity: 0.7;
+  margin-left: 8px;
+}
+
+/* Profundidad: la imagen "sale" de la tarjeta más que el texto */
+.card3d.is-hover .card3d-img {
+  transform: translateZ(20px);
+}
+
+.card3d.is-hover .card3d-caption {
+  transform: translateZ(30px);
+}
+
+@keyframes card3d-in {
+  from { opacity: 0; transform: translateY(20px) rotateX(15deg) scale(0.95); }
+  to   { opacity: 1; transform: none; }
+}
+
+.lightbox-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
   padding: 10px;
 }
 
-.lightbox-media img {
-  max-width: 100%;
-  max-height: 80vh;
-  object-fit: contain;
+@media (prefers-reduced-motion: reduce) {
+  .card3d { animation: none; transition: none; }
+  .card3d-img, .card3d-caption { transition: none; }
 }
 
 .swatch {
@@ -1245,6 +1384,9 @@ footer {
   }
   .sidebar {
     width: 100%;
+    position: static; /* en pantallas chicas va arriba del contenido, sin seguir el scroll */
+    max-height: none;
+    overflow: visible;
   }
   .about-container {
     flex-direction: column;
@@ -1283,6 +1425,9 @@ footer {
   .detail-media,
   .detail-columns {
     grid-template-columns: 1fr;
+  }
+  .detail-panel {
+    height: auto; /* en celular los paneles van uno debajo del otro, cada uno a 300px */
   }
   .detail-stage,
   .detail-main {
