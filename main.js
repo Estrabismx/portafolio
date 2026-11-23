@@ -6,8 +6,8 @@
      1. Utilidades
      2. Enlaces antiguos (index.html#proyecto-01 → proyectos.html)
      3. Ventanas emergentes (contacto y alertas)
-     4. Barra lateral: BROWSE BY TYPE
-     5. Carrusel de proyectos (index.html)
+     4. Menú lateral (botón hamburguesa)
+     5. Teleprompter de proyectos (index.html)
      6. Paint (paint.html)
      7. Inicio de la página
 
@@ -24,7 +24,7 @@ const $ = (id) => document.getElementById(id);
    (inspirado en ui.aceternity.com/components/encrypted-text).
    Uso: encryptText(elemento) anima su texto actual;
         encryptText(elemento, 'nuevo texto') lo cambia y lo anima. */
-const ENCRYPT_TITLES = '.section-title, .sidebar-title, .doc-name, .doc-heading, .project-card-label, .detail-heading, .modal-title';
+const ENCRYPT_TITLES = '.section-title, .doc-name, .doc-heading, .project-card-label, .detail-heading, .modal-title';
 const ENCRYPT_DURATION = 1800; // ms máximos para revelar un título completo
 const ENCRYPT_PER_CHAR = 100;  // ms máximos por carácter (títulos cortos)
 const ENCRYPT_FLIP = 50;      // ms entre cada cambio de 0/1
@@ -89,10 +89,102 @@ function projectFolder(p) {
   return `assets/proyecto-${p.id}/`;
 }
 
-// Primera imagen de la galería (los videos no sirven de portada)
-function projectCover(p) {
-  const img = (p.galeria || []).find((item) => !isVideo(item.archivo));
-  return img ? projectFolder(p) + img.archivo : null;
+/* Versiones livianas de la galería (las genera editor/medios_web.py, sin tocar los originales):
+     web/  foto en WebP de máx. 1600 px · GIF animado convertido a MP4
+     min/  miniatura WebP de máx. 256 px
+   Si alguna no existe (proyecto recién agregado), se carga el archivo original. */
+const fileStem = (archivo) => archivo.replace(/\.[^.]+$/, '');
+
+// Los GIF se muestran como animación (su versión web es un MP4 en bucle)
+function isAnimation(item) {
+  return item.archivo.split('.').pop().toLowerCase() === 'gif';
+}
+
+function mediaOriginal(p, item) {
+  return projectFolder(p) + item.archivo;
+}
+
+function mediaWeb(p, item) {
+  if (isVideo(item.archivo)) return mediaOriginal(p, item);
+  return `${projectFolder(p)}web/${fileStem(item.archivo)}.${isAnimation(item) ? 'mp4' : 'webp'}`;
+}
+
+function mediaThumb(p, item) {
+  return `${projectFolder(p)}min/${fileStem(item.archivo)}.webp`;
+}
+
+// Carga "src" y, si falla, "fallback" (una sola vez)
+function setSrcWithFallback(el, src, fallback) {
+  el.addEventListener('error', () => { if (fallback) el.src = fallback; }, { once: true });
+  el.src = src;
+}
+
+// Imagen, animación o video de la galería en un panel grande.
+// Las fotos se pueden ampliar (clic → visor); las animaciones y videos se reproducen ahí mismo.
+function renderMainMedia(box, p, item) {
+  const nombre = item.nombre || item.archivo;
+  box.innerHTML = '';
+
+  if (isVideo(item.archivo) || isAnimation(item)) {
+    const video = document.createElement('video');
+    video.playsInline = true;
+    if (item.animacion || isAnimation(item)) {
+      video.muted = true;
+      video.setAttribute('muted', '');
+      video.autoplay = true;
+      video.loop = true;
+    } else {
+      video.controls = true;
+      video.preload = 'metadata';
+    }
+    if (isAnimation(item)) {
+      // Sin MP4 todavía: se muestra el GIF original
+      video.addEventListener('error', () => {
+        const img = document.createElement('img');
+        img.src = mediaOriginal(p, item);
+        img.alt = nombre;
+        video.replaceWith(img);
+      }, { once: true });
+    }
+    video.src = mediaWeb(p, item);
+    box.appendChild(video);
+    return;
+  }
+
+  const zoom = document.createElement('button');
+  zoom.type = 'button';
+  zoom.className = 'detail-zoom';
+  zoom.title = 'Ampliar';
+  const img = document.createElement('img');
+  img.alt = nombre;
+  setSrcWithFallback(img, mediaWeb(p, item), mediaOriginal(p, item));
+  zoom.appendChild(img);
+  zoom.addEventListener('click', () => openLightbox(item, p));
+  box.appendChild(zoom);
+}
+
+// Botón miniatura de la galería
+function thumbButton(p, item, lazy = true) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'detail-thumb';
+  btn.title = item.nombre || item.archivo;
+  const img = document.createElement('img');
+  img.alt = '';
+  if (lazy) img.loading = 'lazy';
+  if (isVideo(item.archivo)) {
+    img.addEventListener('error', () => img.remove(), { once: true }); // queda solo el ▶
+    img.src = mediaThumb(p, item);
+  } else {
+    setSrcWithFallback(img, mediaThumb(p, item), mediaOriginal(p, item));
+  }
+  btn.appendChild(img);
+  if (isVideo(item.archivo) || isAnimation(item)) {
+    const marca = document.createElement('span');
+    marca.textContent = item.animacion || isAnimation(item) ? '∞' : '▶';
+    btn.appendChild(marca);
+  }
+  return btn;
 }
 
 // Quita etiquetas HTML (ej: "<i>Mimus</i>" → "Mimus")
@@ -165,127 +257,211 @@ function showAlert(text) {
 }
 
 
-/* ---------- 4. Barra lateral: BROWSE BY TYPE ---------- */
+/* ---------- 4. Menú lateral (botón hamburguesa) ---------- */
 
 // Tipos únicos de los proyectos, en el orden en que aparecen en proyectos.js
 function projectTypes() {
   return [...new Set(PROJECTS.map((p) => p.tipo).filter(Boolean))];
 }
 
-function renderTypeList() {
-  const list = $('typeList');
+// "Fabricación Manual y Digital" → "fabricacion_manual_y_digital"
+function typeSlug(tipo) {
+  return tipo.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+}
+
+// Lista "# tipo" bajo // proyectos: cada una abre proyectos.html filtrado por ese tipo
+function renderMenuTypes() {
+  const list = $('menuTypes');
   if (!list) return;
-
-  const items = [{ label: 'Todos', tipo: '' }, ...projectTypes().map((t) => ({ label: t, tipo: t }))];
   list.innerHTML = '';
-
-  items.forEach(({ label, tipo }) => {
+  projectTypes().forEach((tipo) => {
     const li = document.createElement('li');
     const a = document.createElement('a');
-    a.href = tipo ? `index.html?tipo=${encodeURIComponent(tipo)}#projects` : 'index.html#projects';
-    a.dataset.tipo = tipo;
-    a.textContent = `> ${label}`;
-
-    // En index.html se filtra el carrusel sin recargar la página
-    if ($('carouselDisplay')) {
-      a.addEventListener('click', (e) => {
-        e.preventDefault();
-        setCarouselFilter(tipo);
-        history.replaceState(null, '', a.getAttribute('href'));
-        $('projects').scrollIntoView();
-      });
-    }
-
+    a.href = `proyectos.html?tipo=${encodeURIComponent(tipo)}`;
+    a.textContent = `# ${typeSlug(tipo)}`;
     li.appendChild(a);
     list.appendChild(li);
   });
-
-  markActiveType(new URLSearchParams(location.search).get('tipo') || '');
 }
 
-function markActiveType(tipo) {
-  document.querySelectorAll('#typeList a').forEach((a) => {
-    a.classList.toggle('active', a.dataset.tipo === tipo);
+function initSideMenu() {
+  const menu = $('sideMenu');
+  const toggle = $('menuToggle');
+  if (!menu || !toggle) return;
+  const overlay = $('sideMenuOverlay');
+  const close = menu.querySelector('.side-menu-close');
+  renderMenuTypes();
+
+  // Marca la página actual
+  const page = location.pathname.split('/').pop() || 'index.html';
+  menu.querySelectorAll('.side-menu-title').forEach((a) => {
+    if (a.getAttribute('href') === page) a.setAttribute('aria-current', 'page');
+  });
+
+  const setOpen = (open) => {
+    menu.classList.toggle('open', open);
+    overlay.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    if (open) close.focus();
+  };
+
+  toggle.addEventListener('click', () => setOpen(true));
+  close.addEventListener('click', () => { setOpen(false); toggle.focus(); });
+  overlay.addEventListener('click', () => setOpen(false));
+  // "// contacto" abre su ventana emergente: el menú se cierra para no quedar encima
+  menu.querySelectorAll('[data-open-modal]').forEach((a) => {
+    a.addEventListener('click', () => setOpen(false));
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu.classList.contains('open')) {
+      setOpen(false);
+      toggle.focus();
+    }
   });
 }
 
 
-/* ---------- 5. Carrusel de proyectos ---------- */
+/* ---------- 5. Teleprompter de proyectos (index.html) ----------
+   Franja con el SVG de cada proyecto (assets/proyecto-XX/proyecto_XX.svg) que se
+   desplaza sola y a velocidad constante. Cada ícono abre su proyecto, pero el
+   desplazamiento no se puede arrastrar, deslizar ni detener.
+   Si un proyecto aún no tiene SVG aparece un recuadro con su nombre;
+   al agregar el archivo a su carpeta aparece solo. */
 
-let carouselItems = [];
-let carouselIndex = 0;
+const TICKER_SPEED = 60; // píxeles por segundo
 
-function setCarouselFilter(tipo) {
-  carouselItems = tipo ? PROJECTS.filter((p) => p.tipo === tipo) : PROJECTS.slice();
-  if (!carouselItems.length) carouselItems = PROJECTS.slice(); // tipo desconocido en la URL
-  carouselIndex = 0;
-  markActiveType(carouselItems.length === PROJECTS.length ? '' : tipo);
-  updateCarousel();
+function projectIcon(p) {
+  return `${projectFolder(p)}proyecto_${p.id}.svg`;
 }
 
-function updateCarousel() {
-  const display = $('carouselDisplay');
-  const title = $('carouselTitle');
-  const counter = $('carouselCounter');
-  const p = carouselItems[carouselIndex];
-
-  if (!p) {
-    setEncrypted(title, 'SIN PROYECTOS');
-    counter.textContent = '0/0';
-    display.querySelector('.carousel-media').innerHTML =
-      '<div class="thumbnail-placeholder">[ SIN PROYECTOS ]</div>';
-    return;
-  }
-
-  setEncrypted(title, `SYS_${p.id}: ${p.titulo}`);
-  counter.textContent = `${carouselIndex + 1}/${carouselItems.length}`;
-
-  // Botón ">> ver_proyecto": abre directo la vista de este proyecto en proyectos.html
-  const open = $('carouselOpen');
-  if (open) {
-    open.href = `proyectos.html?ver#proyecto-${p.id}`;
-    open.setAttribute('aria-label', `Ver proyecto ${stripHtml(p.titulo)}`);
-  }
-
-  const media = display.querySelector('.carousel-media');
-  const cover = projectCover(p);
-  media.innerHTML = '';
-
-  if (cover) {
-    const img = document.createElement('img');
-    img.src = cover;
-    img.alt = stripHtml(p.titulo);
-    img.onerror = () => {
-      media.innerHTML = '<div class="thumbnail-placeholder">[ IMAGEN NO DISPONIBLE ]</div>';
-    };
-    media.appendChild(img);
+// hidden = copia de relleno: los lectores de pantalla y el teclado la saltan
+function tickerItem({ p, icon }, hidden) {
+  const name = stripHtml(p.titulo);
+  const a = document.createElement('a');
+  a.className = 'ticker-item';
+  a.href = `proyectos.html?ver#proyecto-${p.id}`;
+  a.draggable = false;
+  a.title = name;
+  if (hidden) {
+    a.tabIndex = -1;
+    a.setAttribute('aria-hidden', 'true');
   } else {
-    media.innerHTML = '<div class="thumbnail-placeholder">[ SIN IMAGEN ]</div>';
+    a.setAttribute('aria-label', `Ver proyecto ${name}`);
   }
 
-  // Precarga la portada siguiente para que el cambio sea inmediato
-  const next = carouselItems[(carouselIndex + 1) % carouselItems.length];
-  const nextCover = next && projectCover(next);
-  if (nextCover) new Image().src = nextCover;
+  if (icon) {
+    const img = document.createElement('img');
+    img.src = icon;
+    img.alt = '';
+    img.draggable = false;
+    a.appendChild(img);
+  } else {
+    const box = document.createElement('span');
+    box.className = 'ticker-placeholder';
+    box.textContent = `[ ${name} ]`;
+    a.appendChild(box);
+  }
+  return a;
 }
 
-function nextSlide() {
-  if (!carouselItems.length) return;
-  carouselIndex = (carouselIndex + 1) % carouselItems.length;
-  updateCarousel();
+function buildTicker(ticker, items) {
+  const track = ticker.querySelector('.ticker-track');
+  track.innerHTML = '';
+  const group = document.createElement('div');
+  group.className = 'ticker-group';
+  track.appendChild(group);
+
+  // Repite los proyectos hasta cubrir el ancho de la franja (así no quedan huecos)
+  let copy = 0;
+  do {
+    items.forEach((item) => group.appendChild(tickerItem(item, copy > 0)));
+    copy++;
+  } while (group.offsetWidth < ticker.clientWidth && copy < 20);
+
+  // Segunda copia idéntica: la animación recorre una copia completa y vuelve
+  // a empezar sin que se note el salto
+  const clone = group.cloneNode(true);
+  clone.setAttribute('aria-hidden', 'true');
+  clone.querySelectorAll('a').forEach((a) => { a.tabIndex = -1; });
+  track.appendChild(clone);
+
+  track.style.setProperty('--ticker-duration', `${group.offsetWidth / TICKER_SPEED}s`);
 }
 
-function prevSlide() {
-  if (!carouselItems.length) return;
-  carouselIndex = (carouselIndex - 1 + carouselItems.length) % carouselItems.length;
-  updateCarousel();
+/* Aumento tipo "dock" (inspirado en ui.aceternity.com/components/floating-dock):
+   los íconos cercanos al cursor crecen un poco, más mientras más cerca, y vuelven
+   suavemente a su tamaño. Como la franja se mueve sola, se recalcula en cada cuadro
+   mientras el mouse está encima. Solo con mouse (en touch no hay "pasar por encima"). */
+const TICKER_MAGNIFY = 0.5;     // aumento máximo (50%): sale del marco hacia arriba
+const TICKER_REACH = 300;       // px desde el cursor en que todavía hay aumento (alcanza a los vecinos)
+const TICKER_SMOOTH = 0.18;     // 0–1: qué tan rápido sigue al cursor
+
+function initTickerMagnify(ticker) {
+  let mouseX = null;
+  let frame = null;
+  const scales = new WeakMap();
+
+  const step = () => {
+    let settling = false;
+    ticker.querySelectorAll('.ticker-item').forEach((item) => {
+      let target = 1;
+      if (mouseX !== null) {
+        const r = item.getBoundingClientRect();
+        const distance = Math.abs(r.left + r.width / 2 - mouseX);
+        // Curva suave: máximo bajo el cursor, cero al llegar al alcance
+        if (distance < TICKER_REACH) target = 1 + TICKER_MAGNIFY * Math.cos((distance / TICKER_REACH) * Math.PI / 2) ** 2;
+      }
+      const current = scales.get(item) || 1;
+      let next = current + (target - current) * (reduceMotion ? 1 : TICKER_SMOOTH);
+      if (Math.abs(target - next) < 0.002) next = target;
+      else settling = true;
+      scales.set(item, next);
+      item.style.transform = next === 1 ? '' : `scale(${next.toFixed(3)})`;
+    });
+    // Sigue mientras el mouse esté encima o algún ícono aún esté volviendo a su tamaño
+    frame = mouseX !== null || settling ? requestAnimationFrame(step) : null;
+  };
+  const start = () => { if (!frame) frame = requestAnimationFrame(step); };
+
+  ticker.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    mouseX = e.clientX;
+    start();
+  });
+  ticker.addEventListener('pointerleave', () => {
+    mouseX = null;
+    start();
+  });
 }
 
-function initCarousel() {
-  if (!$('carouselDisplay')) return;
-  $('carouselPrev').addEventListener('click', prevSlide);
-  $('carouselNext').addEventListener('click', nextSlide);
-  setCarouselFilter(new URLSearchParams(location.search).get('tipo') || '');
+function initTicker() {
+  const ticker = $('projectTicker');
+  if (!ticker || !PROJECTS.length) return;
+
+  // Revisa una sola vez qué proyectos tienen SVG y después arma la franja
+  const checks = PROJECTS.map((p) => new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve({ p, icon: img.src });
+    img.onerror = () => resolve({ p, icon: null });
+    img.src = projectIcon(p);
+  }));
+
+  Promise.all(checks).then((items) => {
+    buildTicker(ticker, items);
+    initTickerMagnify(ticker);
+    // Si cambia el ancho de la pantalla se recalcula cuántas copias hacen falta
+    let width = ticker.clientWidth;
+    let timer;
+    window.addEventListener('resize', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (ticker.clientWidth === width) return;
+        width = ticker.clientWidth;
+        buildTicker(ticker, items);
+      }, 200);
+    });
+  });
 }
 
 
@@ -296,7 +472,29 @@ function initCarousel() {
    - Arrastrar la lata del centro: la rota en 360°.
    - Clic en la lata del centro: abre la vista del proyecto.
    - Clic en otra lata: la trae al centro.
-   Los valores del anillo siguen la guía de ejemplo.json. */
+   proyectos.html?tipo=X (categorías del menú lateral) muestra solo los proyectos de ese tipo. */
+
+// Proyectos del anillo: todos, o solo los del tipo pedido en la URL (si el tipo no existe, todos)
+const RING_TYPE = new URLSearchParams(location.search).get('tipo') || '';
+const RING_PROJECTS = (() => {
+  const filtered = PROJECTS.filter((p) => p.tipo === RING_TYPE);
+  return filtered.length ? filtered : PROJECTS;
+})();
+const RING_FILTERED = RING_PROJECTS !== PROJECTS;
+
+// Aviso "filtro: # tipo · ver_todos" sobre el anillo
+function renderRingFilter() {
+  const box = $('ringFilter');
+  if (!box || !RING_FILTERED) return;
+  box.textContent = 'filtro: ';
+  const name = document.createElement('strong');
+  name.textContent = `# ${typeSlug(RING_TYPE)}`;
+  const all = document.createElement('a');
+  all.href = 'proyectos.html';
+  all.textContent = 'ver_todos';
+  box.append(name, ' · ', all);
+  box.hidden = false;
+}
 
 const RING_SETTINGS = {
   ringRadius: 6.5,
@@ -332,9 +530,14 @@ function modelSettings(p) {
   };
 }
 
+// Color de una variable de la paleta del sitio (style.css / diseno.css), para el 3D
+function paletteColor(name, fallback) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+}
+
 // Color de la etiqueta de la lata: el primero de la paleta del proyecto
 function labelColor(p) {
-  return (p.colores && p.colores[0] && p.colores[0].hex) || '#AB3130';
+  return (p.colores && p.colores[0] && p.colores[0].hex) || paletteColor('--scarlet', '#F20530');
 }
 
 const isEmpty = (value) => value === '' || value == null;
@@ -344,15 +547,6 @@ function fillDataList(dl, rows, hideEmpty = false) {
     .filter(([, value]) => !(hideEmpty && isEmpty(value)))
     .map(([label, value]) => `<dt>${label}</dt><dd>${isEmpty(value) ? '—' : value}</dd>`)
     .join('');
-}
-
-function infoRows(p) {
-  return [
-    ['ID', `proyecto-${p.id}`],
-    ['FABRICACIÓN', p.tipo],
-    ['FECHA', p.anio],
-    ['DESCRIPCIÓN', p.resumen],
-  ];
 }
 
 function techRows(p) {
@@ -371,20 +565,147 @@ function techRows(p) {
   ];
 }
 
-function updateProjectCard(index) {
-  const p = PROJECTS[index];
+// Ficha breve (nombre, categoría y descripción) que sigue al cursor sobre la lata del centro.
+// Inspirada en ui.aceternity.com/components/tooltip-card
+const TOOLTIP_OFFSET = 18; // px entre el cursor y la ficha
+
+function fillRingTooltip(p) {
+  const tip = $('ringTooltip');
+  if (!tip || !p) return;
+  tip.querySelector('.ring-tooltip-title').innerHTML = p.titulo; // puede traer <i>
+  tip.querySelector('.ring-tooltip-type').textContent = p.tipo ? `# ${typeSlug(p.tipo)}` : '';
+  tip.querySelector('.ring-tooltip-desc').textContent = p.resumen || '';
+}
+
+// x, y: posición del cursor en la pantalla. La ficha va abajo a la derecha del cursor
+// y se da vuelta si no cabe.
+function showRingTooltip(x, y) {
+  const tip = $('ringTooltip');
+  if (!tip) return;
+  tip.classList.add('visible');
+  const { offsetWidth: w, offsetHeight: h } = tip;
+  let left = x + TOOLTIP_OFFSET;
+  let top = y + TOOLTIP_OFFSET;
+  if (left + w > window.innerWidth - 8) left = x - TOOLTIP_OFFSET - w;
+  if (top + h > window.innerHeight - 8) top = y - TOOLTIP_OFFSET - h;
+  tip.style.left = `${Math.max(8, left)}px`;
+  tip.style.top = `${Math.max(8, top)}px`;
+}
+
+function hideRingTooltip() {
+  const tip = $('ringTooltip');
+  if (tip) tip.classList.remove('visible');
+}
+
+// Fotos del proyecto del centro, a la derecha del anillo (sin videos:
+// esos se ven en la vista del proyecto). Las animaciones (GIF) sí se muestran.
+let ringPhotosProject = null;
+let ringPhotosTimer = null;
+let ringPhotosToken = 0;        // descarta cargas de un proyecto que ya no está al centro
+const RING_PHOTOS_DELAY = 350;  // ms quieto antes de cargar las fotos del proyecto del centro
+const RING_LOADING_MAX = 8000;  // ms: tope por si una foto nunca termina de cargar
+
+// ¿El anillo sigue girando? (lo define initProjectRing; sin 3D nunca gira)
+let ringIsMoving = () => false;
+
+// Animación "cargando_" sobre el panel de fotos
+function setRingLoading(on) {
+  const loading = $('ringLoading');
+  if (!loading) return;
+  loading.classList.toggle('visible', on);
+  $('ringPhotos').setAttribute('aria-busy', String(on));
+}
+
+// Espera a que una imagen o video termine de cargar (o falle del todo).
+// Las imágenes con respaldo pueden fallar dos veces: la versión web y el original.
+function mediaLoaded(el) {
+  return new Promise((resolve) => {
+    if (!el) return resolve();
+    if (el.tagName === 'VIDEO') {
+      if (el.readyState >= 2) return resolve();
+      el.addEventListener('loadeddata', resolve, { once: true });
+      el.addEventListener('error', resolve, { once: true });
+      return;
+    }
+    if (el.complete && el.naturalWidth) return resolve();
+    let errores = 0;
+    el.addEventListener('load', resolve, { once: true });
+    el.addEventListener('error', () => { if (++errores >= 2) resolve(); });
+  });
+}
+
+function ringPhotoList(p) {
+  return (p.galeria || []).filter((item) => !isVideo(item.archivo));
+}
+
+function showRingPhoto(p, index) {
+  const main = $('ringPhotoMain');
+  const fotos = ringPhotoList(p);
+  if (!fotos.length) {
+    main.innerHTML = '<div class="thumbnail-placeholder">[ SIN IMÁGENES ]</div>';
+    return;
+  }
+  renderMainMedia(main, p, fotos[index]);
+  $('ringPhotoThumbs').querySelectorAll('button').forEach((b, i) => b.classList.toggle('active', i === index));
+}
+
+function renderRingPhotos(p) {
+  if (!$('ringPhotoMain')) return;
+  const token = ++ringPhotosToken;
+  if (p === ringPhotosProject) {   // volvió al mismo proyecto: sus fotos ya están
+    setRingLoading(false);
+    return;
+  }
+  ringPhotosProject = p;
+  const thumbs = $('ringPhotoThumbs');
+  const fotos = ringPhotoList(p);
+  thumbs.innerHTML = '';
+  fotos.forEach((item, i) => {
+    // Sin carga diferida: son livianas y la animación espera a que estén todas
+    const btn = thumbButton(p, item, false);
+    btn.addEventListener('click', () => showRingPhoto(p, i));
+    thumbs.appendChild(btn);
+  });
+  thumbs.hidden = fotos.length < 2;
+  showRingPhoto(p, 0);
+
+  // La animación sigue hasta que cargan la foto grande y las miniaturas
+  const media = [$('ringPhotoMain').querySelector('img, video'), ...thumbs.querySelectorAll('img')];
+  Promise.race([
+    Promise.all(media.map(mediaLoaded)),
+    new Promise((resolve) => setTimeout(resolve, RING_LOADING_MAX)),
+  ]).then(() => {
+    if (token === ringPhotosToken) setRingLoading(false);
+  });
+}
+
+// Las fotos se cargan cuando el anillo se detiene: al girar rápido no descarga
+// la galería de cada proyecto por el que pasa. Mientras tanto, "cargando_".
+function scheduleRingPhotos(p) {
+  clearTimeout(ringPhotosTimer);
+  ringPhotosToken++;   // una carga anterior que termine ahora ya no apaga la animación
+  setRingLoading(true);
+  const intentar = () => {
+    if (ringIsMoving()) ringPhotosTimer = setTimeout(intentar, 120);
+    else renderRingPhotos(p);
+  };
+  ringPhotosTimer = setTimeout(intentar, RING_PHOTOS_DELAY);
+}
+
+// Proyecto que quedó al centro del anillo: nombre, indicador, descripción, fotos y ficha
+function updateRingSelection(index) {
+  const p = RING_PROJECTS[index];
   if (!p) {
-    setEncrypted($('cardTitle'), 'SIN PROYECTOS');
-    $('cardCounter').textContent = '0/0';
-    fillDataList($('cardInfo'), []);
-    fillDataList($('cardTech'), []);
+    setEncrypted($('ringName'), 'SIN PROYECTOS');
+    $('ringCounter').textContent = '0/0';
     return;
   }
 
-  setEncrypted($('cardTitle'), `SYS_${p.id}: ${p.titulo}`);
-  $('cardCounter').textContent = `${index + 1}/${PROJECTS.length}`;
-  fillDataList($('cardInfo'), infoRows(p));
-  fillDataList($('cardTech'), techRows(p));
+  setEncrypted($('ringName'), stripHtml(p.titulo));
+  $('ringCounter').textContent = `${index + 1}/${RING_PROJECTS.length}`;
+  $('ringDesc').textContent = p.resumen || '';
+  scheduleRingPhotos(p);
+  fillRingTooltip(p);
 
   // Enlace directo al proyecto (lo usa también el editor: proyectos.html#proyecto-XX)
   history.replaceState(null, '', `#proyecto-${p.id}`);
@@ -392,7 +713,7 @@ function updateProjectCard(index) {
 
 function initialRingIndex() {
   const id = location.hash.replace('#proyecto-', '');
-  const i = PROJECTS.findIndex((p) => p.id === id);
+  const i = RING_PROJECTS.findIndex((p) => p.id === id);
   return i >= 0 ? i : 0;
 }
 
@@ -498,7 +819,11 @@ function disposeObject(object) {
 // Entorno simple con los colores del sitio para que el metal tenga reflejos
 function buildEnvironment(renderer) {
   const envScene = new THREE.Scene();
-  const colores = ['#EEDBBF', '#121212', '#EEDBBF', '#000000', '#AB3130', '#67191F'];
+  const colores = [
+    paletteColor('--cream', '#EEDBBF'), paletteColor('--midnight', '#0C1226'),
+    paletteColor('--amber', '#F29F05'), paletteColor('--black', '#070B17'),
+    paletteColor('--scarlet', '#F20530'), paletteColor('--deep-red', '#8C0B3B'),
+  ];
   envScene.add(new THREE.Mesh(
     new THREE.BoxGeometry(10, 10, 10),
     colores.map((c) => new THREE.MeshBasicMaterial({ color: c, side: THREE.BackSide }))
@@ -514,7 +839,7 @@ function createViewer(canvas, stage, camera) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
   renderer.setPixelRatio(1);
   renderer.outputEncoding = THREE.sRGBEncoding;
-  renderer.setClearColor('#000000');
+  renderer.setClearColor(paletteColor('--black', '#070B17')); // mismo color que los paneles
 
   const scene = new THREE.Scene();
   scene.environment = buildEnvironment(renderer);
@@ -550,7 +875,7 @@ const LUZ_POR_DEFECTO = 'estudio';
 const LUCES = {
   estudio: {
     nombre: 'Estudio',
-    ambiente: { cielo: '#EEDBBF', suelo: '#67191F', intensidad: 0.6 },
+    ambiente: { cielo: '#EEDBBF', suelo: '#8C0B3B', intensidad: 0.6 },
     principal: { color: '#ffffff', intensidad: 1.2, posicion: [3, 5, 8] },
     contraluz: { color: '#ffffff', intensidad: 0, posicion: [0, 3, -8] },
     reflejos: 1,
@@ -711,16 +1036,7 @@ function showDetailMedia(index) {
 
   detailMediaIndex = (index + galeria.length) % galeria.length;
   const item = galeria[detailMediaIndex];
-  const src = projectFolder(detailProject) + item.archivo;
-
-  if (isVideo(item.archivo)) {
-    main.innerHTML = item.animacion
-      ? `<video src="${src}" autoplay muted loop playsinline></video>`
-      : `<video src="${src}" controls playsinline preload="metadata"></video>`;
-  } else {
-    main.innerHTML = `<button type="button" class="detail-zoom" title="Ampliar"><img src="${src}" alt="${item.nombre || item.archivo}"></button>`;
-    main.querySelector('button').addEventListener('click', () => openLightbox(src, item));
-  }
+  renderMainMedia(main, detailProject, item);
 
   $('detailCaption').textContent = `${detailMediaIndex + 1}/${galeria.length} — ${item.nombre || item.archivo}`;
   document.querySelectorAll('#detailThumbs button').forEach((b, i) => b.classList.toggle('active', i === detailMediaIndex));
@@ -730,14 +1046,7 @@ function renderDetailThumbs(p) {
   const thumbs = $('detailThumbs');
   thumbs.innerHTML = '';
   (p.galeria || []).forEach((item, i) => {
-    const src = projectFolder(p) + item.archivo;
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'detail-thumb';
-    btn.title = item.nombre || item.archivo;
-    btn.innerHTML = isVideo(item.archivo)
-      ? `<video src="${src}#t=0.5" muted preload="metadata" playsinline></video><span>${item.animacion ? '∞' : '▶'}</span>`
-      : `<img src="${src}" alt="" loading="lazy">`;
+    const btn = thumbButton(p, item);
     btn.addEventListener('click', () => showDetailMedia(i));
     thumbs.appendChild(btn);
   });
@@ -748,10 +1057,13 @@ function renderDetailThumbs(p) {
    Con < y > (o las flechas del teclado) se recorren las imágenes del proyecto. */
 let lightboxImages = [];
 let lightboxIndex = 0;
+let lightboxProject = null;
 
-function openLightbox(src, item) {
-  const galeria = (detailProject && detailProject.galeria) || [];
-  lightboxImages = galeria.filter((g) => !isVideo(g.archivo));
+// project: el proyecto de la imagen. Solo recorre fotos (no videos ni animaciones).
+function openLightbox(item, project) {
+  lightboxProject = project;
+  const galeria = (project && project.galeria) || [];
+  lightboxImages = galeria.filter((g) => !isVideo(g.archivo) && !isAnimation(g));
   lightboxIndex = Math.max(0, lightboxImages.indexOf(item));
   if (!lightboxImages.length) lightboxImages = [item];
   showLightboxImage(lightboxIndex);
@@ -763,20 +1075,20 @@ function showLightboxImage(index) {
   const total = lightboxImages.length;
   lightboxIndex = (index + total) % total;
   const item = lightboxImages[lightboxIndex];
-  const src = projectFolder(detailProject) + item.archivo;
   const nombre = item.nombre || item.archivo;
 
   $('lightboxMedia').innerHTML = `
     <div class="card3d" id="lightboxCard">
-      <img class="card3d-img" src="${src}" alt="${nombre}">
+      <img class="card3d-img" alt="${nombre}">
       <p class="card3d-caption">${nombre}${total > 1 ? ` <span>${lightboxIndex + 1}/${total}</span>` : ''}</p>
     </div>`;
   encryptText($('lightboxTitle'), nombre);
   $('lightboxPrev').hidden = $('lightboxNext').hidden = total < 2;
 
+  // Versión web (1600 px); si no existe, el original. Se ajusta al tamaño al cargar.
   const img = $('lightboxMedia').querySelector('.card3d-img');
-  if (img.complete) fitLightboxImage();
-  else img.addEventListener('load', fitLightboxImage, { once: true });
+  img.addEventListener('load', fitLightboxImage);
+  setSrcWithFallback(img, mediaWeb(lightboxProject, item), mediaOriginal(lightboxProject, item));
 }
 
 // Escala la imagen al máximo que cabe en la pantalla (agranda también las pequeñas)
@@ -923,7 +1235,7 @@ function startDetailLoop() {
 }
 
 function openProjectDetail(index, onClose) {
-  const p = PROJECTS[index];
+  const p = RING_PROJECTS[index];
   if (!p) return;
   detailProject = p;
 
@@ -965,42 +1277,52 @@ function closeProjectDetail() {
 
 /* ----- Anillo ----- */
 
+// Abre la vista del proyecto del centro (la define initProjectRing; la usa openLinkedProject)
+let openRingProject = null;
+
 function initProjectRing() {
   const stage = $('ringStage');
   if (!stage) return;
 
-  const count = PROJECTS.length;
+  const count = RING_PROJECTS.length;
   let currentIndex = initialRingIndex();
   let ringRunning = true;
   let startRingLoop = () => {};
 
-  // Avanza o retrocede "delta" proyectos (sin 3D solo cambia la tarjeta)
+  // Avanza o retrocede "delta" proyectos (sin 3D solo cambia la selección)
   let moveBy = (delta) => {
     if (!count) return;
     currentIndex = (currentIndex + delta + count) % count;
-    updateProjectCard(currentIndex);
+    updateRingSelection(currentIndex);
   };
 
   const openDetail = () => {
+    if (!count) return;
+    hideRingTooltip();
     ringRunning = false; // el anillo no se dibuja mientras la vista del proyecto está abierta
     openProjectDetail(currentIndex, () => { ringRunning = true; startRingLoop(); stage.focus({ preventScroll: true }); });
   };
+  openRingProject = openDetail;
 
-  $('ringPrev').addEventListener('click', () => moveBy(-1));
-  $('ringNext').addEventListener('click', () => moveBy(1));
-  $('cardOpen').addEventListener('click', openDetail);
+  // Flechas dentro del anillo: no deben iniciar el arrastre del anillo
+  ['ringPrev', 'ringNext'].forEach((id, i) => {
+    const arrow = $(id);
+    arrow.addEventListener('pointerdown', (e) => e.stopPropagation());
+    arrow.addEventListener('click', () => moveBy(i === 0 ? -1 : 1));
+  });
   $('detailBack').addEventListener('click', closeProjectDetail);
   stage.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') { e.preventDefault(); moveBy(-1); }
     if (e.key === 'ArrowRight') { e.preventDefault(); moveBy(1); }
     if (e.key === 'Enter') { e.preventDefault(); openDetail(); }
   });
-  // Esc vuelve al anillo (si no hay una ventana emergente abierta)
+  // Esc vuelve al anillo (si no hay una ventana emergente ni el menú lateral abiertos)
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !document.querySelector('.modal-overlay.open')) closeProjectDetail();
+    if (e.key === 'Escape' && !document.querySelector('.modal-overlay.open, .side-menu.open')) closeProjectDetail();
   });
 
-  updateProjectCard(currentIndex);
+  renderRingFilter();
+  updateRingSelection(currentIndex);
   if (!count) return;
 
   // Sin Three.js o sin WebGL la tarjeta y la vista del proyecto siguen funcionando
@@ -1015,7 +1337,8 @@ function initProjectRing() {
     return;
   }
   const { renderer, scene } = viewer;
-  scene.fog = new THREE.Fog('#000000', 8, 17);
+  // Las latas del fondo se funden con el color del panel
+  scene.fog = new THREE.Fog(paletteColor('--black', '#070B17'), 8, 17);
 
   // Cámara un poco elevada mirando a la lata del frente; el resto del anillo queda detrás
   camera.position.set(0, 1.6, RING_SETTINGS.cameraZPosition);
@@ -1024,7 +1347,7 @@ function initProjectRing() {
   // Las latas se reparten en el anillo; la del ángulo 0 queda frente a la cámara
   const ring = new THREE.Group();
   const step = (Math.PI * 2) / count;
-  const cans = PROJECTS.map((p, i) => {
+  const cans = RING_PROJECTS.map((p, i) => {
     const can = buildModel(p);
     can.position.set(Math.sin(i * step) * RING_SETTINGS.ringRadius, 0, Math.cos(i * step) * RING_SETTINGS.ringRadius);
     can.userData.index = i;
@@ -1032,7 +1355,7 @@ function initProjectRing() {
     return can;
   });
   scene.add(ring);
-  applyLight(viewer, lightPreset(PROJECTS[currentIndex]), ring, 1);
+  applyLight(viewer, lightPreset(RING_PROJECTS[currentIndex]), ring, 1);
 
   // Estado del giro
   let rotation = -currentIndex * step;
@@ -1047,13 +1370,14 @@ function initProjectRing() {
   const indexAt = (angle) => ((Math.round(-angle / step) % count) + count) % count;
 
   // Botones y teclado: suman desde el destino pendiente, así varios clics seguidos
-  // avanzan varios proyectos. La tarjeta cambia de inmediato.
+  // avanzan varios proyectos. La selección cambia de inmediato.
   moveBy = (delta) => {
+    hideRingTooltip(); // la lata bajo el cursor cambia: la ficha vuelve al mover el mouse
     velocity = 0;
     const base = goal !== null ? goal : -Math.round(-rotation / step) * step;
     goal = base - delta * step;
     currentIndex = indexAt(goal);
-    updateProjectCard(currentIndex);
+    updateRingSelection(currentIndex);
   };
 
   // ¿Qué lata hay bajo el puntero? (índice o -1)
@@ -1068,8 +1392,11 @@ function initProjectRing() {
 
   // La lata del centro solo cuenta como "seleccionada" cuando el anillo está quieto
   const isSettled = () => goal === null && Math.abs(velocity) < 0.002;
+  // Las fotos del panel esperan a que el anillo se detenga (ver scheduleRingPhotos)
+  ringIsMoving = () => (drag && drag.mode === 'ring') || !isSettled();
 
   stage.addEventListener('pointerdown', (e) => {
+    hideRingTooltip();
     const hit = canAt(e);
     const onSelected = hit === currentIndex && hit === indexAt(rotation);
     drag = { mode: onSelected ? 'model' : 'ring', hit, startX: e.clientX, startY: e.clientY, lastX: e.clientX, lastY: e.clientY, moved: false };
@@ -1080,10 +1407,15 @@ function initProjectRing() {
 
   stage.addEventListener('pointermove', (e) => {
     if (!drag) {
+      // Sobre las flechas no cuenta la lata que haya detrás
+      const hit = e.target.closest('.ring-arrow') ? -1 : canAt(e);
       // Pista visual: la lata del centro se puede rotar y abrir
-      const hit = canAt(e);
-      stage.classList.toggle('over-model', hit === currentIndex && isSettled());
+      const overModel = hit === currentIndex && isSettled();
+      stage.classList.toggle('over-model', overModel);
       stage.classList.toggle('over-can', hit >= 0 && hit !== currentIndex);
+      // Ficha del proyecto junto al cursor (solo con mouse o lápiz; en touch no hay "pasar por encima")
+      if (overModel && e.pointerType !== 'touch') showRingTooltip(e.clientX, e.clientY);
+      else hideRingTooltip();
       return;
     }
     const dx = e.clientX - drag.lastX;
@@ -1121,10 +1453,15 @@ function initProjectRing() {
   };
   stage.addEventListener('pointerup', release);
   stage.addEventListener('pointercancel', () => { drag = null; stage.classList.remove('dragging'); });
+  stage.addEventListener('pointerleave', () => {
+    hideRingTooltip();
+    stage.classList.remove('over-model', 'over-can');
+  });
 
   // Rueda del mouse sobre el anillo
   stage.addEventListener('wheel', (e) => {
     e.preventDefault();
+    hideRingTooltip();
     goal = null;
     velocity -= (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) * RING_SETTINGS.wheelSensitivity;
     velocity = Math.max(-RING_SETTINGS.maxVelocity, Math.min(RING_SETTINGS.maxVelocity, velocity));
@@ -1148,11 +1485,11 @@ function initProjectRing() {
     }
     ring.rotation.y = rotation;
 
-    // Al arrastrar o con la rueda, la tarjeta sigue a la lata del centro
+    // Al arrastrar o con la rueda, la selección sigue a la lata del centro
     const front = indexAt(rotation);
     if (goal === null && front !== currentIndex) {
       currentIndex = front;
-      updateProjectCard(currentIndex);
+      updateRingSelection(currentIndex);
     }
 
     // La lata del centro se agranda un poco y gira sola, salvo que se esté rotando a mano
@@ -1160,7 +1497,7 @@ function initProjectRing() {
     cans.forEach((can, i) => {
       const target = i === front ? 1.1 : 1;
       const s = can.userData.highlight = (can.userData.highlight || 1) + (target - (can.userData.highlight || 1)) * 0.1;
-      const base = modelSettings(PROJECTS[i]).escala;
+      const base = modelSettings(RING_PROJECTS[i]).escala;
       can.scale.set(base[0] * s, base[1] * s, base[2] * s);
       const spinner = can.userData.spinner;
       if (i === front) {
@@ -1176,7 +1513,7 @@ function initProjectRing() {
     });
 
     // La luz pasa suavemente al estilo del proyecto del centro
-    applyLight(viewer, lightPreset(PROJECTS[front]), ring, 0.06);
+    applyLight(viewer, lightPreset(RING_PROJECTS[front]), ring, 0.06);
 
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
@@ -1452,8 +1789,8 @@ function hexToRgb(hex) {
 if (!redirectOldProjectLinks()) {
   initModals();
   initLightbox3D();
-  renderTypeList();
-  initCarousel();
+  initSideMenu();
+  initTicker();
   initProjectRing();
   initPaint();
   encryptAll();
@@ -1461,7 +1798,7 @@ if (!redirectOldProjectLinks()) {
   trackHeaderHeight();
 }
 
-// Guarda la altura real del header en --header-height (la usa la barra lateral fija)
+// Guarda la altura real del header en --header-height (la usa el alto máximo de la galería y el visor 3D)
 function trackHeaderHeight() {
   const header = document.querySelector('header');
   if (!header) return;
@@ -1471,10 +1808,13 @@ function trackHeaderHeight() {
   if (document.fonts) document.fonts.ready.then(update); // la fuente cambia la altura al cargar
 }
 
-// proyectos.html?ver#proyecto-XX (botón ">> ver_proyecto" del carrusel de index)
+// proyectos.html?ver#proyecto-XX (íconos del teleprompter de index)
 // abre directamente la vista de ese proyecto en vez de dejarlo solo seleccionado en el anillo
 function openLinkedProject() {
-  if (!$('cardOpen') || !new URLSearchParams(location.search).has('ver')) return;
-  history.replaceState(null, '', location.pathname + location.hash); // quita ?ver de la URL
-  $('cardOpen').click();
+  const params = new URLSearchParams(location.search);
+  if (!openRingProject || !params.has('ver')) return;
+  params.delete('ver'); // quita ?ver de la URL (y deja ?tipo si lo hay)
+  const query = params.toString();
+  history.replaceState(null, '', location.pathname + (query ? `?${query}` : '') + location.hash);
+  openRingProject();
 }

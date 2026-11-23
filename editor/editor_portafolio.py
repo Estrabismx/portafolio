@@ -44,6 +44,7 @@ except ImportError:
     sys.exit(1)
 
 import diseno as dis
+import medios_web   # versiones livianas de la galería (web/ y min/)
 
 try:
     from modelo3d import EXT_MODELO, NIVELES, NIVEL_POR_DEFECTO, convertir as convertir_modelo
@@ -486,7 +487,7 @@ class Editor:
         izquierda = ttk.Frame(principal)
         izquierda.pack(side='left', fill='y', padx=(0, 8))
         ttk.Label(izquierda, text='Proyectos', style='Titulo.TLabel').pack(anchor='w')
-        ttk.Label(izquierda, text='El orden es el del carrusel\nde la página principal.',
+        ttk.Label(izquierda, text='El orden es el del anillo de\nproyectos y del teleprompter.',
                   style='Ayuda.TLabel').pack(anchor='w', pady=(0, 4))
 
         self.lista = tk.Listbox(izquierda, width=30, height=20, activestyle='none', exportselection=False,
@@ -563,9 +564,9 @@ class Editor:
         self.pestanas.add(f, text='  General  ')
         f.columnconfigure(1, weight=1)
 
-        self.campo(f, 0, 'Título corto *', 'titulo', 'Título del proyecto en el carrusel')
-        self.campo(f, 1, 'Encabezado', 'encabezado', 'Título grande del detalle (proyectos.html, en mantención)')
-        self.campo(f, 2, 'Tipo', 'tipo', 'Aparece en el filtro BROWSE BY TYPE')
+        self.campo(f, 0, 'Título corto *', 'titulo', 'Nombre del proyecto en el anillo y en su ficha')
+        self.campo(f, 1, 'Encabezado', 'encabezado', 'Título grande de la vista del proyecto')
+        self.campo(f, 2, 'Tipo', 'tipo', 'Categoría: aparece en el menú lateral (# tipo)')
         self.campo(f, 3, 'Objetivo', 'objetivo')
         self.campo(f, 4, 'Desafío', 'desafio')
 
@@ -684,12 +685,12 @@ class Editor:
         ttk.Button(barra, text='+ Agregar archivos…', command=self.elegir_archivos).pack(side='left')
         ttk.Button(barra, text='◀ Mover', command=lambda: self.mover_archivo(-1)).pack(side='left', padx=(10, 0))
         ttk.Button(barra, text='Mover ▶', command=lambda: self.mover_archivo(1)).pack(side='left')
-        ttk.Button(barra, text='Poner de portada (carrusel)', command=self.poner_portada).pack(side='left', padx=4)
+        ttk.Button(barra, text='Poner primero', command=self.poner_portada).pack(side='left', padx=4)
         ttk.Button(barra, text='Quitar', command=self.quitar_archivo).pack(side='left')
         ttk.Button(barra, text='Optimizar archivos existentes', command=self.optimizar_existentes).pack(side='right')
 
         ttk.Label(f, text=('Arrastra fotos o videos desde Windows a este recuadro. ' if HAY_ARRASTRE else '') +
-                  'Arrastra una miniatura sobre otra para reordenar. La primera es la portada.',
+                  'Arrastra una miniatura sobre otra para reordenar. La primera es la que se ve primero.',
                   style='Ayuda.TLabel').pack(anchor='w', pady=(6, 2))
 
         marco = ttk.Frame(f, relief='sunken', borderwidth=2)
@@ -925,45 +926,9 @@ class Editor:
         for clave in ('escala_texto', 'tam_titulos', 'tam_logo', 'tam_statement'):
             deslizador(clave)
 
-        # Barra lateral
-        titulo('Barra lateral', 'En celular siempre va arriba del contenido.')
-        ttk.Label(f, text='Posición').grid(row=fila, column=0, sticky='w', pady=2)
-        self.lados_sidebar = {'izquierda': 'Izquierda', 'derecha': 'Derecha', 'oculta': 'Oculta'}
-        var_lado = tk.StringVar()
-        combo_lado = ttk.Combobox(f, textvariable=var_lado, state='readonly', width=24,
-                                  values=list(self.lados_sidebar.values()))
-        combo_lado.grid(row=fila, column=1, sticky='w', pady=2)
-        combo_lado.bind('<<ComboboxSelected>>', lambda e: self.al_cambiar_diseno(
-            'sidebar_lado', next(k for k, v in self.lados_sidebar.items() if v == var_lado.get())))
-        self.vars_diseno['sidebar_lado'] = (var_lado, None)
-        fila += 1
-        deslizador('sidebar_ancho')
-
-        # Orden y visibilidad
-        titulo('Orden y visibilidad', 'Selecciona un elemento y usa los botones.')
-        self.listas_orden = {}
-        for orden, ocultos, nombre, nombres in (
-                ('orden_sidebar', 'ocultos_sidebar', 'Módulos de la barra lateral', dis.NOMBRES_SIDEBAR),
-                ('orden_portada', 'ocultos_portada', 'Secciones de la portada', dis.NOMBRES_PORTADA)):
-            ttk.Label(f, text=nombre).grid(row=fila, column=0, sticky='nw', pady=4)
-            marco = ttk.Frame(f)
-            marco.grid(row=fila, column=1, sticky='w', pady=4)
-            lista = tk.Listbox(marco, height=len(nombres), width=32, activestyle='none', exportselection=False,
-                               font=('Segoe UI', 10), selectbackground='#000080')
-            lista.pack(side='left')
-            botones = ttk.Frame(marco)
-            botones.pack(side='left', padx=6)
-            ttk.Button(botones, text='▲ Subir', command=lambda o=orden: self.mover_en_orden(o, -1)).pack(fill='x')
-            ttk.Button(botones, text='▼ Bajar', command=lambda o=orden: self.mover_en_orden(o, 1)).pack(fill='x')
-            ttk.Button(botones, text='Mostrar / ocultar',
-                       command=lambda o=orden, x=ocultos: self.alternar_visible(o, x)).pack(fill='x', pady=(4, 0))
-            self.listas_orden[orden] = (lista, ocultos, nombres)
-            fila += 1
-
         # Alturas
         titulo('Alturas')
-        for clave in ('alto_carrusel', 'alto_anillo', 'alto_visor'):
-            deslizador(clave)
+        deslizador('alto_visor')   # el anillo de proyectos toma solo el alto de la pantalla
 
         # Espaciado y bordes
         titulo('Espaciado y bordes')
@@ -983,8 +948,6 @@ class Editor:
             for clave, (var, mostrar) in self.vars_diseno.items():
                 if clave.startswith('color_'):
                     var.set(d['colores'][clave[6:]])
-                elif clave == 'sidebar_lado':
-                    var.set(self.lados_sidebar.get(d[clave], 'Izquierda'))
                 else:
                     var.set(d[clave])
                     if mostrar:
@@ -993,8 +956,6 @@ class Editor:
             self.cargando_diseno = False
         for clave in self.muestras_diseno:
             self.refrescar_muestra_diseno(clave)
-        for orden in self.listas_orden:
-            self.refrescar_lista_orden(orden)
 
     def al_cambiar_diseno(self, clave, valor):
         if self.cargando_diseno or self.diseno.get(clave) == valor:
@@ -1021,46 +982,9 @@ class Editor:
         if hexa:
             var.set(hexa)
 
-    def refrescar_lista_orden(self, orden, seleccion=None):
-        lista, ocultos, nombres = self.listas_orden[orden]
-        lista.delete(0, 'end')
-        for clave in self.diseno[orden]:
-            oculto = clave in self.diseno[ocultos]
-            lista.insert('end', f'  {"✖" if oculto else "✔"}  {nombres[clave]}' + ('  (oculto)' if oculto else ''))
-            if oculto:
-                lista.itemconfig('end', foreground='#888888')
-        if seleccion is not None:
-            lista.selection_set(seleccion)
-
-    def mover_en_orden(self, orden, direccion):
-        lista = self.listas_orden[orden][0]
-        seleccion = lista.curselection()
-        if not seleccion:
-            return
-        i = seleccion[0]
-        elementos = self.diseno[orden]
-        if not 0 <= i + direccion < len(elementos):
-            return
-        elementos[i], elementos[i + direccion] = elementos[i + direccion], elementos[i]
-        self.marcar_sucio()
-        self.refrescar_lista_orden(orden, i + direccion)
-
-    def alternar_visible(self, orden, ocultos):
-        lista = self.listas_orden[orden][0]
-        seleccion = lista.curselection()
-        if not seleccion:
-            return
-        clave = self.diseno[orden][seleccion[0]]
-        if clave in self.diseno[ocultos]:
-            self.diseno[ocultos].remove(clave)
-        else:
-            self.diseno[ocultos].append(clave)
-        self.marcar_sucio()
-        self.refrescar_lista_orden(orden, seleccion[0])
-
     def restablecer_diseno(self):
         if not messagebox.askyesno('Restablecer diseño',
-                                   '¿Volver a los colores, tamaños y orden originales del sitio?'):
+                                   '¿Volver a los colores y tamaños originales del sitio?'):
             return
         self.diseno = dis.completar(None)
         self.marcar_sucio()
@@ -2175,7 +2099,39 @@ class Editor:
         self.estado.config(text='✔ Guardado. Recuerda hacer commit en GitHub Desktop para publicarlo.')
         if avisos:
             messagebox.showwarning('Guardado con avisos', '\n\n'.join(avisos))
+        if pendientes:
+            self.generar_versiones_web(pendientes)
         return True
+
+    def generar_versiones_web(self, proyectos):
+        """En segundo plano: crea las versiones livianas (web/ y min/) de la galería de los
+        proyectos guardados. Los originales no se tocan (ver medios_web.py).
+        Mientras tanto la web usa los originales."""
+        datos = [limpiar_para_guardar(p) for p in proyectos]
+        resultado = queue.Queue()
+
+        def trabajo():
+            avisos = []
+            for p in datos:
+                try:
+                    avisos += medios_web.generar_proyecto(p, avisar=lambda texto: None)
+                except Exception as error:
+                    avisos.append(f'proyecto-{p["id"]}: {error}')
+            resultado.put(avisos)
+
+        threading.Thread(target=trabajo, daemon=True).start()
+        self.estado.config(text='✔ Guardado. Preparando versiones livianas de las fotos para la web…')
+
+        def revisar():
+            try:
+                avisos = resultado.get_nowait()
+            except queue.Empty:
+                self.root.after(500, revisar)
+                return
+            self.estado.config(text='✔ Guardado. Recuerda hacer commit en GitHub Desktop para publicarlo.')
+            if avisos:
+                messagebox.showwarning('Versiones web con avisos', '\n'.join(avisos[:15]))
+        self.root.after(500, revisar)
 
     def guardar_y_ver(self):
         if self.guardar():

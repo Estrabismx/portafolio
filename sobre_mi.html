@@ -14,47 +14,15 @@
 <body data-page="sobre-mi">
 
 <div class="wrapper">
-  <header>
-    <h1 class="logo"><a href="index.html">ESTRABISMX</a></h1>
-    <nav class="nav-links">
-      <a href="proyectos.html">// proyectos</a>
-      <a href="sobre_mi.html" aria-current="page">// sobre_mi</a>
-      <a href="#contacto" data-open-modal="contactModal">// contacto</a>
-      <a href="paint.html">// pintar</a>
-    </nav>
+  <header class="topbar">
+    <button type="button" class="menu-toggle" id="menuToggle" aria-controls="sideMenu" aria-expanded="false" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="topbar-logo" href="index.html" aria-label="Inicio">&lt;Ex&gt;</a>
+    <span class="topbar-file">portafolio_camila_ramirez.html</span>
   </header>
 
   <div class="main-layout">
-
-    <!-- =================================================================
-         BARRA LATERAL
-         ================================================================= -->
-    <aside class="sidebar">
-      <div class="sidebar-module" data-module="browse">
-        <h3 class="sidebar-title">// categorias</h3>
-        <!-- Se llena con los tipos de proyectos.js -->
-        <ul class="sidebar-list" id="typeList"></ul>
-      </div>
-
-      <div class="sidebar-module" data-module="links">
-        <h3 class="sidebar-title">// enlaces</h3>
-        <ul class="sidebar-list">
-          <li><a href="https://github.com/estrabismx" target="_blank" rel="noopener">> GitHub</a></li>
-          <li><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener">> Instagram</a></li>
-          <li><a href="mailto:camila.ramirez2@mail.udp.cl">> E-mail</a></li>
-        </ul>
-      </div>
-
-      <div class="sidebar-module" data-module="status">
-        <h3 class="sidebar-title">// datos</h3>
-        <ul class="sidebar-list">
-          <li><b>usuario:</b> Estrabismx</li>
-          <li><b>nombre:</b> Camila Ramírez</li>
-          <li><b>ubicacion:</b> Santiago, Chile</li>
-        </ul>
-      </div>
-
-    </aside>
 
     <!-- =================================================================
          CONTENIDO
@@ -140,6 +108,40 @@
     <p>2026 Camila Ramírez "Estrabismx"</p>
   </footer>
 </div>
+
+<!-- =====================================================================
+     MENÚ LATERAL (botón hamburguesa del header)
+     ===================================================================== -->
+<div class="side-menu-overlay" id="sideMenuOverlay"></div>
+<nav class="side-menu" id="sideMenu" aria-label="Menú principal">
+  <button type="button" class="menu-toggle side-menu-close" aria-label="Cerrar menú">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="side-menu-scroll">
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="index.html">// &lt;Estrabismx&gt;</a>
+    </div>
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="proyectos.html">// proyectos</a>
+      <!-- Se llena con los tipos de proyectos.js -->
+      <ul class="side-menu-list" id="menuTypes"></ul>
+    </div>
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="sobre_mi.html">// sobre_mi</a>
+    </div>
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="paint.html">// pintar</a>
+    </div>
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="#contacto" data-open-modal="contactModal">// contacto</a>
+      <ul class="side-menu-list">
+        <li><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener"># Instagram</a></li>
+        <li><a href="https://github.com/estrabismx" target="_blank" rel="noopener"># GitHub</a></li>
+        <li><a href="mailto:camila.ramirez2@mail.udp.cl"># Correo</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
 <!-- =====================================================================
      VENTANA EMERGENTE: CONTACTO

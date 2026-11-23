@@ -2,41 +2,25 @@
    DISEÑO DEL SITIO — lo genera el Editor de Portafolio (pestaña "Diseño").
    No hace falta editarlo a mano: cambia los valores en el editor.
    ===================================================================== */
-/* DISENO {"colores": {"crema": "#EEDBBF", "escarlata": "#AB3130", "rojo_oscuro": "#67191F", "fondo": "#121212"}, "fuente_titulos": "VT323", "fuente_texto": "Roboto Mono", "escala_texto": 100, "tam_logo": 42, "tam_titulos": 32, "tam_statement": 22, "sidebar_lado": "derecha", "sidebar_ancho": 250, "orden_sidebar": ["browse", "links", "status", "contact"], "ocultos_sidebar": [], "orden_portada": ["statement", "projects", "about"], "ocultos_portada": [], "alto_carrusel": 400, "alto_anillo": 460, "alto_visor": 420, "espacio_secciones": 50, "margen_interior": 20, "grosor_bordes": 4, "ancho_maximo": 1600} */
+/* DISENO {"colores": {"crema": "#EEDBBF", "escarlata": "#F20530", "rojo_oscuro": "#8C0B3B", "ambar": "#F29F05", "ambar_detalle": "#F28907", "fondo": "#0C1226", "paneles": "#070B17"}, "fuente_titulos": "VT323", "fuente_texto": "Roboto Mono", "escala_texto": 100, "tam_logo": 42, "tam_titulos": 32, "tam_statement": 22, "alto_visor": 420, "espacio_secciones": 50, "margen_interior": 20, "grosor_bordes": 4, "ancho_maximo": 1600} */
 
 :root {
   --cream: #EEDBBF;
-  --scarlet: #AB3130;
-  --deep-red: #67191F;
-  --midnight: #121212;
+  --scarlet: #F20530;
+  --deep-red: #8C0B3B;
+  --amber: #F29F05;
+  --amber-deep: #F28907;
+  --midnight: #0C1226;
+  --black: #070B17;
   --font-display: 'VT323', monospace;
   --font-text: 'Roboto Mono', monospace;
   --text-scale: 1;
   --font-logo: 42px;
   --font-title: 32px;
   --font-statement: 22px;
-  --sidebar-width: 250px;
   --page-max: 1600px;
   --layout-padding: 20px;
   --section-gap: 50px;
   --border-width: 4px;
-  --carousel-height: 400px;
-  --ring-height: 460px;
   --detail-height: 420px;
 }
-
-/* Barra lateral a la derecha (en celular sigue arriba) */
-@media (min-width: 901px) {
-  .main-layout { flex-direction: row-reverse; }
-}
-
-/* Módulos de la barra lateral: orden y visibilidad */
-.sidebar-module[data-module="browse"] { order: 0; }
-.sidebar-module[data-module="links"] { order: 1; }
-.sidebar-module[data-module="status"] { order: 2; }
-.sidebar-module[data-module="contact"] { order: 3; }
-
-/* Secciones de la portada: orden y visibilidad */
-body[data-page="index"] #statement { order: 0; }
-body[data-page="index"] #projects { order: 1; border-bottom: 2px dashed var(--deep-red); padding-bottom: 30px; }
-body[data-page="index"] #about { order: 2; border-bottom: none; padding-bottom: 0; }

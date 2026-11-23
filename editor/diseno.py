@@ -3,8 +3,8 @@ DISEÑO DEL SITIO — Editor de Portafolio
 =======================================
 
 Lee y escribe  diseno.css  (carpeta principal del sitio). Ese archivo se carga
-después de style.css y cambia sus variables (colores, tamaños, medidas) más
-el orden y la visibilidad de las secciones, sin tocar style.css.
+después de style.css y cambia sus variables (colores, tamaños, medidas)
+sin tocar style.css.
 
 Los valores elegidos se guardan dentro de diseno.css en un comentario
 (/* DISENO {...} */) para que el editor pueda leerlos de vuelta.
@@ -18,21 +18,14 @@ from urllib.parse import quote_plus
 
 # Valores originales del sitio (los mismos que style.css)
 DISENO_INICIAL = {
-    'colores': {'crema': '#EEDBBF', 'escarlata': '#AB3130', 'rojo_oscuro': '#67191F', 'fondo': '#121212'},
+    'colores': {'crema': '#EEDBBF', 'escarlata': '#F20530', 'rojo_oscuro': '#8C0B3B', 'ambar': '#F29F05',
+                'ambar_detalle': '#F28907', 'fondo': '#0C1226', 'paneles': '#070B17'},
     'fuente_titulos': 'VT323',
     'fuente_texto': 'Roboto Mono',
     'escala_texto': 100,        # %
     'tam_logo': 42,             # px
     'tam_titulos': 32,
     'tam_statement': 22,
-    'sidebar_lado': 'izquierda',   # izquierda | derecha | oculta
-    'sidebar_ancho': 250,
-    'orden_sidebar': ['browse', 'links', 'status', 'contact'],
-    'ocultos_sidebar': [],
-    'orden_portada': ['statement', 'projects', 'about'],
-    'ocultos_portada': [],
-    'alto_carrusel': 400,
-    'alto_anillo': 460,
     'alto_visor': 420,
     'espacio_secciones': 50,
     'margen_interior': 20,
@@ -41,14 +34,15 @@ DISENO_INICIAL = {
 }
 
 NOMBRES_COLORES = {
-    'crema': 'Crema (texto)', 'escarlata': 'Escarlata (acento)',
-    'rojo_oscuro': 'Rojo oscuro (bordes)', 'fondo': 'Fondo',
+    'crema': 'Texto', 'escarlata': 'Color principal',
+    'rojo_oscuro': 'Detalles del principal (rellenos, sombras)',
+    'ambar': 'Elementos llamativos (hover, indicadores)',
+    'ambar_detalle': 'Detalles llamativos (bordes secundarios)',
+    'fondo': 'Fondo', 'paneles': 'Paneles',
 }
-VARIABLES_COLORES = {'crema': '--cream', 'escarlata': '--scarlet', 'rojo_oscuro': '--deep-red', 'fondo': '--midnight'}
+VARIABLES_COLORES = {'crema': '--cream', 'escarlata': '--scarlet', 'rojo_oscuro': '--deep-red', 'ambar': '--amber',
+                     'ambar_detalle': '--amber-deep', 'fondo': '--midnight', 'paneles': '--black'}
 
-NOMBRES_SIDEBAR = {'browse': 'Browse by type', 'links': 'Quick links', 'status': 'System status',
-                   'contact': 'Establecer conexión'}
-NOMBRES_PORTADA = {'statement': 'Statement (frases)', 'projects': 'Proyectos (carrusel)', 'about': 'Sobre mí'}
 
 # Fuentes de Google disponibles: nombre → (grosores, familia de respaldo)
 FUENTES_TITULOS = {
@@ -74,10 +68,7 @@ RANGOS = {
     'escala_texto': ('Texto general', 80, 150, '%'),
     'tam_titulos': ('Títulos de sección', 20, 60, 'px'),
     'tam_logo': ('Logo', 24, 72, 'px'),
-    'tam_statement': ('Frases del statement', 14, 36, 'px'),
-    'sidebar_ancho': ('Ancho de la barra lateral', 180, 400, 'px'),
-    'alto_carrusel': ('Carrusel de la portada', 250, 700, 'px'),
-    'alto_anillo': ('Anillo 3D (proyectos)', 300, 800, 'px'),
+    'tam_statement': ('Texto de la portada', 14, 36, 'px'),
     'alto_visor': ('Visor del proyecto', 300, 700, 'px'),
     'espacio_secciones': ('Espacio entre secciones', 10, 100, 'px'),
     'margen_interior': ('Margen interior', 8, 60, 'px'),
@@ -96,10 +87,6 @@ def completar(datos):
             d['colores'].update({k: v for k, v in valor.items() if k in d['colores']})
         elif clave in d:
             d[clave] = valor
-    # Listas de orden: mantener solo claves válidas y agregar las que falten
-    for orden, nombres in (('orden_sidebar', NOMBRES_SIDEBAR), ('orden_portada', NOMBRES_PORTADA)):
-        lista = [k for k in d[orden] if k in nombres]
-        d[orden] = lista + [k for k in nombres if k not in lista]
     return d
 
 
@@ -150,48 +137,14 @@ def generar_css(d):
         f'  --font-logo: {d["tam_logo"]}px;',
         f'  --font-title: {d["tam_titulos"]}px;',
         f'  --font-statement: {d["tam_statement"]}px;',
-        f'  --sidebar-width: {d["sidebar_ancho"]}px;',
         f'  --page-max: {d["ancho_maximo"]}px;',
         f'  --layout-padding: {d["margen_interior"]}px;',
         f'  --section-gap: {d["espacio_secciones"]}px;',
         f'  --border-width: {d["grosor_bordes"]}px;',
-        f'  --carousel-height: {d["alto_carrusel"]}px;',
-        f'  --ring-height: {d["alto_anillo"]}px;',
         f'  --detail-height: {d["alto_visor"]}px;',
         '}',
         '',
     ]
-
-    # Barra lateral: lado
-    if d['sidebar_lado'] == 'derecha':
-        lineas += ['/* Barra lateral a la derecha (en celular sigue arriba) */',
-                   '@media (min-width: 901px) {', '  .main-layout { flex-direction: row-reverse; }', '}', '']
-    elif d['sidebar_lado'] == 'oculta':
-        lineas += ['/* Barra lateral oculta */', '.sidebar { display: none; }', '']
-
-    # Barra lateral: orden y visibilidad de los módulos
-    lineas.append('/* Módulos de la barra lateral: orden y visibilidad */')
-    for posicion, clave in enumerate(d['orden_sidebar']):
-        regla = 'display: none;' if clave in d['ocultos_sidebar'] else f'order: {posicion};'
-        lineas.append(f'.sidebar-module[data-module="{clave}"] {{ {regla} }}')
-    lineas.append('')
-
-    # Portada: orden y visibilidad de las secciones (solo index.html)
-    lineas.append('/* Secciones de la portada: orden y visibilidad */')
-    visibles = [k for k in d['orden_portada'] if k not in d['ocultos_portada']]
-    for posicion, clave in enumerate(d['orden_portada']):
-        selector = f'body[data-page="index"] #{clave}'
-        if clave in d['ocultos_portada']:
-            lineas.append(f'{selector} {{ display: none; }}')
-        elif clave == 'statement':
-            # El statement tiene su propio recuadro: solo cambia de lugar
-            lineas.append(f'{selector} {{ order: {posicion}; }}')
-        else:
-            # La línea punteada separa secciones: la última visible no la lleva
-            borde = ('border-bottom: none; padding-bottom: 0;' if clave == visibles[-1]
-                     else 'border-bottom: 2px dashed var(--deep-red); padding-bottom: 30px;')
-            lineas.append(f'{selector} {{ order: {posicion}; {borde} }}')
-    lineas.append('')
     return '\n'.join(lineas)
 
 
