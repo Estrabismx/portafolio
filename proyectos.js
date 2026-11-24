@@ -6,6 +6,51 @@
    ===================================================================== */
 const PROYECTOS = [
   {
+    "id": "07",
+    "titulo": "Sin_Te",
+    "subtitulo": "Electrónica Colaborativa - Sin_Te",
+    "curso": "Taller de Máquinas Electrónicas",
+    "anio": "2026-1",
+    "tamano": "270 KB",
+    "encabezado": "Electrónica Colaborativa - Sin_Te",
+    "tipo": [
+      "Electrónica",
+      "Interacción Digital"
+    ],
+    "objetivo": "Desarrollar sintetizadores modulares en base al contexto chileno",
+    "desafio": "Leer, identificar e integrar esquemas electrónicas realizados por terceros",
+    "ficha": {
+      "Herramientas": "KiCad ",
+      "Tiempo de Desarrollo": "15 Semanas",
+      "Materiales": "Modulos PCB dis8644-2026-1",
+      "Origen": "Taller de Máquinas Electrónicas 2026-1"
+    },
+    "dificultad": {
+      "porcentaje": 95,
+      "texto": "Complejidad alta"
+    },
+    "modelo3d": {
+      "detalle": "muy_alto",
+      "material": {
+        "color": "#3a2ceb",
+        "metalness": 0.56,
+        "roughness": 0.35
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        1.5708,
+        0.0,
+        0.0
+      ],
+      "archivo": "proyecto_07.glb",
+      "triangulos": 11684
+    }
+  },
+  {
     "id": "01",
     "titulo": "Banca Reticulada",
     "subtitulo": "Mobiliario Estructural - Banca reticulada",
@@ -648,27 +693,6 @@ const PROYECTOS = [
     ]
   },
   {
-    "id": "07",
-    "titulo": "Sin_Te",
-    "subtitulo": "Electrónica Colaborativa - Sin_Te",
-    "curso": "Taller de Máquinas Electrónicas",
-    "anio": "2026-1",
-    "tamano": "270 KB",
-    "encabezado": "Electrónica Colaborativa - Sin_Te",
-    "tipo": "Electrónica",
-    "objetivo": "Desarrollar sintetizadores modulares en base al contexto chileno",
-    "desafio": "Leer, identificar e integrar esquemas electrónicas realizados por terceros",
-    "ficha": {
-      "Herramientas": "KiCad ",
-      "Tiempo de Desarrollo": "15 Semanas",
-      "Origen": "Taller de Máquinas Electrónicas 2026-1"
-    },
-    "dificultad": {
-      "porcentaje": 95,
-      "texto": "Complejidad alta"
-    }
-  },
-  {
     "id": "08",
     "titulo": "Scooter Modular",
     "subtitulo": "Fabricación Avanzada - Scooter modular ",
@@ -681,6 +705,67 @@ const PROYECTOS = [
       "Modelado 3D"
     ],
     "objetivo": "Desarrollar modelos 3D de plegado en acero y llevarlos a fabricar",
-    "desafio": "Lograr sintetizar formas complejas a la realidad material"
+    "desafio": "Lograr sintetizar formas complejas a la realidad material",
+    "ficha": {
+      "Herramientas": "Inventor, AutoCad",
+      "Tiempo de Desarrollo": "5 semanas",
+      "Origen": "Fabricación Digital Avanzada"
+    },
+    "dificultad": {
+      "porcentaje": 80,
+      "texto": "Complejidad Media Alta"
+    },
+    "modelo3d": {
+      "detalle": "medio",
+      "material": {
+        "color": "#ca262b",
+        "metalness": 0.9,
+        "roughness": 0.15
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        4.7124,
+        3.1416,
+        1.5708
+      ],
+      "archivo": "proyecto_08.glb",
+      "triangulos": 1997
+    }
+  },
+  {
+    "id": "09",
+    "titulo": "50N1D0",
+    "encabezado": "Programación de Objetos - 50N1D0",
+    "tipo": [
+      "Electrónica",
+      "Microcontrolador",
+      "Interacción Digital"
+    ],
+    "galeria": [
+      {
+        "archivo": "proyecto_09a.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_09b.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_09c.jpg",
+        "nombre": ""
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "titulo": "Traductor de Bits"
+  },
+  {
+    "id": "11",
+    "titulo": "Dommy plays DOOM"
   }
 ];
