@@ -1,0 +1,26 @@
+/* =====================================================================
+   DISEÑO DEL SITIO — lo genera el Editor de Portafolio (pestaña "Diseño").
+   No hace falta editarlo a mano: cambia los valores en el editor.
+   ===================================================================== */
+/* DISENO {"colores": {"crema": "#EEDBBF", "escarlata": "#F20530", "rojo_oscuro": "#8C0B3B", "ambar": "#F29F05", "ambar_detalle": "#F28907", "fondo": "#0C1226", "paneles": "#070B17"}, "fuente_titulos": "VT323", "fuente_texto": "Roboto Mono", "escala_texto": 100, "tam_logo": 42, "tam_titulos": 32, "tam_statement": 22, "alto_visor": 420, "espacio_secciones": 50, "margen_interior": 20, "grosor_bordes": 4, "ancho_maximo": 1600} */
+
+:root {
+  --cream: #EEDBBF;
+  --scarlet: #F20530;
+  --deep-red: #8C0B3B;
+  --amber: #F29F05;
+  --amber-deep: #F28907;
+  --midnight: #0C1226;
+  --black: #070B17;
+  --font-display: 'VT323', monospace;
+  --font-text: 'Roboto Mono', monospace;
+  --text-scale: 1;
+  --font-logo: 42px;
+  --font-title: 32px;
+  --font-statement: 22px;
+  --page-max: 1600px;
+  --layout-padding: 20px;
+  --section-gap: 50px;
+  --border-width: 4px;
+  --detail-height: 420px;
+}

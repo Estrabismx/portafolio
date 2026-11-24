@@ -6,6 +6,51 @@
    ===================================================================== */
 const PROYECTOS = [
   {
+    "id": "07",
+    "titulo": "Sin_Te",
+    "subtitulo": "Electrónica Colaborativa - Sin_Te",
+    "curso": "Taller de Máquinas Electrónicas",
+    "anio": "2026-1",
+    "tamano": "270 KB",
+    "encabezado": "Electrónica Colaborativa - Sin_Te",
+    "tipo": [
+      "Electrónica",
+      "Interacción Digital"
+    ],
+    "objetivo": "Desarrollar sintetizadores modulares en base al contexto chileno",
+    "desafio": "Leer, identificar e integrar esquemas electrónicas realizados por terceros",
+    "ficha": {
+      "Herramientas": "KiCad ",
+      "Tiempo de Desarrollo": "15 Semanas",
+      "Materiales": "Modulos PCB dis8644-2026-1",
+      "Origen": "Taller de Máquinas Electrónicas 2026-1"
+    },
+    "dificultad": {
+      "porcentaje": 95,
+      "texto": "Complejidad alta"
+    },
+    "modelo3d": {
+      "detalle": "muy_alto",
+      "material": {
+        "color": "#3a2ceb",
+        "metalness": 0.56,
+        "roughness": 0.35
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        1.5708,
+        0.0,
+        0.0
+      ],
+      "archivo": "proyecto_07.glb",
+      "triangulos": 11684
+    }
+  },
+  {
     "id": "01",
     "titulo": "Banca Reticulada",
     "subtitulo": "Mobiliario Estructural - Banca reticulada",
@@ -54,6 +99,25 @@ const PROYECTOS = [
     "dificultad": {
       "porcentaje": 60,
       "texto": "Complejidad media"
+    },
+    "modelo3d": {
+      "material": {
+        "color": "#ae9944",
+        "metalness": 0.49,
+        "roughness": 0.59
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "archivo": "proyecto_01.glb",
+      "triangulos": 540
     },
     "galeria": [
       {
@@ -104,9 +168,12 @@ const PROYECTOS = [
     "anio": "2025-2",
     "tamano": "34 KB",
     "encabezado": "Ejercicio Conceptual - Lampel",
-    "tipo": "Fabricación Manual",
+    "tipo": [
+      "Fabricación Manual",
+      "Fabricación Digital"
+    ],
     "objetivo": "Crear una luminaria que influya en el ambiente de un espacio",
-    "desafio": "Generar un sistema movil",
+    "desafio": "Generar un sistema movil coherente con el ambiente que se busque generar",
     "descripcion": [
       "Lampel nació como un ejercicio conceptual de diseño, donde se buscó generar una experiencia que influya en el ambiente. En este caso, se enfoca en el dinamismo de un espacio, generando una apertura a espacios más sociales al aumentar la intensidad lumínica subiendo su pantalla, pero también generando un espacio más íntimo al bajar su pantalla y disminuir la intensidad lumínica.",
       "Para lograr esta experiencia, se trabajó en un mecanismo que permita subir y bajar la pantalla. Esto se logró mediante un sistema de poleas y contrapesos, que permite que la pantalla se mueva suavemente y logre fijarse en la posición deseada.",
@@ -139,6 +206,26 @@ const PROYECTOS = [
     "dificultad": {
       "porcentaje": 67,
       "texto": "Complejidad media alta"
+    },
+    "modelo3d": {
+      "material": {
+        "color": "#b8a050",
+        "metalness": 0.5,
+        "roughness": 0.64
+      },
+      "escala": [
+        1.4,
+        1.4,
+        1.4
+      ],
+      "rotacion": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "archivo": "proyecto_02.glb",
+      "triangulos": 11866,
+      "detalle": "muy_alto"
     },
     "galeria": [
       {
@@ -181,7 +268,8 @@ const PROYECTOS = [
     "subtitulo": "Material pedagógico - <i>Mimus thenca</i>",
     "resumen": "Este material fue pensado para facilitar la labor pedagógica del PARQUEMET, quienes nos indicaron la necesidad de elementos que ayudaran a la labor educativa que tiene esta red de parques.",
     "etiquetas": [
-      "Fabricación Manual/Digital",
+      "Fabricación Manual",
+      "Fabricación Digital",
       "Colaboración",
       "Movil"
     ],
@@ -189,7 +277,10 @@ const PROYECTOS = [
     "anio": "2025-2",
     "tamano": "920 KB",
     "encabezado": "Elemento pedagógico - <i>Mimus thenca</i>",
-    "tipo": "Fabricación Manual y Digital",
+    "tipo": [
+      "Fabricación Digital",
+      "Fabricación Manual"
+    ],
     "objetivo": "Elemento Educativo para PARQUEMET",
     "desafio": "Representar de manera fiel a la <i>Mimus thenca</i>",
     "descripcion": [
@@ -224,6 +315,26 @@ const PROYECTOS = [
     "dificultad": {
       "porcentaje": 80,
       "texto": "Complejidad media alta"
+    },
+    "modelo3d": {
+      "detalle": "alto",
+      "material": {
+        "color": "#af8b38",
+        "metalness": 0.48,
+        "roughness": 0.59
+      },
+      "escala": [
+        1.2,
+        1.2,
+        1.2
+      ],
+      "rotacion": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "archivo": "proyecto_03.glb",
+      "triangulos": 4982
     },
     "galeria": [
       {
@@ -274,7 +385,10 @@ const PROYECTOS = [
     "anio": "2025-1",
     "tamano": "2.1 MB",
     "encabezado": "Foto recración - Élé chair",
-    "tipo": "Fabricación Manual",
+    "tipo": [
+      "Fabricación Manual",
+      "Fabricación Digital"
+    ],
     "objetivo": "Identificar formas y medidas en base a una fotografía",
     "desafio": "Realizar encajes de carpinteria",
     "descripcion": [
@@ -309,6 +423,26 @@ const PROYECTOS = [
     "dificultad": {
       "porcentaje": 90,
       "texto": "Complejidad Alta"
+    },
+    "modelo3d": {
+      "material": {
+        "color": "#fc2e2e",
+        "metalness": 0.5,
+        "roughness": 0.51
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        0.0,
+        2.3562,
+        0.0
+      ],
+      "detalle": "alto",
+      "archivo": "proyecto_04.glb",
+      "triangulos": 4863
     },
     "galeria": [
       {
@@ -360,7 +494,10 @@ const PROYECTOS = [
     "anio": "2025-1",
     "tamano": "340 KB",
     "encabezado": "Réplica a Detalle - Dualshock II",
-    "tipo": "Modelado 3D",
+    "tipo": [
+      "Modelado 3D",
+      "Fabricación Digital"
+    ],
     "objetivo": "Recrear fielmente un objeto en Rhino 8",
     "desafio": "Complejidad de la geometría",
     "descripcion": [
@@ -394,6 +531,26 @@ const PROYECTOS = [
     "dificultad": {
       "porcentaje": 60,
       "texto": "Complejidad media"
+    },
+    "modelo3d": {
+      "detalle": "medio",
+      "material": {
+        "color": "#3b3b3b",
+        "metalness": 0.27,
+        "roughness": 0.27
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        0.0,
+        3.1416,
+        0.0
+      ],
+      "archivo": "proyecto_05.glb",
+      "triangulos": 2000
     },
     "galeria": [
       {
@@ -480,6 +637,26 @@ const PROYECTOS = [
       "porcentaje": 60,
       "texto": "Complejidad media"
     },
+    "modelo3d": {
+      "detalle": "medio",
+      "material": {
+        "color": "#838a98",
+        "metalness": 0.5,
+        "roughness": 0.94
+      },
+      "escala": [
+        1.2,
+        1.2,
+        1.2
+      ],
+      "rotacion": [
+        0.0,
+        3.927,
+        0.0
+      ],
+      "archivo": "proyecto_06.glb",
+      "triangulos": 1996
+    },
     "galeria": [
       {
         "archivo": "proyecto_06a.jpg",
@@ -514,5 +691,81 @@ const PROYECTOS = [
         "nombre": "Video Proceso"
       }
     ]
+  },
+  {
+    "id": "08",
+    "titulo": "Scooter Modular",
+    "subtitulo": "Fabricación Avanzada - Scooter modular ",
+    "curso": "Fabriación Digital Avanzada",
+    "anio": "2026-1",
+    "tamano": "53 MB",
+    "encabezado": "Fabricación Avanzada - Scooter modular ",
+    "tipo": [
+      "Fabricación Digital",
+      "Modelado 3D"
+    ],
+    "objetivo": "Desarrollar modelos 3D de plegado en acero y llevarlos a fabricar",
+    "desafio": "Lograr sintetizar formas complejas a la realidad material",
+    "ficha": {
+      "Herramientas": "Inventor, AutoCad",
+      "Tiempo de Desarrollo": "5 semanas",
+      "Origen": "Fabricación Digital Avanzada"
+    },
+    "dificultad": {
+      "porcentaje": 80,
+      "texto": "Complejidad Media Alta"
+    },
+    "modelo3d": {
+      "detalle": "medio",
+      "material": {
+        "color": "#ca262b",
+        "metalness": 0.9,
+        "roughness": 0.15
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        4.7124,
+        3.1416,
+        1.5708
+      ],
+      "archivo": "proyecto_08.glb",
+      "triangulos": 1997
+    }
+  },
+  {
+    "id": "09",
+    "titulo": "50N1D0",
+    "encabezado": "Programación de Objetos - 50N1D0",
+    "tipo": [
+      "Electrónica",
+      "Microcontrolador",
+      "Interacción Digital"
+    ],
+    "galeria": [
+      {
+        "archivo": "proyecto_09a.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_09b.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_09c.jpg",
+        "nombre": ""
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "titulo": "Traductor de Bits"
+  },
+  {
+    "id": "11",
+    "titulo": "Dommy plays DOOM"
   }
 ];

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sobre_mi/Estrabismx</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Ajustes de diagramación del editor (pestaña "Diseño") -->
+  <link rel="stylesheet" href="diseno.css">
+</head>
+<body data-page="sobre-mi">
+
+<div class="wrapper">
+  <header class="topbar">
+    <button type="button" class="menu-toggle" id="menuToggle" aria-controls="sideMenu" aria-expanded="false" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="topbar-logo" href="index.html" aria-label="Inicio">&lt;Ex&gt;</a>
+    <span class="topbar-file">portafolio_camila_ramirez.html</span>
+  </header>
+
+  <div class="main-layout">
+
+    <!-- =================================================================
+         CONTENIDO
+         ================================================================= -->
+    <main class="content-area">
+      <section id="about">
+        <!-- Fila superior: título con el botón "volver" y, al lado, el nombre -->
+        <div class="about-top">
+          <div class="section-head">
+            <button type="button" class="btn-retro btn-back" aria-label="Volver" title="Volver">&lt;</button>
+            <h2 class="section-title">// sobre_mi</h2>
+          </div>
+
+          <div class="doc-header">
+            <h3 class="doc-name">Cami Ramírez "Estrabismx"</h3>
+            <p class="doc-tagline">[placeholder]</p>
+          </div>
+        </div>
+
+        <!-- Texto (70%) a la izquierda y gráficos de habilidades (30%) a la derecha -->
+        <div class="about-layout">
+          <div class="about-text">
+            <div class="doc-block">
+              <h3 class="doc-heading">// perfil</h3>
+              <p>Diseñador(x) de Santiago de Chile, trabajando bajo el seudónimo <b>"Estrabismx"</b>. </p> 
+              <p>Experimentad(x) en el diseño industrial e interacción digital. Me especializo en generar proyectos que respondan a la modularidad y la optimización de recursos, todo esto con perspectiva en la democratización de conocimiento mediante la filosofía del <i>open source</i>.</p>
+              <p>He desarrollado proyectos que responden a perspectivas conceptuales como a soluciones prácticas, bajo estas premisas mi trabajo ha sido exhibido en lugares como la <b><i> Design Week Mexico 2026 </i></b>, especificamente en <b> <i> INÉDITO </i> </b> <a class="btn-link" href="https://web.archive.org/web/20261124020313/http://web.archive.org/screenshot/https://faad.udp.cl/escuela-de-diseno-udp-participa-en-inedito-universitario-de-design-week-mexico-2026/" target="_blank" rel="noopener noreferrer">Ver más +</a> </p>
+            </div>
+
+            <div class="doc-block">
+              <h3 class="doc-heading">// educacion</h3>
+              <p><b>Universidad Diego Portales</b><br>
+              <span class="doc-note">Diseño mención industial, 2024 - Presente</span><br>
+              Estudiante con mencion en diseño industrial y formadx en interacción digital.</p>
+            </div>
+            <div class="doc-block">
+              <h3 class="doc-heading">// trayectoria</h3>
+              <p> 1. Representante mención Interación Digital en Mexico Design Week con Sin-Te / 2026 </p>
+              <p> 2. Practica electiva Laboratorio de Interacción Digital / 2026-2 </p>
+              <p> 3. Tutoría curso Diseño Basado en Datos / 2026-2</p>
+            </div>
+          </div>
+
+          <!-- Habilidades: viñetas para elegir el grupo y, debajo, la forma de verlo.
+               Los gráficos (araña y anillos) los dibuja main.js con los datos de las barras -->
+          <aside class="about-stats" data-group="tecnicas" data-view="barras" aria-label="Habilidades">
+            <p class="stats-label" id="statsTabsLabel">// elige qué habilidades ver:</p>
+            <div class="stats-tabs" role="group" aria-labelledby="statsTabsLabel">
+              <button type="button" class="stats-tab" data-group="tecnicas" aria-pressed="true">técnicas</button>
+              <button type="button" class="stats-tab" data-group="software" aria-pressed="false">software</button>
+            </div>
+            <div class="stats-toggle" role="group" aria-label="Ver habilidades como">
+              <button type="button" class="stats-toggle-btn" data-view="barras" aria-pressed="true">barras</button>
+              <button type="button" class="stats-toggle-btn" data-view="radar" aria-pressed="false">araña</button>
+              <button type="button" class="stats-toggle-btn" data-view="anillos" aria-pressed="false">anillos</button>
+            </div>
+            <!-- Para cambiar una habilidad: edita el nombre y el porcentaje (width) -->
+            <div class="doc-block skill-group" data-group="tecnicas">
+              <h3 class="doc-heading">// habilidades tecnicas</h3>
+              <div class="skill">
+                <div class="skill-name"># fabricación digital</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># diseño de productos</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># prototipado</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 80%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># desarrollo conceptual</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 80%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># interaccion digital</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 80%;"></div></div>
+              </div>
+            </div>
+
+            <div class="doc-block skill-group" data-group="software">
+              <h3 class="doc-heading">// habilidades en software</h3>
+              <p class="doc-note">*Estos programas no son los únicos que manejo, solamente los más representativos</p>
+              <div class="skill">
+                <div class="skill-name"># Autocad</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># Rhino 8</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># Inventor</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 85%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># Illustrator</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 75%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># KiCad</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 65%;"></div></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <!-- Experiencia laboral (DESACTIVADA HASTA QUE TENGA EXPERIENCIA xddd)
+        <div class="doc-block">
+          <h3 class="doc-heading">IV. Historial de Versiones</h3>
+          <p><b>Diseñadora de Marca Independiente (Freelancer)</b><br>
+          <span class="doc-note">Versión 2.0 (2023 - Presente)</span><br>
+          Desarrollo de proyectos de branding para emprendedores y empresas digitales, abarcando desde la dirección de arte hasta la entrega de guías de marca.</p>
+          <p><b>Diseñadora Gráfica Junior - Agencia Pixel</b><br>
+          <span class="doc-note">Versión 1.0 (2021 - 2023)</span><br>
+          Maquetación editorial, diseño de anuncios digitales e ilustración isométrica para campañas interactivas.</p>
+        </div>
+        -->
+
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p>2026 Camila Ramírez "Estrabismx"</p>
+  </footer>
+</div>
+
+<!-- =====================================================================
+     MENÚ LATERAL (botón hamburguesa del header)
+     ===================================================================== -->
+<div class="side-menu-overlay" id="sideMenuOverlay"></div>
+<nav class="side-menu" id="sideMenu" aria-label="Menú principal">
+  <button type="button" class="menu-toggle side-menu-close" aria-label="Cerrar menú">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="side-menu-scroll">
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="index.html">// &lt;Estrabismx&gt;</a>
+    </div>
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="proyectos.html">// proyectos</a>
+      <!-- Se llena con los tipos de proyectos.js -->
+      <ul class="side-menu-list" id="menuTypes"></ul>
+    </div>
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="sobre_mi.html">// sobre_mi</a>
+    </div>
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="paint.html">// pintar</a>
+    </div>
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="#contacto" data-open-modal="contactModal">// contacto</a>
+      <ul class="side-menu-list">
+        <li><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener"># Instagram</a></li>
+        <li><a href="https://github.com/estrabismx" target="_blank" rel="noopener"># GitHub</a></li>
+        <li><a href="mailto:camila.ramirez2@mail.udp.cl"># Correo</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- =====================================================================
+     VENTANA EMERGENTE: CONTACTO
+     ===================================================================== -->
+<div id="contactModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+  <div class="modal-window">
+    <div class="modal-header">
+      <span class="modal-title" id="contactTitle">// contacto</span>
+      <button type="button" class="modal-close" aria-label="Cerrar">X</button>
+    </div>
+    <div class="modal-body">
+      <p><strong>enlaces de contacto</strong></p>
+      <ul class="contact-list">
+        <li><span>E-mail:</span><a href="mailto:camila.ramirez2@mail.udp.cl">camila.ramirez2@mail.udp.cl</a></li>
+        <li><span>Instagram:</span><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener">@n.arkotikk</a></li>
+        <li><span>GitHub:</span><a href="https://github.com/estrabismx" target="_blank" rel="noopener">github.com/estrabismx</a></li>
+      </ul>
+      <div class="badges">
+        <a href="https://github.com/estrabismx" target="_blank" rel="noopener" class="badge">GITHUB</a>
+        <a href="mailto:camila.ramirez2@mail.udp.cl" class="badge">E-MAIL</a>
+        <a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener" class="badge">INSTAGRAM</a>
+      </div>
+      <p class="modal-note">Haz clic en los enlaces para abrir de forma externa.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Datos de los proyectos (edita este archivo para agregar proyectos) -->
+<script src="proyectos.js"></script>
+<!-- Lógica del sitio -->
+<script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paint - Camila Ramírez "Estrabismx"</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Ajustes de diagramación del editor (pestaña "Diseño") -->
+  <link rel="stylesheet" href="diseno.css">
+</head>
+<body data-page="paint">
+
+<div class="wrapper">
+  <header class="topbar">
+    <button type="button" class="menu-toggle" id="menuToggle" aria-controls="sideMenu" aria-expanded="false" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="topbar-logo" href="index.html" aria-label="Inicio">&lt;Ex&gt;</a>
+    <span class="topbar-file">portafolio_camila_ramirez.html</span>
+  </header>
+
+  <div class="main-layout">
+
+    <!-- =================================================================
+         CONTENIDO
+         ================================================================= -->
+    <main class="content-area">
+      <section id="paint">
+        <!-- Título con el botón "volver" (vuelve a la página anterior) -->
+        <div class="section-head">
+          <button type="button" class="btn-retro btn-back" aria-label="Volver" title="Volver">&lt;</button>
+          <h2 class="section-title">// pintar</h2>
+        </div>
+
+        <div class="paint">
+          <div class="paint-toolbar">
+            <button type="button" class="btn-retro" id="btnNew">NUEVO</button>
+            <button type="button" class="btn-retro" id="btnSave">GUARDAR COMO...</button>
+            <span class="paint-separator"></span>
+            <button type="button" class="btn-retro" id="btnUndo" title="Ctrl+Z">DESHACER</button>
+            <button type="button" class="btn-retro" id="btnRedo" title="Ctrl+Y">REHACER</button>
+            <span class="paint-separator"></span>
+            <label class="paint-size">TAMAÑO
+              <select id="strokeSize">
+                <option value="1">1 px</option>
+                <option value="3" selected>3 px</option>
+                <option value="6">6 px</option>
+                <option value="10">10 px</option>
+                <option value="20">20 px</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="paint-body">
+            <!-- Caja de herramientas -->
+            <div class="paint-tools">
+              <button type="button" class="tool-button" data-tool="eraser" title="Borrador" aria-label="Borrador">
+                <svg viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" fill="pink" stroke="black"/><path d="M3 10 L13 10" stroke="black"/></svg>
+              </button>
+              <button type="button" class="tool-button" data-tool="fill" title="Relleno con color" aria-label="Relleno con color">
+                <svg viewBox="0 0 16 16"><path d="M2 12 L10 4 L12 6 L4 14 Z" fill="gray" stroke="black"/><path d="M12 6 L14 8 L11 11 L9 9 Z" fill="red"/><path d="M14 14 C14 14 11 12 11 10 C11 9 12 8 13 8 C14 8 15 9 15 11 C15 13 14 14 14 14 Z" fill="blue"/></svg>
+              </button>
+              <button type="button" class="tool-button" data-tool="picker" title="Seleccionar color" aria-label="Seleccionar color">
+                <svg viewBox="0 0 16 16"><path d="M2 14 L4 14 L12 6 L10 4 Z" fill="yellow" stroke="black"/><circle cx="13" cy="3" r="2" fill="red"/></svg>
+              </button>
+              <button type="button" class="tool-button active" data-tool="pencil" title="Lápiz" aria-label="Lápiz" aria-pressed="true">
+                <svg viewBox="0 0 16 16"><path d="M2 14 L4 14 L13 5 L11 3 Z" fill="yellow" stroke="black"/><path d="M2 14 L4 12 L2 12 Z" fill="black"/></svg>
+              </button>
+              <button type="button" class="tool-button" data-tool="brush" title="Pincel" aria-label="Pincel">
+                <svg viewBox="0 0 16 16"><circle cx="5" cy="11" r="3" fill="brown"/><path d="M5 11 L12 4 L14 6 L7 13 Z" fill="orange" stroke="black"/></svg>
+              </button>
+              <button type="button" class="tool-button" data-tool="line" title="Línea" aria-label="Línea">
+                <svg viewBox="0 0 16 16"><line x1="2" y1="14" x2="14" y2="2" stroke="black" stroke-width="2"/></svg>
+              </button>
+              <button type="button" class="tool-button" data-tool="rect" title="Rectángulo" aria-label="Rectángulo">
+                <svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" fill="none" stroke="black" stroke-width="2"/></svg>
+              </button>
+              <button type="button" class="tool-button" data-tool="ellipse" title="Elipse" aria-label="Elipse">
+                <svg viewBox="0 0 16 16"><ellipse cx="8" cy="8" rx="6" ry="5" fill="none" stroke="black" stroke-width="2"/></svg>
+              </button>
+            </div>
+
+            <!-- Lienzo -->
+            <div class="canvas-container">
+              <canvas id="paintCanvas" width="800" height="600"></canvas>
+            </div>
+          </div>
+
+          <!-- Paleta de colores -->
+          <div class="paint-palette">
+            <div class="color-current" id="colorCurrent" title="Color actual"></div>
+            <div class="palette-grid" id="paletteGrid"></div>
+          </div>
+
+          <div class="paint-status">
+            <span id="paintStatus">Herramienta activa: LÁPIZ</span>
+            <span id="paintCoords">0, 0px</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p>2026 Camila Ramírez "Estrabismx"</p>
+  </footer>
+</div>
+
+<!-- =====================================================================
+     MENÚ LATERAL (botón hamburguesa del header)
+     ===================================================================== -->
+<div class="side-menu-overlay" id="sideMenuOverlay"></div>
+<nav class="side-menu" id="sideMenu" aria-label="Menú principal">
+  <button type="button" class="menu-toggle side-menu-close" aria-label="Cerrar menú">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="side-menu-scroll">
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="index.html">// &lt;Estrabismx&gt;</a>
+    </div>
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="proyectos.html">// proyectos</a>
+      <!-- Se llena con los tipos de proyectos.js -->
+      <ul class="side-menu-list" id="menuTypes"></ul>
+    </div>
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="sobre_mi.html">// sobre_mi</a>
+    </div>
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="paint.html">// pintar</a>
+    </div>
+    <div class="side-menu-module">
+      <a class="side-menu-title" href="#contacto" data-open-modal="contactModal">// contacto</a>
+      <ul class="side-menu-list">
+        <li><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener"># Instagram</a></li>
+        <li><a href="https://github.com/estrabismx" target="_blank" rel="noopener"># GitHub</a></li>
+        <li><a href="mailto:camila.ramirez2@mail.udp.cl"># Correo</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- =====================================================================
+     VENTANA EMERGENTE: CONTACTO
+     ===================================================================== -->
+<div id="contactModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+  <div class="modal-window">
+    <div class="modal-header">
+      <span class="modal-title" id="contactTitle">// contacto</span>
+      <button type="button" class="modal-close" aria-label="Cerrar">X</button>
+    </div>
+    <div class="modal-body">
+      <p><strong>enlaces de contacto</strong></p>
+      <ul class="contact-list">
+        <li><span>E-mail:</span><a href="mailto:camila.ramirez2@mail.udp.cl">camila.ramirez2@mail.udp.cl</a></li>
+        <li><span>Instagram:</span><a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener">@n.arkotikk</a></li>
+        <li><span>GitHub:</span><a href="https://github.com/estrabismx" target="_blank" rel="noopener">github.com/estrabismx</a></li>
+      </ul>
+      <div class="badges">
+        <a href="https://github.com/estrabismx" target="_blank" rel="noopener" class="badge">GITHUB</a>
+        <a href="mailto:camila.ramirez2@mail.udp.cl" class="badge">E-MAIL</a>
+        <a href="https://instagram.com/n.arkotikk" target="_blank" rel="noopener" class="badge">INSTAGRAM</a>
+      </div>
+      <p class="modal-note">Haz clic en los enlaces para abrir de forma externa.</p>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================================
+     VENTANA EMERGENTE: MENSAJE DEL SISTEMA (Paint)
+     ===================================================================== -->
+<div id="alertModal" class="modal-overlay" role="alertdialog" aria-modal="true" aria-labelledby="alertTitle">
+  <div class="modal-window">
+    <div class="modal-header">
+      <span class="modal-title" id="alertTitle">MENSAJE_DEL_SISTEMA</span>
+      <button type="button" class="modal-close" aria-label="Cerrar">X</button>
+    </div>
+    <div class="modal-body">
+      <p id="alertText"></p>
+      <button type="button" class="btn-retro" data-close-modal>ACEPTAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- Datos de los proyectos (edita este archivo para agregar proyectos) -->
+<script src="proyectos.js"></script>
+<!-- Lógica del sitio -->
+<script src="main.js"></script>
+</body>
+</html>
