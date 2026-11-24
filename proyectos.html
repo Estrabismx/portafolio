@@ -30,7 +30,12 @@
          ================================================================= -->
     <main class="content-area">
       <section id="projects">
-        <h2 class="section-title">// proyectos</h2>
+        <!-- Título con el botón "volver": en la vista del proyecto vuelve al anillo;
+             en el anillo, a la página anterior -->
+        <div class="section-head">
+          <button type="button" class="btn-retro btn-back" id="detailBack" aria-label="Volver" title="Volver">&lt;</button>
+          <h2 class="section-title">// proyectos</h2>
+        </div>
 
         <!-- =============== VISTA 1: ANILLO (cabe en la pantalla, sin scroll) =============== -->
         <div id="ringView">
@@ -41,14 +46,17 @@
         <!-- Aviso del filtro por tipo (proyectos.html?tipo=X, lo llena main.js) -->
         <p class="ring-filter" id="ringFilter" hidden></p>
 
-        <!-- Proyecto del centro del anillo: nombre, indicador y descripción (lo llena main.js) -->
-        <div class="ring-info" aria-live="polite">
+        <!-- Proyecto del centro del anillo: indicador y nombre (lo llena main.js).
+             La descripción se despliega al pasar el cursor por la barra (en celular se ve siempre). -->
+        <div class="ring-info" tabindex="0" aria-live="polite">
           <div class="ring-info-head">
             <h3 class="ring-info-label">// proyecto</h3>
             <span class="ring-info-counter" id="ringCounter"></span>
+            <p class="ring-info-name" id="ringName"></p>
           </div>
-          <p class="ring-info-name" id="ringName"></p>
-          <p class="ring-info-desc" id="ringDesc"></p>
+          <div class="ring-info-more">
+            <p class="ring-info-desc" id="ringDesc"></p>
+          </div>
         </div>
 
         <div class="ring-layout">
@@ -65,6 +73,9 @@
             <button type="button" class="ring-arrow ring-arrow-next" id="ringNext" aria-label="Proyecto siguiente">
               <svg viewBox="0 0 6 9" shape-rendering="crispEdges" aria-hidden="true"><path class="px-shadow" transform="translate(0.5 0.5)" d="M4 0h2v1h-2zM3 1h2v1h-2zM2 2h2v1h-2zM1 3h2v1h-2zM0 4h2v1h-2zM1 5h2v1h-2zM2 6h2v1h-2zM3 7h2v1h-2zM4 8h2v1h-2z"/><path class="px-fill" d="M4 0h2v1h-2zM3 1h2v1h-2zM2 2h2v1h-2zM1 3h2v1h-2zM0 4h2v1h-2zM1 5h2v1h-2zM2 6h2v1h-2zM3 7h2v1h-2zM4 8h2v1h-2z"/></svg>
             </button>
+
+            <!-- Abre la vista del proyecto que está al centro -->
+            <button type="button" class="ring-select" id="ringSelect">seleccionar_proyecto</button>
           </div>
 
           <!-- Fotos del proyecto del centro: clic en una miniatura la muestra, clic en la grande la amplía -->
@@ -90,34 +101,31 @@
 
         <!-- =============== VISTA 2: PROYECTO (se llena con main.js) =============== -->
         <div id="detailView" class="detail-view" hidden>
-          <div class="detail-media">
-            <!-- Visor 3D: arrastrar rota en 360°, la rueda acerca y aleja -->
-            <div class="detail-panel">
-              <!-- Barra con el nombre del proyecto, dentro de la ventana del modelo 3D -->
-              <div class="detail-toolbar">
-                <button type="button" class="btn-retro" id="detailBack" aria-label="Volver al anillo" title="Volver al anillo">&lt;</button>
-                <h3 class="project-card-title" id="detailTitle"></h3>
-              </div>
+          <!-- Izquierda: visor (modelo 3D + fotos). Derecha: información por pestañas -->
+          <div class="detail-panel detail-viewer">
+            <!-- Barra con el nombre del proyecto -->
+            <div class="detail-toolbar">
+              <h3 class="project-card-title" id="detailTitle"></h3>
+            </div>
+            <div class="detail-screen">
+              <!-- Visor 3D: arrastrar rota en 360°, la rueda acerca y aleja -->
               <div class="detail-stage" id="detailStage" aria-label="Modelo 3D del proyecto">
                 <canvas id="detailCanvas"></canvas>
                 <span class="ring-badge">[ 3D // ARRASTRA: ROTAR · RUEDA: ZOOM ]</span>
                 <p class="ring-fallback" id="detailFallback" hidden>[ VISOR 3D NO DISPONIBLE ]</p>
               </div>
-              <div class="detail-caption">
-                <span id="detailModelName"></span>
-                <button type="button" class="btn-retro" id="detailReset">RESET VISTA</button>
-              </div>
+              <!-- Foto / video de la galería (encima del visor 3D) -->
+              <div class="detail-main" id="detailMain" hidden></div>
             </div>
-
-            <!-- Galería: imagen grande + miniaturas -->
-            <div class="detail-panel">
-              <div class="detail-main" id="detailMain"></div>
-              <div class="detail-caption"><span id="detailCaption"></span></div>
-              <div class="detail-thumbs" id="detailThumbs"></div>
+            <div class="detail-caption">
+              <span id="detailCaption"></span>
+              <button type="button" class="btn-retro" id="detailReset">RESET VISTA</button>
             </div>
+            <!-- Miniaturas: la primera es el modelo 3D -->
+            <div class="detail-thumbs" id="detailThumbs"></div>
           </div>
 
-          <div id="detailBody"></div>
+          <div class="detail-panel detail-info" id="detailBody"></div>
         </div>
       </section>
     </main>

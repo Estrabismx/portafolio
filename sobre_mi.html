@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sobre Mí - Camila Ramírez "Estrabismx"</title>
+  <title>sobre_mi/Estrabismx</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
@@ -29,59 +29,106 @@
          ================================================================= -->
     <main class="content-area">
       <section id="about">
-        <h2 class="section-title">// sobre_mi</h2>
-
-        <div class="doc-header">
-          <h3 class="doc-name">Camila Ramírez "Estrabismx"</h3>
-          <p class="doc-tagline">Diseñadorx interdisciplinar, fan del trabajo artesanal y digital</p>
-        </div>
-
-        <div class="doc-block">
-          <h3 class="doc-heading">I. Perfil</h3>
-          <p>Diseñadorx de Santiago de Chile, trabajando bajo el seudónimo <b>"Estrabismx"</b>. Especialista en la fabricación digital, además del trabajo artesanal y manual. Aprendiendo y capacitandose en el área de la electrónica y la programación.</p>
-          <p>Mi especialidad se centra en el trabajo modular, optimizando materiales, recursos y tiempos, buscando así la manera más efectiva de llevar a cabo un proyecto. Realizo trabajos no solo enfocado en busqueda de soluciones, además busco la manera de poder experimentar nuevas técnicas, procesos y metodos de conceptualización.</p>
-        </div>
-
-        <!-- Para cambiar una habilidad: edita el nombre y el porcentaje (width) -->
-        <div class="doc-block">
-          <h3 class="doc-heading">II. Habilidades técnicas</h3>
-          <div class="skill">
-            <div class="skill-name">Fabricación Digital</div>
-            <div class="skill-bar"><div class="skill-fill" style="width: 100%;"></div></div>
+        <!-- Fila superior: título con el botón "volver" y, al lado, el nombre -->
+        <div class="about-top">
+          <div class="section-head">
+            <button type="button" class="btn-retro btn-back" aria-label="Volver" title="Volver">&lt;</button>
+            <h2 class="section-title">// sobre_mi</h2>
           </div>
-          <div class="skill">
-            <div class="skill-name">Diseño de productos</div>
-            <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
-          </div>
-          <div class="skill">
-            <div class="skill-name">Prototipado</div>
-            <div class="skill-bar"><div class="skill-fill" style="width: 80%;"></div></div>
+
+          <div class="doc-header">
+            <h3 class="doc-name">Cami Ramírez "Estrabismx"</h3>
+            <p class="doc-tagline">[placeholder]</p>
           </div>
         </div>
 
-        <div class="doc-block">
-          <h3 class="doc-heading">III. Habilidades en software</h3>
-          <p class="doc-note">*Estos programas no son los únicos que manejo, solamente los más representativos</p>
-          <div class="skill">
-            <div class="skill-name">Autocad</div>
-            <div class="skill-bar"><div class="skill-fill" style="width: 100%;"></div></div>
+        <!-- Texto (70%) a la izquierda y gráficos de habilidades (30%) a la derecha -->
+        <div class="about-layout">
+          <div class="about-text">
+            <div class="doc-block">
+              <h3 class="doc-heading">// perfil</h3>
+              <p>Diseñador(x) de Santiago de Chile, trabajando bajo el seudónimo <b>"Estrabismx"</b>. </p> 
+              <p>Experimentad(x) en el diseño industrial e interacción digital. Me especializo en generar proyectos que respondan a la modularidad y la optimización de recursos, todo esto con perspectiva en la democratización de conocimiento mediante la filosofía del <i>open source</i>.</p>
+              <p>He desarrollado proyectos que responden a perspectivas conceptuales como a soluciones prácticas, bajo estas premisas mi trabajo ha sido exhibido en lugares como la <b><i> Design Week Mexico 2026 </i></b>, especificamente en <b> <i> INÉDITO </i> </b> <a class="btn-link" href="https://web.archive.org/web/20261124020313/http://web.archive.org/screenshot/https://faad.udp.cl/escuela-de-diseno-udp-participa-en-inedito-universitario-de-design-week-mexico-2026/" target="_blank" rel="noopener noreferrer">Ver más +</a> </p>
+            </div>
+
+            <div class="doc-block">
+              <h3 class="doc-heading">// educacion</h3>
+              <p><b>Universidad Diego Portales</b><br>
+              <span class="doc-note">Diseño mención industial, 2024 - Presente</span><br>
+              Estudiante con mencion en diseño industrial y formadx en interacción digital.</p>
+            </div>
+            <div class="doc-block">
+              <h3 class="doc-heading">// trayectoria</h3>
+              <p> 1. Representante mención Interación Digital en Mexico Design Week con Sin-Te / 2026 </p>
+              <p> 2. Practica electiva Laboratorio de Interacción Digital / 2026-2 </p>
+              <p> 3. Tutoría curso Diseño Basado en Datos / 2026-2</p>
+            </div>
           </div>
-          <div class="skill">
-            <div class="skill-name">Rhino 8</div>
-            <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
-          </div>
-          <div class="skill">
-            <div class="skill-name">Inventor</div>
-            <div class="skill-bar"><div class="skill-fill" style="width: 85%;"></div></div>
-          </div>
-          <div class="skill">
-            <div class="skill-name">Illustrator</div>
-            <div class="skill-bar"><div class="skill-fill" style="width: 75%;"></div></div>
-          </div>
-          <div class="skill">
-            <div class="skill-name">KiCad</div>
-            <div class="skill-bar"><div class="skill-fill" style="width: 65%;"></div></div>
-          </div>
+
+          <!-- Habilidades: viñetas para elegir el grupo y, debajo, la forma de verlo.
+               Los gráficos (araña y anillos) los dibuja main.js con los datos de las barras -->
+          <aside class="about-stats" data-group="tecnicas" data-view="barras" aria-label="Habilidades">
+            <p class="stats-label" id="statsTabsLabel">// elige qué habilidades ver:</p>
+            <div class="stats-tabs" role="group" aria-labelledby="statsTabsLabel">
+              <button type="button" class="stats-tab" data-group="tecnicas" aria-pressed="true">técnicas</button>
+              <button type="button" class="stats-tab" data-group="software" aria-pressed="false">software</button>
+            </div>
+            <div class="stats-toggle" role="group" aria-label="Ver habilidades como">
+              <button type="button" class="stats-toggle-btn" data-view="barras" aria-pressed="true">barras</button>
+              <button type="button" class="stats-toggle-btn" data-view="radar" aria-pressed="false">araña</button>
+              <button type="button" class="stats-toggle-btn" data-view="anillos" aria-pressed="false">anillos</button>
+            </div>
+            <!-- Para cambiar una habilidad: edita el nombre y el porcentaje (width) -->
+            <div class="doc-block skill-group" data-group="tecnicas">
+              <h3 class="doc-heading">// habilidades tecnicas</h3>
+              <div class="skill">
+                <div class="skill-name"># fabricación digital</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># diseño de productos</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># prototipado</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 80%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># desarrollo conceptual</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 80%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># interaccion digital</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 80%;"></div></div>
+              </div>
+            </div>
+
+            <div class="doc-block skill-group" data-group="software">
+              <h3 class="doc-heading">// habilidades en software</h3>
+              <p class="doc-note">*Estos programas no son los únicos que manejo, solamente los más representativos</p>
+              <div class="skill">
+                <div class="skill-name"># Autocad</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># Rhino 8</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># Inventor</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 85%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># Illustrator</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 75%;"></div></div>
+              </div>
+              <div class="skill">
+                <div class="skill-name"># KiCad</div>
+                <div class="skill-bar"><div class="skill-fill" style="width: 65%;"></div></div>
+              </div>
+            </div>
+          </aside>
         </div>
 
         <!-- Experiencia laboral (DESACTIVADA HASTA QUE TENGA EXPERIENCIA xddd)
@@ -96,10 +143,6 @@
         </div>
         -->
 
-        <div class="doc-signature">
-          <p class="doc-date">Actualizado hasta el: 14 de Julio de 2026</p>
-          <p class="doc-sign">Camila Ramírez P.</p>
-        </div>
       </section>
     </main>
   </div>

@@ -24,7 +24,7 @@ const $ = (id) => document.getElementById(id);
    (inspirado en ui.aceternity.com/components/encrypted-text).
    Uso: encryptText(elemento) anima su texto actual;
         encryptText(elemento, 'nuevo texto') lo cambia y lo anima. */
-const ENCRYPT_TITLES = '.section-title, .doc-name, .doc-heading, .project-card-label, .detail-heading, .modal-title';
+const ENCRYPT_TITLES = '.home-title, .home-statement, .home-nav a, .section-title,.doc-name, .doc-heading, .project-card-label, .detail-heading, .modal-title';
 const ENCRYPT_DURATION = 1800; // ms máximos para revelar un título completo
 const ENCRYPT_PER_CHAR = 100;  // ms máximos por carácter (títulos cortos)
 const ENCRYPT_FLIP = 50;      // ms entre cada cambio de 0/1
@@ -259,9 +259,15 @@ function showAlert(text) {
 
 /* ---------- 4. Menú lateral (botón hamburguesa) ---------- */
 
+// Tipos de un proyecto: "tipo" puede ser un texto o una lista (varias categorías)
+function typesOf(p) {
+  const tipo = p && p.tipo;
+  return (Array.isArray(tipo) ? tipo : [tipo]).filter(Boolean);
+}
+
 // Tipos únicos de los proyectos, en el orden en que aparecen en proyectos.js
 function projectTypes() {
-  return [...new Set(PROJECTS.map((p) => p.tipo).filter(Boolean))];
+  return [...new Set(PROJECTS.flatMap(typesOf))];
 }
 
 // "Fabricación Manual y Digital" → "fabricacion_manual_y_digital"
@@ -324,8 +330,8 @@ function initSideMenu() {
 
 /* ---------- 5. Teleprompter de proyectos (index.html) ----------
    Franja con el SVG de cada proyecto (assets/proyecto-XX/proyecto_XX.svg) que se
-   desplaza sola y a velocidad constante. Cada ícono abre su proyecto, pero el
-   desplazamiento no se puede arrastrar, deslizar ni detener.
+   desplaza sola y a velocidad constante (con el mouse encima, más lento). Cada ícono
+   abre su proyecto, pero el desplazamiento no se puede arrastrar ni deslizar.
    Si un proyecto aún no tiene SVG aparece un recuadro con su nombre;
    al agregar el archivo a su carpeta aparece solo. */
 
@@ -397,13 +403,29 @@ const TICKER_MAGNIFY = 0.5;     // aumento máximo (50%): sale del marco hacia a
 const TICKER_REACH = 300;       // px desde el cursor en que todavía hay aumento (alcanza a los vecinos)
 const TICKER_SMOOTH = 0.18;     // 0–1: qué tan rápido sigue al cursor
 
+/* Frenado al pasar el cursor (inspirado en motion-primitives.com/docs/infinite-slider,
+   speed 100 → speedOnHover 20): la franja baja a 1/5 de su velocidad y, al salir,
+   recupera la velocidad de a poco. Cambia la velocidad de la animación CSS. */
+const TICKER_HOVER_RATE = 0.2;  // velocidad con el cursor encima (1 = normal)
+const TICKER_RATE_SMOOTH = 0.06; // 0–1: qué tan rápido frena o acelera
+
 function initTickerMagnify(ticker) {
   let mouseX = null;
   let frame = null;
+  let rate = 1;
   const scales = new WeakMap();
 
   const step = () => {
     let settling = false;
+
+    // Frenado: acerca la velocidad a la deseada en cada cuadro
+    const targetRate = mouseX !== null ? TICKER_HOVER_RATE : 1;
+    rate += (targetRate - rate) * (reduceMotion ? 1 : TICKER_RATE_SMOOTH);
+    if (Math.abs(targetRate - rate) < 0.005) rate = targetRate;
+    else settling = true;
+    const animation = ticker.querySelector('.ticker-track').getAnimations()[0];
+    if (animation && animation.playbackRate !== rate) animation.playbackRate = rate;
+
     ticker.querySelectorAll('.ticker-item').forEach((item) => {
       let target = 1;
       if (mouseX !== null) {
@@ -477,7 +499,7 @@ function initTicker() {
 // Proyectos del anillo: todos, o solo los del tipo pedido en la URL (si el tipo no existe, todos)
 const RING_TYPE = new URLSearchParams(location.search).get('tipo') || '';
 const RING_PROJECTS = (() => {
-  const filtered = PROJECTS.filter((p) => p.tipo === RING_TYPE);
+  const filtered = PROJECTS.filter((p) => typesOf(p).includes(RING_TYPE));
   return filtered.length ? filtered : PROJECTS;
 })();
 const RING_FILTERED = RING_PROJECTS !== PROJECTS;
@@ -549,22 +571,6 @@ function fillDataList(dl, rows, hideEmpty = false) {
     .join('');
 }
 
-function techRows(p) {
-  const m = modelSettings(p);
-  const mat = m.material;
-  return [
-    ['MODELO', modelLabel(p)],
-    ['TRIÁNGULOS', m.archivo ? m.triangulos : null],
-    ['MATERIAL', mat.tipo],
-    ['COLOR', `<span class="swatch" style="background:${mat.color}"></span>${mat.color}`],
-    ['METALNESS', mat.metalness],
-    ['ROUGHNESS', mat.roughness],
-    ['ESCALA', m.escala.join(' × ')],
-    ['ROTACIÓN', `${m.rotacion.join(', ')} rad`],
-    ['LUZ', lightPreset(p).nombre],
-  ];
-}
-
 // Ficha breve (nombre, categoría y descripción) que sigue al cursor sobre la lata del centro.
 // Inspirada en ui.aceternity.com/components/tooltip-card
 const TOOLTIP_OFFSET = 18; // px entre el cursor y la ficha
@@ -573,7 +579,7 @@ function fillRingTooltip(p) {
   const tip = $('ringTooltip');
   if (!tip || !p) return;
   tip.querySelector('.ring-tooltip-title').innerHTML = p.titulo; // puede traer <i>
-  tip.querySelector('.ring-tooltip-type').textContent = p.tipo ? `# ${typeSlug(p.tipo)}` : '';
+  tip.querySelector('.ring-tooltip-type').textContent = typesOf(p).map((t) => `# ${typeSlug(t)}`).join(' ');
   tip.querySelector('.ring-tooltip-desc').textContent = p.resumen || '';
 }
 
@@ -638,6 +644,8 @@ function ringPhotoList(p) {
   return (p.galeria || []).filter((item) => !isVideo(item.archivo));
 }
 
+let ringPhotoIndex = 0;
+
 function showRingPhoto(p, index) {
   const main = $('ringPhotoMain');
   const fotos = ringPhotoList(p);
@@ -645,6 +653,7 @@ function showRingPhoto(p, index) {
     main.innerHTML = '<div class="thumbnail-placeholder">[ SIN IMÁGENES ]</div>';
     return;
   }
+  ringPhotoIndex = index = (index + fotos.length) % fotos.length;
   renderMainMedia(main, p, fotos[index]);
   $('ringPhotoThumbs').querySelectorAll('button').forEach((b, i) => b.classList.toggle('active', i === index));
 }
@@ -960,6 +969,55 @@ function pauseMediaIn(element) {
   element.querySelectorAll('video').forEach((v) => v.pause());
 }
 
+// Tecla de navegación: ← o < = -1, → o > = 1 (si no, 0). Con Ctrl/Alt/Cmd no cuenta.
+function navStep(e) {
+  if (e.ctrlKey || e.altKey || e.metaKey) return 0;
+  return { ArrowLeft: -1, '<': -1, ArrowRight: 1, '>': 1 }[e.key] || 0;
+}
+
+// Rectángulo donde se ve de verdad una imagen/video con object-fit: contain
+function shownMediaRect(el) {
+  const r = el.getBoundingClientRect();
+  const w = el.naturalWidth || el.videoWidth;
+  const h = el.naturalHeight || el.videoHeight;
+  if (!w || !h) return r;
+  const scale = Math.min(r.width / w, r.height / h);
+  const sw = w * scale;
+  const sh = h * scale;
+  const left = r.left + (r.width - sw) / 2;
+  const top = r.top + (r.height - sh) / 2;
+  return { left, top, right: left + sw, bottom: top + sh };
+}
+
+// -1 / 1 si el puntero está en el panel pero fuera de la imagen (según el lado), 0 si está sobre ella
+function sideOfMedia(box, e) {
+  const media = box.querySelector('img, video');
+  if (media) {
+    const m = shownMediaRect(media);
+    if (e.clientX >= m.left && e.clientX <= m.right && e.clientY >= m.top && e.clientY <= m.bottom) return 0;
+  }
+  const r = box.getBoundingClientRect();
+  return e.clientX < r.left + r.width / 2 ? -1 : 1;
+}
+
+// Clic dentro del panel pero fuera de la foto: va a la anterior (mitad izquierda) o a la siguiente
+function initSideClickNav(box, go) {
+  if (!box) return;
+  box.addEventListener('click', (e) => {
+    const step = sideOfMedia(box, e);
+    if (!step) return;
+    e.preventDefault();
+    e.stopPropagation(); // no abre la imagen ampliada
+    go(step);
+  }, true);
+  box.addEventListener('mousemove', (e) => {
+    const step = sideOfMedia(box, e);
+    box.classList.toggle('nav-prev', step < 0);
+    box.classList.toggle('nav-next', step > 0);
+  });
+  box.addEventListener('mouseleave', () => box.classList.remove('nav-prev', 'nav-next'));
+}
+
 
 /* ----- Vista del proyecto (reemplaza al anillo dentro de la sección) ----- */
 
@@ -968,8 +1026,33 @@ let detailProject = null;
 let detailMediaIndex = 0;
 let closeDetailHandler = null;
 
-function detailSection(title, html) {
-  return `<div class="detail-block"><h4 class="project-card-label">/// ${title}</h4>${html}</div>`;
+// Información del proyecto por secciones: una pestaña por sección, se ve una a la vez
+function showDetailTab(index) {
+  const tabs = document.querySelectorAll('#detailBody .detail-tab');
+  const panels = document.querySelectorAll('#detailBody .detail-block');
+  tabs.forEach((t, i) => {
+    t.classList.toggle('active', i === index);
+    t.setAttribute('aria-selected', i === index);
+    t.tabIndex = i === index ? 0 : -1;
+  });
+  panels.forEach((panel, i) => { panel.hidden = i !== index; panel.scrollTop = 0; });
+}
+
+function initDetailTabs() {
+  const tabs = [...document.querySelectorAll('#detailBody .detail-tab')];
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => showDetailTab(i));
+    // Flechas izquierda/derecha recorren las pestañas (patrón de pestañas accesibles)
+    tab.addEventListener('keydown', (e) => {
+      const step = navStep(e);
+      if (!step) return;
+      e.preventDefault();
+      const next = (i + step + tabs.length) % tabs.length;
+      showDetailTab(next);
+      tabs[next].focus();
+    });
+  });
+  showDetailTab(0);
 }
 
 function renderDetailBody(p) {
@@ -981,7 +1064,7 @@ function renderDetailBody(p) {
     .join('');
 
   const info = [
-    ['TIPO', p.tipo], ['CURSO', p.curso], ['AÑO', p.anio],
+    ['TIPO', typesOf(p).join(', ')], ['CURSO', p.curso], ['AÑO', p.anio],
     ['OBJETIVO', p.objetivo], ['DESAFÍO', p.desafio], ['TAMAÑO', p.tamano],
   ];
   // Igual que en el editor: las filas sin valor no se muestran
@@ -992,8 +1075,10 @@ function renderDetailBody(p) {
     <div class="skill-bar difficulty"><div class="skill-fill" style="width:${dif.porcentaje}%"></div></div>
     <p class="detail-note">${dif.texto || ''} (${dif.porcentaje}%)</p>` : '';
 
-  const colores = (p.colores || []).map((c) => `
-    <li><span class="swatch" style="background:${c.hex}"></span>${c.nombre ? `${c.nombre} — ` : ''}${c.hex}</li>`).join('');
+  // Colores del proyecto (sin nombre): cuadrados que muestran el hex al pasar el cursor
+  // y lo copian al hacer clic (ver initSwatchCopy)
+  const colores = (p.colores || []).filter((c) => c && c.hex).map((c) => `
+    <button type="button" class="swatch-copy" style="--swatch:${c.hex}" data-hex="${c.hex}" aria-label="Copiar ${c.hex}"></button>`).join('');
 
   const dl = (rows) => {
     const tmp = document.createElement('dl');
@@ -1002,52 +1087,106 @@ function renderDetailBody(p) {
     return tmp.outerHTML;
   };
 
+  // La ficha técnica: datos arriba y, abajo a la derecha, los colores (sin título)
+  const fichaHtml = (ficha.length || colores) && `
+    <div class="ficha-layout">
+      ${ficha.length ? dl(ficha) : ''}
+      ${colores ? `<div class="swatch-row" aria-label="Colores del proyecto">${colores}</div>` : ''}
+    </div>`;
+
+  // [título de la pestaña, contenido]; las secciones vacías no aparecen
+  const secciones = [
+    ['DESCRIPCIÓN', parrafos && `<div class="detail-text">${parrafos}</div>`],
+    ['INFO', dl(info)],
+    ['FICHA_TECNICA', fichaHtml],
+    ['DIFICULTAD', dificultad],
+  ].filter(([, html]) => html);
+
   $('detailBody').innerHTML = `
     <div class="detail-header">
       <h3 class="detail-heading">${p.encabezado || p.titulo}</h3>
       ${p.subtitulo ? `<p class="detail-subtitle">${p.subtitulo}</p>` : ''}
       ${etiquetas ? `<div class="tags">${etiquetas}</div>` : ''}
     </div>
-    <div class="detail-columns">
-      <div>
-        ${parrafos ? detailSection('DESCRIPCIÓN', `<div class="detail-text">${parrafos}</div>`) : ''}
-        ${colores ? detailSection('PALETA_DE_COLORES', `<ul class="palette-list">${colores}</ul>`) : ''}
-      </div>
-      <div>
-        ${detailSection('INFO', dl(info))}
-        ${ficha.length ? detailSection('FICHA_TECNICA', dl(ficha)) : ''}
-        ${dificultad ? detailSection('DIFICULTAD', dificultad) : ''}
-        ${detailSection('DATOS_TECNICOS_MODELO', dl(techRows(p)))}
-      </div>
-    </div>`;
+    <div class="detail-tabs" role="tablist" aria-label="Secciones del proyecto">
+      ${secciones.map(([title], i) => `
+        <button type="button" class="detail-tab" role="tab" id="detailTab${i}" aria-controls="detailSection${i}">/// ${title}</button>`).join('')}
+    </div>
+    ${secciones.map(([, html], i) => `
+      <div class="detail-block" role="tabpanel" id="detailSection${i}" aria-labelledby="detailTab${i}" tabindex="0">${html}</div>`).join('')}`;
+  initDetailTabs();
+  initSwatchCopy($('detailBody'));
 }
 
-// Muestra un archivo de la galería en el panel grande (imagen, animación o video)
+// Clic en un color de la ficha técnica: copia su código hex
+function initSwatchCopy(root) {
+  if (!root || root.dataset.swatchCopy) return;
+  root.dataset.swatchCopy = '1';
+  root.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.swatch-copy');
+    if (!btn) return;
+    const hex = btn.dataset.hex;
+    let ok = false;
+    try {
+      await navigator.clipboard.writeText(hex);
+      ok = true;
+    } catch (err) {
+      // Sin permiso de portapapeles (p. ej. abriendo el archivo sin servidor): método antiguo
+      const tmp = document.createElement('textarea');
+      tmp.value = hex;
+      document.body.appendChild(tmp);
+      tmp.select();
+      ok = document.execCommand('copy');
+      tmp.remove();
+    }
+    btn.dataset.copied = ok ? 'copiado' : 'error';
+    clearTimeout(btn._copyTimer);
+    btn._copyTimer = setTimeout(() => delete btn.dataset.copied, 1200);
+  });
+}
+
+// Visor del proyecto: el ítem 0 es el modelo 3D; los siguientes, los archivos de la galería
+// (imagen, animación o video). La foto se muestra encima del visor 3D, que se pausa.
 function showDetailMedia(index) {
   const galeria = (detailProject && detailProject.galeria) || [];
+  const total = galeria.length + 1;
   const main = $('detailMain');
   pauseMediaIn(main);
 
-  if (!galeria.length) {
-    main.innerHTML = '<div class="thumbnail-placeholder">[ SIN IMÁGENES ]</div>';
-    $('detailCaption').textContent = '';
+  detailMediaIndex = (index + total) % total;
+  const is3D = detailMediaIndex === 0;
+  main.hidden = is3D;
+  $('detailReset').hidden = !is3D;
+  document.querySelectorAll('#detailThumbs button').forEach((b, i) => b.classList.toggle('active', i === detailMediaIndex));
+
+  if (is3D) {
+    main.innerHTML = '';
+    $('detailCaption').textContent = `${modelLabel(detailProject)} · Luz: ${lightPreset(detailProject).nombre}`;
+    startDetailLoop();
     return;
   }
 
-  detailMediaIndex = (index + galeria.length) % galeria.length;
-  const item = galeria[detailMediaIndex];
+  if (detailViewer) detailViewer.running = false;
+  const item = galeria[detailMediaIndex - 1];
   renderMainMedia(main, detailProject, item);
-
-  $('detailCaption').textContent = `${detailMediaIndex + 1}/${galeria.length} — ${item.nombre || item.archivo}`;
-  document.querySelectorAll('#detailThumbs button').forEach((b, i) => b.classList.toggle('active', i === detailMediaIndex));
+  $('detailCaption').textContent = `${detailMediaIndex}/${galeria.length} — ${item.nombre || item.archivo}`;
 }
 
 function renderDetailThumbs(p) {
   const thumbs = $('detailThumbs');
   thumbs.innerHTML = '';
+
+  const model = document.createElement('button');
+  model.type = 'button';
+  model.className = 'detail-thumb detail-thumb-3d';
+  model.setAttribute('aria-label', 'Modelo 3D');
+  model.textContent = '3D';
+  model.addEventListener('click', () => showDetailMedia(0));
+  thumbs.appendChild(model);
+
   (p.galeria || []).forEach((item, i) => {
     const btn = thumbButton(p, item);
-    btn.addEventListener('click', () => showDetailMedia(i));
+    btn.addEventListener('click', () => showDetailMedia(i + 1));
     thumbs.appendChild(btn);
   });
 }
@@ -1156,8 +1295,10 @@ function initLightbox3D() {
 
   document.addEventListener('keydown', (e) => {
     if (!$('lightboxModal').classList.contains('open') || lightboxImages.length < 2) return;
-    if (e.key === 'ArrowLeft') showLightboxImage(lightboxIndex - 1);
-    if (e.key === 'ArrowRight') showLightboxImage(lightboxIndex + 1);
+    const step = navStep(e);
+    if (!step) return;
+    e.preventDefault();
+    showLightboxImage(lightboxIndex + step);
   });
 }
 
@@ -1169,7 +1310,8 @@ function initDetailViewer() {
     return null;
   }
   const stage = $('detailStage');
-  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+  // Misma lente que el anillo, para que el modelo se vea igual que al centro de él
+  const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
   let viewer;
   try {
     viewer = createViewer($('detailCanvas'), stage, camera);
@@ -1178,16 +1320,20 @@ function initDetailViewer() {
     return null;
   }
 
-  const ZOOM = { min: 3.5, max: 10, start: 6 };
+  // Zoom como múltiplo de la distancia del anillo (1 = el mismo encuadre que la lata del centro)
+  const ZOOM = { min: 0.6, max: 1.8, start: 1 };
   let distance = ZOOM.start;
+  // Cámara del anillo vista desde la lata del frente: mismo ángulo desde arriba
+  const camOffset = new THREE.Vector3(0, 1.6, RING_SETTINGS.cameraZPosition - RING_SETTINGS.ringRadius);
+  const lookOffset = new THREE.Vector3(0, -0.35, -3);
   let dragging = false;
   let last = null;
 
   detailViewer = { ...viewer, camera, can: null, running: false };
 
   const placeCamera = () => {
-    camera.position.set(0, 0.6 * (distance / ZOOM.start), distance);
-    camera.lookAt(0, 0, 0);
+    camera.position.copy(camOffset).multiplyScalar(distance);
+    camera.lookAt(lookOffset.clone().multiplyScalar(distance));
   };
   placeCamera();
 
@@ -1213,7 +1359,7 @@ function initDetailViewer() {
   stage.addEventListener('pointercancel', release);
   stage.addEventListener('wheel', (e) => {
     e.preventDefault();
-    distance = Math.max(ZOOM.min, Math.min(ZOOM.max, distance + e.deltaY * 0.004));
+    distance = Math.max(ZOOM.min, Math.min(ZOOM.max, distance + e.deltaY * 0.0007));
     placeCamera();
   }, { passive: false });
 
@@ -1234,6 +1380,18 @@ function startDetailLoop() {
   requestAnimationFrame(loop);
 }
 
+// El modelo tal como se ve al centro del anillo: el anillo gira el conjunto
+// (-índice × paso) y la lata del centro se agranda un 10 %; aquí se repite igual
+function buildDetailModel(p, index) {
+  const pivot = buildModel(p);
+  const holder = new THREE.Group();
+  holder.add(pivot);
+  holder.rotation.y = -index * (Math.PI * 2) / RING_PROJECTS.length;
+  holder.scale.setScalar(1.1);
+  holder.userData.spinner = pivot.userData.spinner;
+  return holder;
+}
+
 function openProjectDetail(index, onClose) {
   const p = RING_PROJECTS[index];
   if (!p) return;
@@ -1246,18 +1404,16 @@ function openProjectDetail(index, onClose) {
 
   $('ringView').hidden = true;
   $('detailView').hidden = false;
-  showDetailMedia(0);
-  $('detailModelName').textContent = `${modelLabel(p)} · Luz: ${lightPreset(p).nombre}`;
 
   const viewer = initDetailViewer();
   if (viewer) {
     if (viewer.can) { viewer.scene.remove(viewer.can); disposeObject(viewer.can); }
-    viewer.can = buildModel(p);
+    viewer.can = buildDetailModel(p, index);
     viewer.scene.add(viewer.can);
     applyLight(viewer, lightPreset(p), viewer.can, 1);
     viewer.reset();
-    startDetailLoop();
   }
+  showDetailMedia(0); // abre en el modelo 3D (y arranca su animación)
 
   closeDetailHandler = onClose;
   $('projects').scrollIntoView();
@@ -1305,21 +1461,30 @@ function initProjectRing() {
   openRingProject = openDetail;
 
   // Flechas dentro del anillo: no deben iniciar el arrastre del anillo
-  ['ringPrev', 'ringNext'].forEach((id, i) => {
-    const arrow = $(id);
-    arrow.addEventListener('pointerdown', (e) => e.stopPropagation());
-    arrow.addEventListener('click', () => moveBy(i === 0 ? -1 : 1));
+  // (ni mostrar la ficha de la lata al pasar por encima)
+  ['ringPrev', 'ringNext', 'ringSelect'].forEach((id, i) => {
+    const button = $(id);
+    button.addEventListener('pointerdown', (e) => e.stopPropagation());
+    button.addEventListener('pointermove', (e) => { e.stopPropagation(); hideRingTooltip(); });
+    button.addEventListener('keydown', (e) => { if (!navStep(e)) e.stopPropagation(); }); // Enter/espacio = solo este botón
+    button.addEventListener('click', () => (id === 'ringSelect' ? openDetail() : moveBy(i === 0 ? -1 : 1)));
   });
-  $('detailBack').addEventListener('click', closeProjectDetail);
   stage.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') { e.preventDefault(); moveBy(-1); }
-    if (e.key === 'ArrowRight') { e.preventDefault(); moveBy(1); }
     if (e.key === 'Enter') { e.preventDefault(); openDetail(); }
   });
-  // Esc vuelve al anillo (si no hay una ventana emergente ni el menú lateral abiertos)
+  // Flechas o < y >: en el anillo lo giran; en la vista del proyecto recorren la galería
+  // (Esc no vuelve al anillo: solo cierra la imagen ampliada y las ventanas emergentes)
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !document.querySelector('.modal-overlay.open, .side-menu.open')) closeProjectDetail();
+    const step = navStep(e);
+    if (!step || document.querySelector('.modal-overlay.open, .side-menu.open')) return;
+    if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable="true"], .detail-tab')) return;
+    e.preventDefault();
+    if ($('detailView').hidden) moveBy(step);
+    else showDetailMedia(detailMediaIndex + step);
   });
+  // Clic en el panel de fotos fuera de la imagen: anterior / siguiente
+  initSideClickNav($('detailMain'), (step) => showDetailMedia(detailMediaIndex + step));
+  initSideClickNav($('ringPhotoMain'), (step) => ringPhotosProject && showRingPhoto(ringPhotosProject, ringPhotoIndex + step));
 
   renderRingFilter();
   updateRingSelection(currentIndex);
@@ -1784,9 +1949,341 @@ function hexToRgb(hex) {
 }
 
 
+/* ---------- 6b. Fondo "matrix trail" (todas las páginas) ----------
+   Grilla de 0 y 1 que se encienden bajo el cursor y se apagan
+   dejando un rastro (inspirado en ui.aceternity.com/interactions/matrix-trail).
+   El canvas va fijo detrás del marco central (.wrapper), que es opaco,
+   así que el rastro solo se ve en el fondo de afuera. */
+const TRAIL_CELL = 18;      // px por celda
+const TRAIL_RADIUS = 2.2;   // radio del pincel, en celdas
+const TRAIL_DECAY = 0.025;  // cuánto se apaga cada celda por cuadro (~0.7 s)
+const TRAIL_FLIP = 0.08;    // probabilidad por cuadro de que una celda cambie 0 ↔ 1
+
+function initMatrixTrail() {
+  if (!document.querySelector('.wrapper')) return;
+  const canvas = document.createElement('canvas');
+  canvas.className = 'matrix-trail';
+  canvas.setAttribute('aria-hidden', 'true');
+  document.body.prepend(canvas);
+  const ctx = canvas.getContext('2d');
+
+  const head = hexToRgb(paletteColor('--amber', '#F29F05'));
+  const tail = hexToRgb(paletteColor('--scarlet', '#F20530'));
+  let cols = 0, rows = 0, life, chars, dpr = 1;
+  const active = new Set();
+  let running = false, last = null;
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = innerWidth * dpr;
+    canvas.height = innerHeight * dpr;
+    cols = Math.ceil(innerWidth / TRAIL_CELL);
+    rows = Math.ceil(innerHeight / TRAIL_CELL);
+    life = new Float32Array(cols * rows);
+    chars = new Uint8Array(cols * rows).map(() => Math.random() < 0.5 ? 0 : 1);
+    active.clear();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.font = `${TRAIL_CELL}px ${getComputedStyle(document.body).getPropertyValue('--font-display') || 'monospace'}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+  }
+
+  // Enciende las celdas alrededor de (x, y)
+  function stamp(x, y) {
+    const cx = x / TRAIL_CELL, cy = y / TRAIL_CELL;
+    const r = Math.ceil(TRAIL_RADIUS);
+    for (let j = Math.floor(cy) - r; j <= Math.floor(cy) + r; j++) {
+      if (j < 0 || j >= rows) continue;
+      for (let i = Math.floor(cx) - r; i <= Math.floor(cx) + r; i++) {
+        if (i < 0 || i >= cols) continue;
+        const d = Math.hypot(i + 0.5 - cx, j + 0.5 - cy) / TRAIL_RADIUS;
+        if (d > 1 || Math.random() < d * 0.6) continue; // borde irregular
+        const k = j * cols + i;
+        const v = 1 - d * 0.5;
+        if (v > life[k]) {
+          if (life[k] === 0) chars[k] = Math.random() < 0.5 ? 0 : 1;
+          life[k] = v;
+        }
+        active.add(k);
+      }
+    }
+  }
+
+  function frame() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const k of active) {
+      const v = life[k];
+      if (v <= 0) { life[k] = 0; active.delete(k); continue; }
+      if (!reduceMotion && Math.random() < TRAIL_FLIP) chars[k] ^= 1;
+      // recién encendida = ámbar; al apagarse pasa a escarlata y se desvanece
+      const r = Math.round(tail.r + (head.r - tail.r) * v);
+      const g = Math.round(tail.g + (head.g - tail.g) * v);
+      const b = Math.round(tail.b + (head.b - tail.b) * v);
+      ctx.fillStyle = `rgba(${r},${g},${b},${Math.min(1, v * 1.2)})`;
+      const i = k % cols, j = (k - i) / cols;
+      ctx.fillText(chars[k], (i + 0.5) * TRAIL_CELL, (j + 0.5) * TRAIL_CELL);
+      life[k] = v - TRAIL_DECAY;
+    }
+    if (active.size) requestAnimationFrame(frame);
+    else running = false;
+  }
+
+  window.addEventListener('pointermove', (e) => {
+    // interpola entre posiciones para que el rastro no quede con huecos
+    const from = last || { x: e.clientX, y: e.clientY };
+    const steps = Math.max(1, Math.ceil(Math.hypot(e.clientX - from.x, e.clientY - from.y) / (TRAIL_CELL * 0.75)));
+    for (let s = 1; s <= steps; s++) {
+      stamp(from.x + (e.clientX - from.x) * s / steps, from.y + (e.clientY - from.y) * s / steps);
+    }
+    last = { x: e.clientX, y: e.clientY };
+    if (!running) { running = true; requestAnimationFrame(frame); }
+  }, { passive: true });
+  document.documentElement.addEventListener('pointerleave', () => { last = null; });
+  window.addEventListener('pointerdown', () => { last = null; }); // en táctil no une toques separados
+  window.addEventListener('blur', () => { last = null; });
+  window.addEventListener('resize', resize);
+  resize();
+  // la fuente VT323 puede cargar después: actualiza el canvas cuando esté lista
+  if (document.fonts) document.fonts.ready.then(resize);
+}
+
+
+/* ---------- 6d. Habilidades: barras o gráfico araña (sobre_mi.html) ----------
+   Los datos salen de las barras del HTML (nombre y width en %), así que
+   para cambiar una habilidad basta con editar sobre_mi.html.
+   La vista elegida se recuerda entre visitas. */
+// El gráfico se dibuja en píxeles reales según el espacio disponible, así los nombres
+// mantienen su tamaño aunque el gráfico se achique; se redibuja al cambiar el tamaño.
+const RADAR = { labelGap: 8, labelW: 92, labelH: 28, minRadius: 40, rings: [25, 50, 75, 100] };
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const RADAR_FILLS_COLUMN = window.matchMedia('(min-width: 901px)'); // igual que en style.css
+
+function svgEl(tag, attrs = {}) {
+  const el = document.createElementNS(SVG_NS, tag);
+  Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+  return el;
+}
+
+const skillShortName = (name) => name.replace(/^#\s*/, '');
+
+// Nombre para el gráfico: sin "# " y partido en líneas de ~12 caracteres
+function radarLabelLines(name) {
+  const lines = [];
+  skillShortName(name).split(/\s+/).forEach((word) => {
+    const lastLine = lines[lines.length - 1];
+    if (lastLine && (lastLine + ' ' + word).length <= 12) lines[lines.length - 1] = `${lastLine} ${word}`;
+    else lines.push(word);
+  });
+  return lines;
+}
+
+function drawRadar(box, skills) {
+  const { labelGap, labelW, labelH, minRadius, rings } = RADAR;
+  const w = box.clientWidth;
+  if (!w) return; // vista oculta: se dibuja al mostrarse
+  // Alto: en escritorio, el que le da la columna; en celular, uno proporcional al ancho
+  const h = RADAR_FILLS_COLUMN.matches ? box.clientHeight : Math.min(w * 0.8, 320);
+  if (!h) return;
+  const radius = Math.max(minRadius, Math.min((w - 2 * (labelW + labelGap)) / 2, (h - 2 * (labelH + labelGap)) / 2));
+  const cx = w / 2, cy = h / 2;
+  const n = skills.length;
+  // Primer eje hacia arriba, luego en sentido horario
+  const at = (i, r) => {
+    const a = -Math.PI / 2 + (i * 2 * Math.PI) / n;
+    return [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
+  };
+  const poly = (r) => skills.map((_, i) => at(i, r).join(',')).join(' ');
+
+  const svg = svgEl('svg', { width: w, height: h, viewBox: `0 0 ${w} ${h}`, role: 'img' });
+  svg.setAttribute('aria-label', `Gráfico araña: ${skills.map((s) => `${skillShortName(s.name)} ${s.value}%`).join(', ')}`);
+
+  // Grilla: anillos cada 25% y un eje por habilidad
+  rings.forEach((pct) => svg.appendChild(svgEl('polygon', { class: 'radar-grid', points: poly(radius * pct / 100) })));
+  skills.forEach((_, i) => {
+    const [x, y] = at(i, radius);
+    svg.appendChild(svgEl('line', { class: 'radar-axis', x1: cx, y1: cy, x2: x, y2: y }));
+  });
+  // Escala en el primer eje (solo 50% y 100%, para no recargar)
+  [50, 100].forEach((pct) => {
+    const t = svgEl('text', { class: 'radar-tick', x: cx + 4, y: cy - radius * pct / 100 + 10 });
+    t.textContent = `${pct}%`;
+    svg.appendChild(t);
+  });
+
+  // Área de los valores
+  svg.appendChild(svgEl('polygon', {
+    class: 'radar-area',
+    points: skills.map((s, i) => at(i, radius * s.value / 100).join(',')).join(' '),
+    style: `--cx:${cx}px; --cy:${cy}px`,
+  }));
+
+  // Puntos con su ficha al pasar el cursor (área de toque más grande que el punto)
+  const tip = box.querySelector('.radar-tip');
+  // Radio chico: el área de toque no puede tapar a los puntos vecinos
+  const hitR = Math.min(14, radius / 3);
+  skills.forEach((s, i) => {
+    const [x, y] = at(i, radius * s.value / 100);
+    const g = svgEl('g', { class: 'radar-point', tabindex: '0' });
+    g.appendChild(svgEl('circle', { class: 'radar-hit', cx: x, cy: y, r: hitR }));
+    g.appendChild(svgEl('circle', { class: 'radar-dot', cx: x, cy: y, r: 5 }));
+    const show = () => {
+      tip.textContent = `${skillShortName(s.name)} · ${s.value}%`;
+      tip.style.left = `${x}px`;
+      tip.style.top = `${y}px`;
+      tip.hidden = false;
+    };
+    const hide = () => { tip.hidden = true; };
+    g.addEventListener('pointerenter', show);
+    g.addEventListener('pointerleave', hide);
+    g.addEventListener('focus', show);
+    g.addEventListener('blur', hide);
+    svg.appendChild(g);
+
+    // Nombre fuera del círculo, alineado según el lado
+    const [lx, ly] = at(i, radius + labelGap);
+    const anchor = Math.abs(lx - cx) < 1 ? 'middle' : lx > cx ? 'start' : 'end';
+    const lines = radarLabelLines(s.name);
+    const label = svgEl('text', { class: 'radar-label', x: lx, y: ly, 'text-anchor': anchor });
+    // Arriba el texto crece hacia arriba, abajo hacia abajo, a los lados queda centrado
+    const firstDy = ly < cy - 1 ? -(lines.length - 1) * 1.2 : ly > cy + 1 ? 0.8 : -(lines.length - 1) * 0.6 + 0.35;
+    lines.forEach((line, k) => {
+      const span = svgEl('tspan', { x: lx, dy: `${k === 0 ? firstDy : 1.2}em` });
+      span.textContent = line;
+      label.appendChild(span);
+    });
+    svg.appendChild(label);
+  });
+
+  const old = box.querySelector('svg');
+  if (old) old.replaceWith(svg);
+  else box.prepend(svg);
+}
+
+function buildRadar(group) {
+  const skills = [...group.querySelectorAll('.skill')].map((s) => ({
+    name: s.querySelector('.skill-name').textContent.trim(),
+    value: parseFloat(s.querySelector('.skill-fill').style.width) || 0,
+  }));
+  if (skills.length < 3) return; // con menos de 3 ejes no hay "araña"
+
+  const box = document.createElement('div');
+  box.className = 'radar';
+  const tip = document.createElement('div');
+  tip.className = 'radar-tip';
+  tip.hidden = true;
+  box.appendChild(tip);
+  group.appendChild(box);
+
+  let lastSize = '';
+  const redraw = () => {
+    const size = `${box.clientWidth}x${box.clientHeight}`;
+    if (size === lastSize) return;
+    lastSize = size;
+    drawRadar(box, skills);
+  };
+  // En el cuadro siguiente, para no redibujar dentro del mismo cálculo de tamaños
+  new ResizeObserver(() => requestAnimationFrame(redraw)).observe(box);
+}
+
+// Datos de un grupo, leídos de sus barras (nombre y width en %)
+function readSkills(group) {
+  return [...group.querySelectorAll('.skill')].map((s) => ({
+    name: s.querySelector('.skill-name').textContent.trim(),
+    value: parseFloat(s.querySelector('.skill-fill').style.width) || 0,
+  }));
+}
+
+// Anillos: un medidor circular por habilidad, con el % al centro
+function buildRings(group, skills) {
+  const R = 30;
+  const len = 2 * Math.PI * R;
+  const box = document.createElement('div');
+  box.className = 'rings';
+  skills.forEach((s, i) => {
+    const fig = document.createElement('figure');
+    fig.className = 'ring';
+    fig.style.setProperty('--i', i);
+    const svg = svgEl('svg', { viewBox: '0 0 76 76', 'aria-hidden': 'true' });
+    svg.appendChild(svgEl('circle', { class: 'ring-track', cx: 38, cy: 38, r: R }));
+    svg.appendChild(svgEl('circle', {
+      class: 'ring-fg', cx: 38, cy: 38, r: R,
+      'stroke-dasharray': len,
+      'stroke-dashoffset': len * (1 - s.value / 100),
+      transform: 'rotate(-90 38 38)', // empieza arriba
+      style: `--len:${len}`,
+    }));
+    const t = svgEl('text', { class: 'ring-value', x: 38, y: 38, 'text-anchor': 'middle', 'dominant-baseline': 'central' });
+    t.textContent = `${s.value}%`;
+    svg.appendChild(t);
+    const cap = document.createElement('figcaption');
+    cap.textContent = skillShortName(s.name);
+    fig.setAttribute('aria-label', `${skillShortName(s.name)}: ${s.value}%`);
+    fig.append(svg, cap);
+    box.appendChild(fig);
+  });
+  group.appendChild(box);
+}
+
+function initSkillCharts() {
+  const stats = document.querySelector('.about-stats');
+  if (!stats) return;
+  stats.querySelectorAll('.skill-group').forEach((group) => {
+    // Orden de cada barra para que crezcan una tras otra
+    group.querySelectorAll('.skill').forEach((s, i) => s.style.setProperty('--i', i));
+    const skills = readSkills(group);
+    buildRadar(group);
+    buildRings(group, skills);
+  });
+
+  // Viñetas (grupo) y selector (forma); los dos se recuerdan entre visitas
+  const choose = (attr, selector, key, value) => {
+    stats.dataset[attr] = value;
+    stats.querySelectorAll(selector).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset[attr] === value)));
+    try { localStorage.setItem(key, value); } catch (err) { /* sin almacenamiento */ }
+  };
+  const setup = (attr, selector, key) => {
+    const buttons = [...stats.querySelectorAll(selector)];
+    buttons.forEach((b) => b.addEventListener('click', () => choose(attr, selector, key, b.dataset[attr])));
+    let saved = null;
+    try { saved = localStorage.getItem(key); } catch (err) { /* sin almacenamiento */ }
+    if (buttons.some((b) => b.dataset[attr] === saved)) choose(attr, selector, key, saved);
+  };
+  setup('group', '.stats-tab', 'grupoHabilidades');
+  setup('view', '.stats-toggle-btn', 'vistaHabilidades');
+}
+
+
+/* ---------- 6c. Botón "volver" junto al título (todas las pestañas) ----------
+   "< // título" es una sola casilla: el "<" y el título vuelven atrás.
+   En proyectos.html, con un proyecto abierto, vuelve primero al anillo. */
+function goBack() {
+  if (!$('detailView') || $('detailView').hidden) {
+    // Si se llegó desde otra página del sitio, vuelve a ella; si no, a la portada
+    const fromSite = document.referrer && new URL(document.referrer).origin === location.origin;
+    if (fromSite && history.length > 1) history.back();
+    else location.href = 'index.html';
+    return;
+  }
+  closeProjectDetail();
+}
+
+function initBackButtons() {
+  document.querySelectorAll('.section-head').forEach((head) => {
+    const btn = head.querySelector('.btn-back');
+    if (!btn) return;
+    btn.addEventListener('click', goBack);
+    head.querySelector('.section-title').addEventListener('click', goBack);
+  });
+}
+
+
 /* ---------- 7. Inicio de la página ---------- */
 
 if (!redirectOldProjectLinks()) {
+  initMatrixTrail();
+  initBackButtons();
+  initSkillCharts();
   initModals();
   initLightbox3D();
   initSideMenu();
@@ -1795,17 +2292,6 @@ if (!redirectOldProjectLinks()) {
   initPaint();
   encryptAll();
   openLinkedProject();
-  trackHeaderHeight();
-}
-
-// Guarda la altura real del header en --header-height (la usa el alto máximo de la galería y el visor 3D)
-function trackHeaderHeight() {
-  const header = document.querySelector('header');
-  if (!header) return;
-  const update = () => document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`);
-  update();
-  window.addEventListener('resize', update);
-  if (document.fonts) document.fonts.ready.then(update); // la fuente cambia la altura al cargar
 }
 
 // proyectos.html?ver#proyecto-XX (íconos del teleprompter de index)

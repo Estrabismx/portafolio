@@ -55,6 +55,25 @@ const PROYECTOS = [
       "porcentaje": 60,
       "texto": "Complejidad media"
     },
+    "modelo3d": {
+      "material": {
+        "color": "#ae9944",
+        "metalness": 0.49,
+        "roughness": 0.59
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "archivo": "proyecto_01.glb",
+      "triangulos": 540
+    },
     "galeria": [
       {
         "archivo": "proyecto_01a.jpg",
@@ -104,9 +123,12 @@ const PROYECTOS = [
     "anio": "2025-2",
     "tamano": "34 KB",
     "encabezado": "Ejercicio Conceptual - Lampel",
-    "tipo": "Fabricación Manual",
+    "tipo": [
+      "Fabricación Manual",
+      "Fabricación Digital"
+    ],
     "objetivo": "Crear una luminaria que influya en el ambiente de un espacio",
-    "desafio": "Generar un sistema movil",
+    "desafio": "Generar un sistema movil coherente con el ambiente que se busque generar",
     "descripcion": [
       "Lampel nació como un ejercicio conceptual de diseño, donde se buscó generar una experiencia que influya en el ambiente. En este caso, se enfoca en el dinamismo de un espacio, generando una apertura a espacios más sociales al aumentar la intensidad lumínica subiendo su pantalla, pero también generando un espacio más íntimo al bajar su pantalla y disminuir la intensidad lumínica.",
       "Para lograr esta experiencia, se trabajó en un mecanismo que permita subir y bajar la pantalla. Esto se logró mediante un sistema de poleas y contrapesos, que permite que la pantalla se mueva suavemente y logre fijarse en la posición deseada.",
@@ -139,6 +161,26 @@ const PROYECTOS = [
     "dificultad": {
       "porcentaje": 67,
       "texto": "Complejidad media alta"
+    },
+    "modelo3d": {
+      "material": {
+        "color": "#b8a050",
+        "metalness": 0.5,
+        "roughness": 0.64
+      },
+      "escala": [
+        1.4,
+        1.4,
+        1.4
+      ],
+      "rotacion": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "archivo": "proyecto_02.glb",
+      "triangulos": 11866,
+      "detalle": "muy_alto"
     },
     "galeria": [
       {
@@ -181,7 +223,8 @@ const PROYECTOS = [
     "subtitulo": "Material pedagógico - <i>Mimus thenca</i>",
     "resumen": "Este material fue pensado para facilitar la labor pedagógica del PARQUEMET, quienes nos indicaron la necesidad de elementos que ayudaran a la labor educativa que tiene esta red de parques.",
     "etiquetas": [
-      "Fabricación Manual/Digital",
+      "Fabricación Manual",
+      "Fabricación Digital",
       "Colaboración",
       "Movil"
     ],
@@ -189,7 +232,10 @@ const PROYECTOS = [
     "anio": "2025-2",
     "tamano": "920 KB",
     "encabezado": "Elemento pedagógico - <i>Mimus thenca</i>",
-    "tipo": "Fabricación Manual y Digital",
+    "tipo": [
+      "Fabricación Digital",
+      "Fabricación Manual"
+    ],
     "objetivo": "Elemento Educativo para PARQUEMET",
     "desafio": "Representar de manera fiel a la <i>Mimus thenca</i>",
     "descripcion": [
@@ -224,6 +270,26 @@ const PROYECTOS = [
     "dificultad": {
       "porcentaje": 80,
       "texto": "Complejidad media alta"
+    },
+    "modelo3d": {
+      "detalle": "alto",
+      "material": {
+        "color": "#af8b38",
+        "metalness": 0.48,
+        "roughness": 0.59
+      },
+      "escala": [
+        1.2,
+        1.2,
+        1.2
+      ],
+      "rotacion": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "archivo": "proyecto_03.glb",
+      "triangulos": 4982
     },
     "galeria": [
       {
@@ -274,7 +340,10 @@ const PROYECTOS = [
     "anio": "2025-1",
     "tamano": "2.1 MB",
     "encabezado": "Foto recración - Élé chair",
-    "tipo": "Fabricación Manual",
+    "tipo": [
+      "Fabricación Manual",
+      "Fabricación Digital"
+    ],
     "objetivo": "Identificar formas y medidas en base a una fotografía",
     "desafio": "Realizar encajes de carpinteria",
     "descripcion": [
@@ -380,7 +449,10 @@ const PROYECTOS = [
     "anio": "2025-1",
     "tamano": "340 KB",
     "encabezado": "Réplica a Detalle - Dualshock II",
-    "tipo": "Modelado 3D",
+    "tipo": [
+      "Modelado 3D",
+      "Fabricación Digital"
+    ],
     "objetivo": "Recrear fielmente un objeto en Rhino 8",
     "desafio": "Complejidad de la geometría",
     "descripcion": [
@@ -520,6 +592,26 @@ const PROYECTOS = [
       "porcentaje": 60,
       "texto": "Complejidad media"
     },
+    "modelo3d": {
+      "detalle": "medio",
+      "material": {
+        "color": "#838a98",
+        "metalness": 0.5,
+        "roughness": 0.94
+      },
+      "escala": [
+        1.2,
+        1.2,
+        1.2
+      ],
+      "rotacion": [
+        0.0,
+        3.927,
+        0.0
+      ],
+      "archivo": "proyecto_06.glb",
+      "triangulos": 1996
+    },
     "galeria": [
       {
         "archivo": "proyecto_06a.jpg",
@@ -584,7 +676,10 @@ const PROYECTOS = [
     "anio": "2026-1",
     "tamano": "53 MB",
     "encabezado": "Fabricación Avanzada - Scooter modular ",
-    "tipo": "Fabricación Digital",
+    "tipo": [
+      "Fabricación Digital",
+      "Modelado 3D"
+    ],
     "objetivo": "Desarrollar modelos 3D de plegado en acero y llevarlos a fabricar",
     "desafio": "Lograr sintetizar formas complejas a la realidad material"
   }

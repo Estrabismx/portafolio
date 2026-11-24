@@ -40,10 +40,7 @@
   --layout-padding: 20px;
   --section-gap: 50px;
   --border-width: 4px;
-  --detail-height: 420px;
-  /* Alto de la galería y el visor 3D (y máximo del anillo): 85% de la pantalla disponible
-     (pantalla − header fijo; --header-height lo pone main.js) */
-  --media-max-height: calc((100vh - var(--header-height, 110px)) * 0.85);
+  --detail-height: 420px; /* alto del visor del proyecto en celular */
 }
 
 html {
@@ -74,6 +71,17 @@ a {
 :focus-visible {
   outline: 2px dashed var(--cream);
   outline-offset: 2px;
+}
+
+
+/* Fondo "matrix trail" (lo crea main.js): fijo detrás del marco central */
+.matrix-trail {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
 }
 
 
@@ -115,8 +123,7 @@ header.topbar {
   min-height: 60px;
   flex-shrink: 0;
   background: var(--deep-red);
-  border: none;
-  border-right: 2px solid var(--deep-red);
+  border: 2px solid var(--amber); /* botón: borde #F29F05 */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -202,7 +209,6 @@ header.topbar {
   top: 0;
   left: 100%;
   margin-left: var(--border-width);
-  border-right: none;
 }
 
 .side-menu-scroll {
@@ -290,7 +296,7 @@ header.topbar {
   align-items: center;
   justify-content: center;
   font-size: calc(10px * var(--text-scale));
-  border: 2px solid var(--deep-red);
+  border: 2px solid var(--amber);
   text-decoration: none;
   font-weight: bold;
 }
@@ -301,7 +307,7 @@ header.topbar {
 }
 
 .badge:active {
-  border: 2px inset var(--deep-red);
+  border: 2px inset var(--amber);
 }
 
 .content-area {
@@ -332,7 +338,7 @@ section:last-child {
   font-weight: normal;
   color: var(--cream);
   background: var(--deep-red);
-  border: 2px solid var(--amber);
+  border: 2px solid var(--deep-red); /* no es un botón: sin borde amarillo */
   margin-top: 0;
   display: inline-block;
   padding: 4px 18px;
@@ -551,7 +557,8 @@ section:last-child {
 
 
 /* ---------- 7. Botones ---------- */
-/* Botones: #8C0B3B; con el cursor encima, #F29F05 (texto oscuro para que se lea) */
+/* Botones: #8C0B3B con borde #F29F05 (solo lo clickeable lleva borde amarillo);
+   con el cursor encima, #F29F05 (texto oscuro para que se lea) */
 .btn-retro {
   background: var(--deep-red);
   color: var(--cream);
@@ -561,7 +568,7 @@ section:last-child {
   text-align: center;
   text-decoration: none;
   padding: 8px 15px;
-  border: 2px solid var(--deep-red);
+  border: 2px solid var(--amber);
   display: inline-block;
   cursor: pointer;
 }
@@ -640,25 +647,470 @@ section:last-child {
   background: repeating-linear-gradient(90deg, var(--scarlet), var(--scarlet) 8px, var(--deep-red) 8px, var(--deep-red) 10px);
 }
 
-.doc-signature {
-  text-align: right;
-  border-top: 2px dashed var(--deep-red);
-  padding-top: 15px;
-}
-
-.doc-signature p {
-  margin: 0 0 5px;
-}
-
-.doc-signature .doc-date {
-  font-size: calc(12px * var(--text-scale));
-  opacity: 0.8;
-}
-
-.doc-signature .doc-sign {
+/* Enlace con forma de botón (p. ej. "Ver más +" en sobre_mi) */
+.btn-link {
+  display: inline-block;
+  background: var(--deep-red);
+  color: var(--cream);
+  border: 2px solid var(--amber);
+  padding: 0 8px;
   font-weight: bold;
-  color: var(--scarlet);
-  font-size: calc(16px * var(--text-scale));
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 1.5;
+}
+
+.btn-link:hover,
+.btn-link:focus-visible {
+  background: var(--amber);
+  color: var(--black);
+}
+
+/* Fila superior: "< // sobre_mi" y, al lado, la franja con el nombre */
+.about-top {
+  display: flex;
+  align-items: center; /* "< // sobre_mi" conserva su alto, igual que en las otras pestañas */
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.about-top .section-head {
+  margin-bottom: 0;
+}
+
+
+.about-top .doc-header {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px; /* nombre arriba, frase debajo */
+}
+
+.about-top .doc-name {
+  font-size: calc(32px * var(--text-scale));
+}
+
+.about-top .doc-tagline {
+  margin: 0;
+}
+
+/* Texto (70%) a la izquierda y habilidades (30%) a la derecha */
+.about-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
+  gap: 40px;
+  align-items: start;
+}
+
+/* Viñetas "técnicas | software": eligen qué grupo de habilidades se ve.
+   Para que se entienda que es una elección: un texto que lo pide, una marca
+   [x] / [ ] en cada opción y la opción no elegida apagada (se enciende al pasar el cursor) */
+.stats-label {
+  margin: 0 0 6px;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--amber);
+}
+
+.stats-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.stats-tab {
+  flex: 1;
+  background: var(--black);
+  color: var(--cream);
+  font-family: var(--font-text);
+  font-size: calc(13px * var(--text-scale));
+  font-weight: bold;
+  text-align: left;
+  padding: 6px 10px;
+  border: 2px dashed var(--amber-deep);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.stats-tab::before {
+  content: '[ ] ';
+}
+
+.stats-tab[aria-pressed="true"] {
+  background: var(--amber);
+  color: var(--black);
+  border-style: solid;
+  border-color: var(--amber);
+  cursor: default;
+}
+
+.stats-tab[aria-pressed="true"]::before {
+  content: '[x] ';
+}
+
+.stats-tab[aria-pressed="false"]:hover,
+.stats-tab[aria-pressed="false"]:focus-visible {
+  background: var(--deep-red);
+  border-style: solid;
+}
+
+/* Selector de la forma del gráfico: barras | araña | anillos */
+.stats-toggle {
+  display: flex;
+  margin-bottom: 16px;
+}
+
+.stats-toggle-btn {
+  flex: 1;
+  background: var(--black);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: calc(19px * var(--text-scale));
+  padding: 2px 4px;
+  border: 2px solid var(--deep-red);
+  cursor: pointer;
+}
+
+.stats-toggle-btn + .stats-toggle-btn {
+  border-left: none;
+}
+
+.stats-toggle-btn[aria-pressed="true"] {
+  background: var(--deep-red);
+}
+
+.stats-toggle-btn:hover,
+.stats-toggle-btn:focus-visible {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--black);
+}
+
+/* Las viñetas ya nombran el grupo: el título de cada grupo no se repite */
+.about-stats .skill-group > .doc-heading {
+  display: none;
+}
+
+/* Solo se ve el grupo elegido en las viñetas */
+.about-stats[data-group="tecnicas"] .skill-group[data-group="software"],
+.about-stats[data-group="software"] .skill-group[data-group="tecnicas"] {
+  display: none !important;
+}
+
+/* Cada vista muestra solo su gráfico. Al aparecer (display: none -> visible)
+   las animaciones de abajo vuelven a correr solas */
+.about-stats:not([data-view="barras"]) .skill,
+.about-stats:not([data-view="radar"]) .radar,
+.about-stats:not([data-view="anillos"]) .rings {
+  display: none;
+}
+
+/* Animación de las barras: crecen desde la izquierda, una tras otra */
+.about-stats .skill-fill {
+  transform-origin: left center;
+  animation: bar-grow 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@keyframes bar-grow {
+  from { transform: scaleX(0); }
+}
+
+/* Anillos: un medidor circular por habilidad */
+.rings {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 14px 10px;
+}
+
+.ring {
+  margin: 0;
+  text-align: center;
+}
+
+.ring svg {
+  display: block;
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 4px;
+}
+
+.ring-track {
+  fill: none;
+  stroke: var(--black);
+  stroke-width: 8;
+}
+
+.ring-fg {
+  fill: none;
+  stroke: var(--scarlet);
+  stroke-width: 8;
+  animation: ring-fill 0.9s ease-out both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+@keyframes ring-fill {
+  from { stroke-dashoffset: var(--len); }
+}
+
+.ring-value {
+  fill: var(--cream);
+  font-family: var(--font-display);
+  font-size: 20px;
+}
+
+.ring figcaption {
+  font-size: calc(12px * var(--text-scale));
+  line-height: 1.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-stats .skill-fill,
+  .ring-fg {
+    animation: none;
+  }
+}
+
+/* Gráfico araña (lo dibuja main.js a partir de las barras) */
+.radar {
+  position: relative;
+}
+
+.radar svg {
+  display: block;
+  overflow: visible;
+}
+
+.radar-grid {
+  fill: none;
+  stroke: var(--deep-red);
+  stroke-width: 1;
+}
+
+.radar-axis {
+  stroke: var(--deep-red);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+
+.radar-area {
+  fill: var(--scarlet);
+  fill-opacity: 0.25;
+  stroke: var(--scarlet);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  transform-origin: var(--cx) var(--cy);
+  animation: radar-grow 0.5s ease-out;
+}
+
+@keyframes radar-grow {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+.radar-dot {
+  fill: var(--scarlet);
+  stroke: var(--black);
+  stroke-width: 2;
+}
+
+.radar-point:hover .radar-dot,
+.radar-point:focus-visible .radar-dot {
+  fill: var(--amber);
+}
+
+.radar-point:focus-visible {
+  outline: none;
+}
+
+.radar-hit {
+  fill: transparent;
+}
+
+.radar-label {
+  fill: var(--cream);
+  font-family: var(--font-text);
+  font-size: calc(12px * var(--text-scale));
+}
+
+.radar-tick {
+  fill: var(--cream);
+  opacity: 0.6;
+  font-family: var(--font-text);
+  font-size: 10px;
+}
+
+.radar-tip {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 12px));
+  padding: 3px 8px;
+  background: var(--black);
+  border: 1px solid var(--amber);
+  color: var(--cream);
+  font-size: calc(12px * var(--text-scale));
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radar-area { animation: none; }
+}
+
+/* Escritorio: sobre_mi cabe en la pantalla sin desplazar la página.
+   El marco toma exactamente el 90% del alto y las dos columnas se reparten
+   lo que queda; si una pantalla muy baja no alcanza, la columna se desplaza por dentro. */
+@media (min-width: 901px) {
+  body[data-page="sobre-mi"] .wrapper {
+    height: 90vh;
+    height: 90dvh;
+  }
+  body[data-page="sobre-mi"] .main-layout,
+  body[data-page="sobre-mi"] .content-area,
+  body[data-page="sobre-mi"] #about {
+    min-height: 0;
+  }
+  body[data-page="sobre-mi"] #about {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  body[data-page="sobre-mi"] .about-layout {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+  }
+  body[data-page="sobre-mi"] .about-text,
+  body[data-page="sobre-mi"] .about-stats {
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 6px;
+    scrollbar-width: thin; /* solo aparece en pantallas muy bajas */
+    scrollbar-color: var(--deep-red) var(--black);
+  }
+  body[data-page="sobre-mi"] .about-text {
+    display: flex;
+    flex-direction: column;
+  }
+  /* Bloques más compactos para que todo quepa */
+  body[data-page="sobre-mi"] .doc-block {
+    margin-bottom: 18px;
+  }
+  body[data-page="sobre-mi"] .doc-heading {
+    font-size: calc(24px * var(--text-scale));
+    margin-bottom: 10px;
+  }
+  body[data-page="sobre-mi"] .doc-block p {
+    font-size: calc(14px * var(--text-scale));
+    line-height: 1.55;
+    margin-bottom: 8px;
+  }
+  body[data-page="sobre-mi"] .skill {
+    margin-bottom: 8px;
+  }
+  body[data-page="sobre-mi"] .skill-name {
+    margin-bottom: 3px;
+  }
+  body[data-page="sobre-mi"] .skill-bar {
+    height: 12px;
+  }
+  /* La columna de habilidades no crece por el gráfico: él se adapta a ella */
+  body[data-page="sobre-mi"] .about-stats[data-view="radar"] {
+    overflow: hidden;
+  }
+  /* Vista araña: cada gráfico se reparte el alto de la columna */
+  body[data-page="sobre-mi"] .about-stats {
+    display: flex;
+    flex-direction: column;
+  }
+  body[data-page="sobre-mi"] .about-stats[data-view="radar"] .skill-group {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+  /* El gráfico toma el alto que le queda al grupo (main.js lo dibuja a ese tamaño) */
+  body[data-page="sobre-mi"] .about-stats[data-view="radar"] .radar {
+    flex: 1;
+    min-height: 0;
+  }
+  body[data-page="sobre-mi"] .about-stats[data-view="radar"] .radar svg {
+    position: absolute;
+    inset: 0;
+  }
+}
+
+/* Escritorio con poca altura (p. ej. notebooks de 768px): todo más compacto
+   y "educación" y "trayectoria" lado a lado, para que siga sin haber scroll */
+@media (min-width: 901px) and (max-height: 900px) {
+  body[data-page="sobre-mi"] .wrapper {
+    height: 96vh;
+    height: 96dvh;
+    margin: 2vh 0;
+    margin: 2dvh 0;
+  }
+  body[data-page="sobre-mi"] .main-layout {
+    padding: 14px var(--layout-padding);
+  }
+  body[data-page="sobre-mi"] footer {
+    padding: 6px;
+  }
+  body[data-page="sobre-mi"] .about-top {
+    margin-bottom: 10px;
+  }
+  body[data-page="sobre-mi"] .about-top .doc-name {
+    font-size: calc(26px * var(--text-scale));
+  }
+  body[data-page="sobre-mi"] .about-top .doc-header {
+    padding: 4px 16px;
+  }
+  body[data-page="sobre-mi"] .doc-heading {
+    font-size: calc(21px * var(--text-scale));
+    margin-bottom: 6px;
+  }
+  body[data-page="sobre-mi"] .doc-block {
+    margin-bottom: 8px;
+  }
+  body[data-page="sobre-mi"] .doc-block p {
+    font-size: calc(13px * var(--text-scale));
+    line-height: 1.4;
+    margin-bottom: 5px;
+  }
+  body[data-page="sobre-mi"] .about-text {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-content: start;
+    column-gap: 24px;
+  }
+  body[data-page="sobre-mi"] .about-text > .doc-block:first-child {
+    grid-column: 1 / -1;
+  }
+  body[data-page="sobre-mi"] .stats-toggle {
+    margin-bottom: 10px;
+  }
+  /* Barras: nombre a la izquierda y barra a la derecha, en una sola línea */
+  body[data-page="sobre-mi"] .skill {
+    display: grid;
+    grid-template-columns: 13em minmax(60px, 1fr); /* mismo ancho de nombre en todas: las barras quedan alineadas */
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 7px;
+  }
+  body[data-page="sobre-mi"] .skill-name {
+    font-size: calc(12px * var(--text-scale));
+    margin-bottom: 0;
+  }
+  body[data-page="sobre-mi"] .skill-bar {
+    height: 10px;
+  }
+  body[data-page="sobre-mi"] .about-stats .doc-note {
+    margin-bottom: 6px;
+  }
 }
 
 
@@ -740,8 +1192,57 @@ body[data-page="proyectos"] #ringView {
   min-height: 0;
 }
 
-body[data-page="proyectos"] #projects > .section-title {
+body[data-page="proyectos"] #projects > .section-head {
   align-self: flex-start; /* la casilla "// proyectos" solo abarca el texto */
+}
+
+/* Título con el botón "volver" delante (todas las pestañas) */
+.section-head {
+  display: flex;
+  width: fit-content;
+  align-items: stretch;
+  gap: 0;
+  margin-bottom: calc(var(--font-title) * 0.83); /* el mismo aire que tenía el título solo */
+}
+
+.section-head .section-title {
+  margin: 0;
+}
+
+/* Botón "volver" fusionado con el título: una sola casilla "< // título"
+   que vuelve atrás y se enciende en ámbar al pasar el cursor (ver goBack en main.js) */
+.btn-back {
+  font-family: var(--font-display);
+  font-size: var(--font-title);
+  font-weight: normal;
+  line-height: 1.2;
+  padding: 4px 4px 4px 18px;
+  border: 2px solid var(--deep-red);
+  border-right: none;
+}
+
+.section-head .btn-back + .section-title {
+  padding-left: 10px;
+  cursor: pointer;
+}
+
+/* El recuadro de foco rodea toda la casilla "< // proyectos", no solo el "<" */
+.btn-back:focus-visible {
+  outline: none;
+}
+
+.section-head:has(.btn-back:focus-visible) {
+  outline: 2px dashed var(--cream);
+  outline-offset: 2px;
+}
+
+.section-head:hover .btn-back,
+.section-head:hover .btn-back + .section-title,
+.btn-back:focus-visible,
+.btn-back:focus-visible + .section-title {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--black);
 }
 
 /* Menos aire en las instrucciones para que todo quepa también en pantallas bajas (768px) */
@@ -749,26 +1250,40 @@ body[data-page="proyectos"] #ringView > .section-desc {
   margin: 0 0 15px;
 }
 
-/* Franja con el proyecto del centro: "// proyecto" + indicador, nombre y descripción */
+/* Franja con el proyecto del centro: "// proyecto" + indicador y nombre en grande.
+   La descripción está plegada y se despliega hacia abajo al pasar el cursor
+   (o al enfocar la barra con el teclado). */
 .ring-info {
   display: grid;
-  grid-template-columns: minmax(200px, 1fr) minmax(0, 2fr);
-  grid-template-areas:
-    "head desc"
-    "name desc";
-  gap: 4px 30px;
-  align-items: center;
+  grid-template-rows: auto 0fr;
+  transition: grid-template-rows 0.25s;
   margin-bottom: 15px;
-  padding: 12px 18px;
+  padding: 10px 18px;
   background: var(--black);
   border: 2px solid var(--deep-red);
 }
 
+.ring-info:hover,
+.ring-info:focus-visible {
+  grid-template-rows: auto 1fr;
+}
+
 .ring-info-head {
-  grid-area: head;
   display: flex;
-  align-items: baseline;
-  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+
+.ring-info-more {
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring-info {
+    transition: none;
+  }
 }
 
 .ring-info-label {
@@ -779,29 +1294,29 @@ body[data-page="proyectos"] #ringView > .section-desc {
   color: var(--scarlet);
 }
 
+/* Indicador (n° de proyecto) y nombre: lo más grande de la barra */
 .ring-info-counter {
+  font-family: var(--font-display);
   color: var(--amber);
-  font-size: calc(12px * var(--text-scale));
-  font-weight: bold;
-  padding: 1px 8px;
-  border: 1px solid var(--deep-red);
+  font-size: calc(30px * var(--text-scale));
+  line-height: 1;
+  padding: 2px 10px;
+  border: 2px solid var(--deep-red);
 }
 
 .ring-info-name {
-  grid-area: name;
   margin: 0;
   font-family: var(--font-display);
-  font-size: calc(32px * var(--text-scale));
-  line-height: 1.1;
+  font-size: calc(46px * var(--text-scale));
+  line-height: 1;
   color: var(--cream);
   overflow-wrap: anywhere;
 }
 
 .ring-info-desc {
-  grid-area: desc;
-  margin: 0;
-  padding-left: 30px;
-  border-left: 2px dashed var(--deep-red);
+  margin: 10px 0 2px;
+  padding-top: 10px;
+  border-top: 2px dashed var(--deep-red);
   font-size: calc(13px * var(--text-scale));
   line-height: 1.6;
 }
@@ -813,7 +1328,9 @@ body[data-page="proyectos"] #ringView > .section-desc {
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-  grid-template-rows: minmax(260px, 1fr); /* el alto lo pone el marco, no las fotos */
+  /* el alto lo pone el marco, no las fotos; mínimo bajo para que al desplegar
+     la descripción el anillo se achique en vez de generar scroll */
+  grid-template-rows: minmax(180px, 1fr);
   gap: 20px;
 }
 
@@ -912,7 +1429,7 @@ body[data-page="proyectos"] #ringView > .section-desc {
   padding: 0;
   background: none;
   border: none;
-  color: var(--deep-red); /* botón: #8C0B3B, con el cursor encima #F29F05 */
+  color: var(--scarlet); /* rojo claro #F20530, con el cursor encima #F29F05 */
   cursor: pointer;
   transition: color 0.15s, transform 0.15s;
 }
@@ -944,6 +1461,37 @@ body[data-page="proyectos"] #ringView > .section-desc {
 
 .ring-arrow:active {
   transform: none;
+}
+
+/* "SELECCIONAR PROYECTO": abajo al centro del anillo, en rojo claro como las flechas */
+.ring-select {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  z-index: 2;
+  transform: translateX(-50%);
+  max-width: calc(100% - 20px);
+  padding: 8px 18px;
+  background: var(--scarlet);
+  color: var(--cream);
+  font-family: var(--font-text);
+  font-size: calc(14px * var(--text-scale));
+  font-weight: bold;
+  white-space: nowrap;
+  border: 2px solid var(--amber);
+  box-shadow: 3px 3px 0px var(--midnight);
+  cursor: pointer;
+}
+
+.ring-select:hover,
+.ring-select:focus-visible {
+  background: var(--amber);
+  color: var(--black);
+}
+
+.ring-select:active {
+  box-shadow: none;
+  transform: translate(calc(-50% + 3px), 3px);
 }
 
 /* Ficha del proyecto que sigue al cursor sobre la lata del centro
@@ -1059,12 +1607,6 @@ body[data-page="proyectos"] #ringView > .section-desc {
   border-bottom: 2px dashed var(--deep-red);
 }
 
-.detail-toolbar .btn-retro {
-  font-size: calc(12px * var(--text-scale));
-  padding: 2px 9px;
-  flex-shrink: 0;
-}
-
 .detail-toolbar .project-card-title {
   font-size: calc(22px * var(--text-scale));
   color: var(--scarlet);
@@ -1074,32 +1616,44 @@ body[data-page="proyectos"] #ringView > .section-desc {
   text-overflow: ellipsis;
 }
 
-.detail-media {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-/* Galería y visor 3D: ocupan el 85% de la pantalla disponible (pantalla − header fijo).
-   Adentro, la imagen grande y el modelo 3D toman el espacio que dejan los textos y miniaturas. */
+/* Paneles con borde (visor del proyecto, información y fotos junto al anillo) */
 .detail-panel {
   border: var(--border-width) solid var(--deep-red);
   background: var(--black);
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
   box-sizing: border-box; /* el alto incluye el borde */
-  height: var(--media-max-height);
 }
 
-/* flex "1 1 auto" + height: parte de --detail-height (no del tamaño de la imagen),
-   crece para igualar al panel vecino y se encoge si no cabe en el 70% */
-.detail-stage {
-  position: relative;
-  flex: 1 1 auto;
+/* Vista del proyecto sin scroll: visor a la izquierda, información a la derecha;
+   juntos toman todo el alto que queda en el marco (igual que el anillo) */
+body[data-page="proyectos"] #detailView {
+  flex: 1;
   min-height: 0;
-  height: var(--detail-height);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: minmax(300px, 1fr);
+  gap: 20px;
+}
+
+/* El visor solo ocupa el alto que necesita su pantalla 16:9 */
+body[data-page="proyectos"] .detail-viewer {
+  align-self: start;
+}
+
+/* Pantalla del visor en proporción 16:9: el modelo 3D siempre ocupa el espacio; la foto se pone encima */
+.detail-screen {
+  position: relative;
+  flex: none;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.detail-stage {
+  position: absolute;
+  inset: 0;
   cursor: grab;
   touch-action: none;
 }
@@ -1111,11 +1665,17 @@ body[data-page="proyectos"] #ringView > .section-desc {
 .detail-main {
   flex: 1 1 auto;
   min-height: 0;
-  height: var(--detail-height);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+.detail-screen .detail-main {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--black);
 }
 
 /* Imagen o video ocupan todo el panel: si son más chicos que el espacio se agrandan,
@@ -1126,6 +1686,16 @@ body[data-page="proyectos"] #ringView > .section-desc {
   height: 100%;
   object-fit: contain;
   display: block;
+}
+
+/* Fuera de la foto (pero dentro del panel) el clic va a la anterior / siguiente */
+.detail-main.nav-prev,
+.detail-main.nav-prev * {
+  cursor: w-resize;
+}
+.detail-main.nav-next,
+.detail-main.nav-next * {
+  cursor: e-resize;
 }
 
 .detail-zoom {
@@ -1203,8 +1773,50 @@ body[data-page="proyectos"] #ringView > .section-desc {
   border-color: var(--amber);
 }
 
+/* Primera miniatura: vuelve al modelo 3D */
+.detail-thumb-3d {
+  font-family: var(--font-display);
+  font-size: calc(24px * var(--text-scale));
+  color: var(--scarlet);
+}
+
+/* Columna de información: encabezado fijo, pestañas y la sección activa
+   (si una sección es muy larga, se desplaza solo ella, no la página) */
+.detail-info {
+  padding: 18px 20px;
+}
+
 .detail-header {
-  margin-bottom: 25px;
+  flex-shrink: 0;
+  margin-bottom: 15px;
+}
+
+.detail-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex-shrink: 0;
+  padding-bottom: 12px;
+  margin-bottom: 15px;
+  border-bottom: 2px dashed var(--deep-red);
+}
+
+.detail-tab {
+  background: var(--deep-red);
+  color: var(--cream);
+  font-family: var(--font-text);
+  font-size: calc(12px * var(--text-scale));
+  font-weight: bold;
+  padding: 5px 10px;
+  border: 2px solid var(--amber);
+  cursor: pointer;
+}
+
+.detail-tab:hover,
+.detail-tab:focus-visible,
+.detail-tab.active {
+  background: var(--amber);
+  color: var(--black);
 }
 
 .detail-heading {
@@ -1235,14 +1847,11 @@ body[data-page="proyectos"] #ringView > .section-desc {
   background: var(--black);
 }
 
-.detail-columns {
-  display: grid;
-  grid-template-columns: 3fr 2fr;
-  gap: 30px;
-}
-
 .detail-block {
-  margin-bottom: 25px;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 6px;
 }
 
 .detail-text p {
@@ -1255,15 +1864,6 @@ body[data-page="proyectos"] #ringView > .section-desc {
   font-size: calc(12px * var(--text-scale));
   margin: 6px 0 0;
   opacity: 0.85;
-}
-
-.palette-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 6px;
-  font-size: calc(13px * var(--text-scale));
 }
 
 /* La ventana de imagen ampliada se ajusta al tamaño de la imagen (máx. 96% de la pantalla).
@@ -1354,13 +1954,72 @@ body[data-page="proyectos"] #ringView > .section-desc {
   .card3d-img, .card3d-caption { transition: none; }
 }
 
-.swatch {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border: 1px solid var(--deep-red);
-  vertical-align: -1px;
-  margin-right: 6px;
+/* Ficha técnica: los datos arriba y los colores abajo a la derecha del panel */
+.ficha-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-height: 100%;
+}
+
+/* Colores en la ficha técnica: cuadrados grandes; el hex aparece encima
+   al pasar el cursor y el clic lo copia ("copiado" por un momento) */
+.swatch-row {
+  margin-top: auto;   /* empuja los colores al fondo del panel */
+  align-self: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 26px; /* espacio para la etiqueta del hex de la primera fila */
+}
+
+.swatch-copy {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  background: var(--swatch);
+  border: 2px solid var(--deep-red);
+  cursor: copy;
+}
+
+.swatch-copy:hover,
+.swatch-copy:focus-visible {
+  border-color: var(--amber);
+  outline: none;
+}
+
+.swatch-copy::after {
+  content: attr(data-hex);
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 6px;
+  background: var(--black);
+  border: 1px solid var(--amber);
+  color: var(--cream);
+  font-family: var(--font-text);
+  font-size: calc(11px * var(--text-scale));
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 2;
+}
+
+.swatch-copy:hover::after,
+.swatch-copy:focus-visible::after,
+.swatch-copy[data-copied]::after {
+  opacity: 1;
+}
+
+.swatch-copy[data-copied]::after {
+  content: attr(data-copied);
+  text-transform: none;
+  color: var(--black);
+  background: var(--amber);
 }
 
 
@@ -1430,7 +2089,7 @@ body[data-page="proyectos"] #ringView > .section-desc {
   height: 30px;
   padding: 0;
   background: var(--cream); /* fondo claro: los íconos tienen trazos negros */
-  border: 2px solid var(--deep-red);
+  border: 2px solid var(--amber);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1556,7 +2215,7 @@ body[data-page="proyectos"] #ringView > .section-desc {
 .modal-close {
   background: var(--deep-red);
   color: var(--cream);
-  border: 2px solid var(--deep-red);
+  border: 2px solid var(--amber);
   font-family: var(--font-text);
   font-weight: bold;
   font-size: calc(16px * var(--text-scale));
@@ -1628,6 +2287,17 @@ footer {
 
 /* ---------- 13. Celular ---------- */
 @media (max-width: 900px) {
+  /* Sobre mí en celular: texto arriba, habilidades abajo */
+  .about-layout {
+    grid-template-columns: 1fr;
+  }
+  .about-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .about-top .doc-header {
+    align-self: stretch;
+  }
   header.topbar {
     position: static;
     padding-right: 15px;
@@ -1705,21 +2375,20 @@ footer {
     scroll-margin-top: 20px;
   }
   /* Proyectos en celular: info, anillo y fotos uno debajo del otro (la página se desplaza) */
+  /* En celular no hay "pasar el cursor": la descripción se ve siempre */
   .ring-info {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "head"
-      "name"
-      "desc";
-    gap: 6px;
+    grid-template-rows: auto 1fr;
+  }
+  .ring-info-counter {
+    font-size: calc(24px * var(--text-scale));
   }
   .ring-info-name {
-    font-size: calc(26px * var(--text-scale));
+    flex-basis: 100%;
+    font-size: calc(34px * var(--text-scale));
   }
-  .ring-info-desc {
-    padding: 8px 0 0;
-    border-left: none;
-    border-top: 2px dashed var(--deep-red);
+  .ring-select {
+    font-size: calc(12px * var(--text-scale));
+    padding: 6px 12px;
   }
   .ring-layout {
     grid-template-columns: 1fr;
@@ -1731,16 +2400,16 @@ footer {
   .detail-panel.ring-photos {
     height: 360px;
   }
-  .detail-media,
-  .detail-columns {
+  /* Vista del proyecto en celular: visor arriba, información abajo (la página se desplaza) */
+  body[data-page="proyectos"] #detailView {
     grid-template-columns: 1fr;
+    grid-template-rows: none;
   }
-  .detail-panel {
-    height: auto; /* en celular los paneles van uno debajo del otro, cada uno a 300px */
+  .detail-screen {
+    max-height: var(--detail-height);
   }
-  .detail-stage,
-  .detail-main {
-    min-height: min(var(--detail-height), 300px);
-    height: min(var(--detail-height), 300px);
+  .detail-block {
+    flex: none;
+    overflow: visible;
   }
 }

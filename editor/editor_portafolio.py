@@ -566,7 +566,7 @@ class Editor:
 
         self.campo(f, 0, 'Título corto *', 'titulo', 'Nombre del proyecto en el anillo y en su ficha')
         self.campo(f, 1, 'Encabezado', 'encabezado', 'Título grande de la vista del proyecto')
-        self.campo(f, 2, 'Tipo', 'tipo', 'Categoría: aparece en el menú lateral (# tipo)')
+        self.campo(f, 2, 'Tipos', 'tipo', 'Una o más categorías separadas por comas (menú lateral: # tipo)')
         self.campo(f, 3, 'Objetivo', 'objetivo')
         self.campo(f, 4, 'Desafío', 'desafio')
 
@@ -1271,8 +1271,9 @@ class Editor:
         try:
             for clave, var in self.vars.items():
                 valor = (p or {}).get(clave, '')
-                if clave == 'etiquetas':
-                    valor = ', '.join(valor or [])
+                if clave in ('etiquetas', 'tipo'):
+                    # "tipo" puede venir como texto (un solo tipo) o como lista
+                    valor = ', '.join([valor] if isinstance(valor, str) else (valor or []))
                 var.set(valor or '')
             for caja, valor in ((self.texto_descripcion, '\n\n'.join((p or {}).get('descripcion', []))),
                                 (self.texto_resumen, (p or {}).get('resumen', ''))):
@@ -1305,8 +1306,10 @@ class Editor:
         if self.cargando or not self.p():
             return
         valor = self.vars[clave].get()
-        if clave == 'etiquetas':
+        if clave in ('etiquetas', 'tipo'):
             valor = [t.strip() for t in valor.split(',') if t.strip()]
+            if clave == 'tipo' and len(valor) < 2:
+                valor = valor[0] if valor else ''   # un solo tipo se guarda como texto
         self.p()[clave] = valor
         self.marcar_cambio()
         if clave == 'titulo':
