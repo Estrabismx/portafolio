@@ -948,12 +948,28 @@ function applyLight(viewer, preset, root, t) {
   }
 }
 
-// Gira un objeto según el arrastre del mouse: horizontal = eje Y, vertical = eje X (360° libre)
-function rotateByDrag(object, dx, dy) {
+// Ejes del canvas: X = horizontal de la pantalla, Y = vertical de la pantalla
+// (arreglos simples: THREE puede no estar cargado cuando se lee este archivo)
+const CANVAS_X = [1, 0, 0];
+const CANVAS_Y = [0, 1, 0];
+
+// Gira un objeto en un eje del canvas (visto desde la cámara), no en sus ejes propios:
+// así da igual la "rotacion" del proyecto o cuánto haya girado el anillo
+function rotateOnCanvasAxis(object, camera, canvasAxis, angle) {
+  const parentQ = new THREE.Quaternion();
+  object.parent.getWorldQuaternion(parentQ);
+  const axis = new THREE.Vector3(...canvasAxis)
+    .applyQuaternion(camera.quaternion)   // eje de pantalla -> mundo
+    .applyQuaternion(parentQ.invert())    // mundo -> espacio del padre del objeto
+    .normalize();
+  object.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(axis, angle));
+}
+
+// Gira un objeto según el arrastre del mouse: horizontal = eje Y del canvas, vertical = eje X del canvas (360° libre)
+function rotateByDrag(object, camera, dx, dy) {
   const k = RING_SETTINGS.modelSensitivity;
-  const qy = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), dx * k);
-  const qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), dy * k);
-  object.quaternion.premultiply(qy).premultiply(qx);
+  rotateOnCanvasAxis(object, camera, CANVAS_Y, dx * k);
+  rotateOnCanvasAxis(object, camera, CANVAS_X, dy * k);
 }
 
 // Punto del puntero en coordenadas de la escena (-1 a 1)
@@ -1351,7 +1367,7 @@ function initDetailViewer() {
   });
   stage.addEventListener('pointermove', (e) => {
     if (!dragging || !detailViewer.can) return;
-    rotateByDrag(detailViewer.can.userData.spinner, e.clientX - last.x, e.clientY - last.y);
+    rotateByDrag(detailViewer.can.userData.spinner, camera, e.clientX - last.x, e.clientY - last.y);
     last = { x: e.clientX, y: e.clientY };
   });
   const release = () => { dragging = false; stage.classList.remove('dragging'); };
@@ -1591,7 +1607,7 @@ function initProjectRing() {
     if (!drag.moved) return;
 
     if (drag.mode === 'model') {
-      rotateByDrag(cans[currentIndex].userData.spinner, dx, dy);
+      rotateByDrag(cans[currentIndex].userData.spinner, camera, dx, dy);
       lastModelTouch = performance.now();
     } else {
       const delta = dx * RING_SETTINGS.dragSensitivity;
@@ -1667,7 +1683,8 @@ function initProjectRing() {
       const spinner = can.userData.spinner;
       if (i === front) {
         if (autoSpin && !(drag && drag.mode === 'model')) {
-          spinner.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0.012));
+          // Giro horario en el eje X del canvas (visto desde la derecha), independiente de la pose del modelo
+          rotateOnCanvasAxis(spinner, camera, CANVAS_Y, -0.012);
         }
       } else if (spinner.quaternion.angleTo(POSE_ORIGEN) > 0.001) {
         // Al dejar el centro, el modelo vuelve suavemente a su pose de origen
@@ -2055,7 +2072,8 @@ function initMatrixTrail() {
    La vista elegida se recuerda entre visitas. */
 // El gráfico se dibuja en píxeles reales según el espacio disponible, así los nombres
 // mantienen su tamaño aunque el gráfico se achique; se redibuja al cambiar el tamaño.
-const RADAR = { labelGap: 8, labelW: 92, labelH: 28, minRadius: 40, rings: [25, 50, 75, 100] };
+// (el ancho y alto de las etiquetas se miden en drawRadar con la letra de las barras)
+const RADAR = { labelGap: 8, minRadius: 40, rings: [25, 50, 75, 100] };
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const RADAR_FILLS_COLUMN = window.matchMedia('(min-width: 901px)'); // igual que en style.css
 
@@ -2067,24 +2085,46 @@ function svgEl(tag, attrs = {}) {
 
 const skillShortName = (name) => name.replace(/^#\s*/, '');
 
-// Nombre para el gráfico: sin "# " y partido en líneas de ~12 caracteres
-function radarLabelLines(name) {
+// Mide texto con la misma letra que el nombre en la vista de barras
+const measureCtx = document.createElement('canvas').getContext('2d');
+function skillFont(group) {
+  const ref = group.querySelector('.skill-name');
+  const cs = getComputedStyle(ref || group);
+  return { css: `${cs.fontSize} ${cs.fontFamily}`, size: parseFloat(cs.fontSize) || 13 };
+}
+function textWidth(text, font) {
+  measureCtx.font = font;
+  return measureCtx.measureText(text).width;
+}
+
+// Nombre para el gráfico: el mismo que en las barras ("# nombre"), partido en líneas
+// que no pasen de maxW píxeles ("#" siempre va pegado a la primera palabra)
+function radarLabelLines(name, font, maxW) {
+  const words = skillShortName(name).split(/\s+/);
+  words[0] = `# ${words[0]}`;
   const lines = [];
-  skillShortName(name).split(/\s+/).forEach((word) => {
+  words.forEach((word) => {
     const lastLine = lines[lines.length - 1];
-    if (lastLine && (lastLine + ' ' + word).length <= 12) lines[lines.length - 1] = `${lastLine} ${word}`;
+    if (lastLine && textWidth(`${lastLine} ${word}`, font) <= maxW) lines[lines.length - 1] = `${lastLine} ${word}`;
     else lines.push(word);
   });
   return lines;
 }
 
 function drawRadar(box, skills) {
-  const { labelGap, labelW, labelH, minRadius, rings } = RADAR;
+  const { labelGap, minRadius, rings } = RADAR;
   const w = box.clientWidth;
   if (!w) return; // vista oculta: se dibuja al mostrarse
   // Alto: en escritorio, el que le da la columna; en celular, uno proporcional al ancho
   const h = RADAR_FILLS_COLUMN.matches ? box.clientHeight : Math.min(w * 0.8, 320);
   if (!h) return;
+  // Etiquetas con la letra de las barras: su ancho y alto reales definen cuánto espacio dejar
+  const font = skillFont(box.parentElement);
+  const longestWord = Math.max(...skills.flatMap((s) => radarLabelLines(s.name, font.css, 0)).map((l) => textWidth(l, font.css)));
+  const maxLineW = Math.max(longestWord, w * 0.3);
+  const labels = skills.map((s) => radarLabelLines(s.name, font.css, maxLineW));
+  const labelW = Math.max(...labels.flat().map((l) => textWidth(l, font.css)));
+  const labelH = Math.max(...labels.map((l) => l.length)) * font.size * 1.2;
   const radius = Math.max(minRadius, Math.min((w - 2 * (labelW + labelGap)) / 2, (h - 2 * (labelH + labelGap)) / 2));
   const cx = w / 2, cy = h / 2;
   const n = skills.length;
@@ -2128,7 +2168,7 @@ function drawRadar(box, skills) {
     g.appendChild(svgEl('circle', { class: 'radar-hit', cx: x, cy: y, r: hitR }));
     g.appendChild(svgEl('circle', { class: 'radar-dot', cx: x, cy: y, r: 5 }));
     const show = () => {
-      tip.textContent = `${skillShortName(s.name)} · ${s.value}%`;
+      tip.textContent = `${s.name} · ${s.value}%`;
       tip.style.left = `${x}px`;
       tip.style.top = `${y}px`;
       tip.hidden = false;
@@ -2143,7 +2183,7 @@ function drawRadar(box, skills) {
     // Nombre fuera del círculo, alineado según el lado
     const [lx, ly] = at(i, radius + labelGap);
     const anchor = Math.abs(lx - cx) < 1 ? 'middle' : lx > cx ? 'start' : 'end';
-    const lines = radarLabelLines(s.name);
+    const lines = labels[i];
     const label = svgEl('text', { class: 'radar-label', x: lx, y: ly, 'text-anchor': anchor });
     // Arriba el texto crece hacia arriba, abajo hacia abajo, a los lados queda centrado
     const firstDy = ly < cy - 1 ? -(lines.length - 1) * 1.2 : ly > cy + 1 ? 0.8 : -(lines.length - 1) * 0.6 + 0.35;
@@ -2184,6 +2224,8 @@ function buildRadar(group) {
   };
   // En el cuadro siguiente, para no redibujar dentro del mismo cálculo de tamaños
   new ResizeObserver(() => requestAnimationFrame(redraw)).observe(box);
+  // Las etiquetas se miden con la letra web: al terminar de cargar, se vuelve a dibujar
+  if (document.fonts) document.fonts.ready.then(() => { lastSize = ''; redraw(); });
 }
 
 // Datos de un grupo, leídos de sus barras (nombre y width en %)
@@ -2217,7 +2259,7 @@ function buildRings(group, skills) {
     t.textContent = `${s.value}%`;
     svg.appendChild(t);
     const cap = document.createElement('figcaption');
-    cap.textContent = skillShortName(s.name);
+    cap.textContent = s.name; // igual que en la vista de barras
     fig.setAttribute('aria-label', `${skillShortName(s.name)}: ${s.value}%`);
     fig.append(svg, cap);
     box.appendChild(fig);

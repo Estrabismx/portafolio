@@ -8,6 +8,7 @@ const PROYECTOS = [
   {
     "id": "07",
     "titulo": "Sin_Te",
+    "icono": "proyecto_07.svg",
     "subtitulo": "Electrónica Colaborativa - Sin_Te",
     "curso": "Taller de Máquinas Electrónicas",
     "anio": "2026-1",
@@ -695,6 +696,7 @@ const PROYECTOS = [
   {
     "id": "08",
     "titulo": "Scooter Modular",
+    "icono": "proyecto_08.svg",
     "subtitulo": "Fabricación Avanzada - Scooter modular ",
     "curso": "Fabriación Digital Avanzada",
     "anio": "2026-1",
@@ -739,12 +741,34 @@ const PROYECTOS = [
   {
     "id": "09",
     "titulo": "50N1D0",
+    "icono": "proyecto_09.svg",
     "encabezado": "Programación de Objetos - 50N1D0",
     "tipo": [
       "Electrónica",
       "Microcontrolador",
       "Interacción Digital"
     ],
+    "modelo3d": {
+      "archivo": "proyecto_09.glb",
+      "triangulos": 11797,
+      "material": {
+        "color": "#948d8e",
+        "metalness": 0.21,
+        "roughness": 0.83
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        4.7124,
+        1.5708,
+        0.0
+      ],
+      "detalle": "muy_alto",
+      "luz": "noche"
+    },
     "galeria": [
       {
         "archivo": "proyecto_09a.jpg",

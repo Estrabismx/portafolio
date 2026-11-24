@@ -863,8 +863,10 @@ section:last-child {
   font-size: 20px;
 }
 
+/* Mismo texto que el nombre en la vista de barras */
 .ring figcaption {
-  font-size: calc(12px * var(--text-scale));
+  font-family: var(--font-text);
+  font-size: var(--skill-name-size, calc(13px * var(--text-scale)));
   line-height: 1.3;
 }
 
@@ -931,10 +933,11 @@ section:last-child {
   fill: transparent;
 }
 
+/* Mismo texto que el nombre en la vista de barras */
 .radar-label {
   fill: var(--cream);
   font-family: var(--font-text);
-  font-size: calc(12px * var(--text-scale));
+  font-size: var(--skill-name-size, calc(13px * var(--text-scale)));
 }
 
 .radar-tick {
@@ -951,7 +954,8 @@ section:last-child {
   background: var(--black);
   border: 1px solid var(--amber);
   color: var(--cream);
-  font-size: calc(12px * var(--text-scale));
+  font-family: var(--font-text);
+  font-size: var(--skill-name-size, calc(13px * var(--text-scale)));
   white-space: nowrap;
   pointer-events: none;
   z-index: 2;
@@ -959,6 +963,37 @@ section:last-child {
 
 @media (prefers-reduced-motion: reduce) {
   .radar-area { animation: none; }
+}
+
+/* Sobre mí: texto más grande para que se lea mejor (solo en esta página) */
+body[data-page="sobre-mi"] .doc-block p {
+  font-size: calc(17px * var(--text-scale));
+}
+body[data-page="sobre-mi"] .doc-heading {
+  font-size: calc(34px * var(--text-scale));
+  margin-bottom: 18px;
+}
+body[data-page="sobre-mi"] .doc-block {
+  margin-bottom: 44px;
+}
+body[data-page="sobre-mi"] .doc-note {
+  font-size: calc(14px * var(--text-scale)) !important;
+}
+body[data-page="sobre-mi"] .about-top .doc-tagline {
+  font-size: calc(17px * var(--text-scale));
+}
+/* Un solo tamaño para los nombres de habilidades en barras, araña y anillos */
+body[data-page="sobre-mi"] .about-stats {
+  --skill-name-size: calc(15px * var(--text-scale));
+}
+body[data-page="sobre-mi"] .skill-name {
+  font-size: var(--skill-name-size);
+}
+body[data-page="sobre-mi"] .stats-label {
+  font-size: calc(14px * var(--text-scale));
+}
+body[data-page="sobre-mi"] .stats-tab {
+  font-size: calc(15px * var(--text-scale));
 }
 
 /* Escritorio: sobre_mi cabe en la pantalla sin desplazar la página.
@@ -988,9 +1023,45 @@ section:last-child {
   body[data-page="sobre-mi"] .about-stats {
     min-height: 0;
     overflow-y: auto;
-    padding-right: 6px;
-    scrollbar-width: thin; /* solo aparece en pantallas muy bajas */
-    scrollbar-color: var(--deep-red) var(--black);
+    padding-right: 14px; /* aire entre el texto y la barra */
+  }
+  /* Barra de desplazamiento ancha y retro: riel negro con borde punteado,
+     bloque rojo con borde de color que se enciende en ámbar al usarla */
+  body[data-page="sobre-mi"] .about-text::-webkit-scrollbar,
+  body[data-page="sobre-mi"] .about-stats::-webkit-scrollbar {
+    width: 16px;
+  }
+  body[data-page="sobre-mi"] .about-text::-webkit-scrollbar-track,
+  body[data-page="sobre-mi"] .about-stats::-webkit-scrollbar-track {
+    background: var(--black);
+    border: 2px dashed var(--deep-red);
+  }
+  body[data-page="sobre-mi"] .about-text::-webkit-scrollbar-thumb,
+  body[data-page="sobre-mi"] .about-stats::-webkit-scrollbar-thumb {
+    background: var(--deep-red);
+    border: 3px solid var(--scarlet);
+    border-radius: 0;
+    min-height: 40px;
+  }
+  body[data-page="sobre-mi"] .about-text::-webkit-scrollbar-thumb:hover,
+  body[data-page="sobre-mi"] .about-stats::-webkit-scrollbar-thumb:hover,
+  body[data-page="sobre-mi"] .about-text::-webkit-scrollbar-thumb:active,
+  body[data-page="sobre-mi"] .about-stats::-webkit-scrollbar-thumb:active {
+    background: var(--amber);
+    border-color: var(--amber-deep);
+  }
+  body[data-page="sobre-mi"] .about-text::-webkit-scrollbar-button,
+  body[data-page="sobre-mi"] .about-stats::-webkit-scrollbar-button {
+    display: none;
+  }
+  /* Firefox no tiene los selectores de arriba: barra de ancho normal con los mismos colores.
+     (Va dentro de @supports para que Chrome/Edge no la usen e ignoren el estilo de arriba) */
+  @supports not selector(::-webkit-scrollbar) {
+    body[data-page="sobre-mi"] .about-text,
+    body[data-page="sobre-mi"] .about-stats {
+      scrollbar-width: auto;
+      scrollbar-color: var(--scarlet) var(--black);
+    }
   }
   body[data-page="sobre-mi"] .about-text {
     display: flex;
@@ -998,14 +1069,14 @@ section:last-child {
   }
   /* Bloques más compactos para que todo quepa */
   body[data-page="sobre-mi"] .doc-block {
-    margin-bottom: 18px;
+    margin-bottom: 34px;
   }
   body[data-page="sobre-mi"] .doc-heading {
-    font-size: calc(24px * var(--text-scale));
-    margin-bottom: 10px;
+    font-size: calc(32px * var(--text-scale));
+    margin-bottom: 16px;
   }
   body[data-page="sobre-mi"] .doc-block p {
-    font-size: calc(14px * var(--text-scale));
+    font-size: calc(17px * var(--text-scale));
     line-height: 1.55;
     margin-bottom: 8px;
   }
@@ -1070,15 +1141,15 @@ section:last-child {
     padding: 4px 16px;
   }
   body[data-page="sobre-mi"] .doc-heading {
-    font-size: calc(21px * var(--text-scale));
-    margin-bottom: 6px;
+    font-size: calc(28px * var(--text-scale));
+    margin-bottom: 12px;
   }
   body[data-page="sobre-mi"] .doc-block {
-    margin-bottom: 8px;
+    margin-bottom: 22px;
   }
   body[data-page="sobre-mi"] .doc-block p {
-    font-size: calc(13px * var(--text-scale));
-    line-height: 1.4;
+    font-size: calc(16px * var(--text-scale));
+    line-height: 1.45;
     margin-bottom: 5px;
   }
   body[data-page="sobre-mi"] .about-text {
@@ -1101,8 +1172,10 @@ section:last-child {
     gap: 10px;
     margin-bottom: 7px;
   }
+  body[data-page="sobre-mi"] .about-stats {
+    --skill-name-size: calc(14px * var(--text-scale));
+  }
   body[data-page="sobre-mi"] .skill-name {
-    font-size: calc(12px * var(--text-scale));
     margin-bottom: 0;
   }
   body[data-page="sobre-mi"] .skill-bar {
