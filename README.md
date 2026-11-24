@@ -29,6 +29,8 @@ Conjunto de conceptos que se trabajaron en el semestre
 
 - GitHub Pages: Es un servidor de pagínas web alojado en GitHub
 
+- MQTT: 
+
 ### 1er Intento
 
 Anteriormente intente hacer un portafolio en GitHub Pages pero al no tener conocimientos base fue bastante complejo, ya que no entendía los distintos lenguajes de programación y el flujo de trabajo al no tener conocimientos previos fue caotico.
@@ -61,7 +63,12 @@ Además, para entender diagramaciones y jerarquia de la información se boceteo 
 
 ## Lógica interna
 
-
+<>
 
 ## Conclusión
 
+Muchas veces utilizar IA no nos asegura poder realizar lo que queremos al 100%, para lograrlo debemos invertir el 90% en pensar y definir lo que queremos y el restante 10% solo en dialogar con nuestro agente IA
+
+Además es necesario documentarse, preparar y entender los límites de lo que queremos realizar. Ya que multiples veces las cosas van a fallar por no tener claridad en lo que puede y debe ocurrir.
+
+No quiero dejar de lado el hecho de recordar que las cosas que hacemos no solo queremos hacerlas funcionar en nuestro entorno, ya sea el pc o celular, puesto que nuestras interacciones deben ser funcionales y visualizarse correctamente en cualquier pantalla. ***Siempre y cuando yo no quiera lo contrario***, ya que es completamente entendible dejar ciertos hardware o software de lado
