@@ -783,7 +783,14 @@ function loadModelGeometries(url) {
         gltf.scene.traverse((child) => {
           if (child.isMesh) geometries.push(child.geometry.clone().applyMatrix4(child.matrixWorld));
         });
-        geometries.length ? resolve(geometries) : reject(new Error('El modelo no tiene mallas'));
+        if (!geometries.length) { reject(new Error('El modelo no tiene mallas')); return; }
+        // Centra el modelo en el origen: así gira como trompo sobre el eje del canvas
+        // que pasa por su centro, y no alrededor del origen con que se exportó el archivo
+        const box = new THREE.Box3();
+        geometries.forEach((g) => { g.computeBoundingBox(); box.union(g.boundingBox); });
+        const center = box.getCenter(new THREE.Vector3());
+        geometries.forEach((g) => { g.translate(-center.x, -center.y, -center.z); g.computeBoundingSphere(); });
+        resolve(geometries);
       }, undefined, reject);
     }));
   }
@@ -1683,7 +1690,7 @@ function initProjectRing() {
       const spinner = can.userData.spinner;
       if (i === front) {
         if (autoSpin && !(drag && drag.mode === 'model')) {
-          // Giro horario en el eje X del canvas (visto desde la derecha), independiente de la pose del modelo
+          // Giro de trompo en el eje vertical del canvas (pasa por el centro del modelo), independiente de su pose
           rotateOnCanvasAxis(spinner, camera, CANVAS_Y, -0.012);
         }
       } else if (spinner.quaternion.angleTo(POSE_ORIGEN) > 0.001) {
