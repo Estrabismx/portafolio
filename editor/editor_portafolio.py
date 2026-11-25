@@ -118,7 +118,7 @@ CABECERA = """/* ===============================================================
 
 # Orden de los campos al escribir proyectos.js
 ORDEN_CAMPOS = ['id', 'titulo', 'icono', 'subtitulo', 'resumen', 'etiquetas', 'curso', 'anio', 'tamano',
-                'encabezado', 'tipo', 'objetivo', 'desafio', 'descripcion', 'colores', 'ficha',
+                'encabezado', 'tipo', 'objetivo', 'desafio', 'descripcion', 'interaccion_web', 'colores', 'ficha',
                 'dificultad', 'modelo3d', 'galeria']
 
 # Tamaño de las miniaturas de la galería
@@ -181,6 +181,9 @@ def limpiar_para_guardar(p):
                           **({'plano': bool(g['plano'])} if 'plano' in g else {}))
                      for g in (valor or [])]
         if clave == 'dificultad' and valor and not valor.get('texto') and not valor.get('porcentaje'):
+            valor = None
+        if clave == 'interaccion_web' and valor and not (
+                valor.get('activa') or valor.get('github') or valor.get('web')):
             valor = None
         if clave == 'ficha' and valor:
             valor = {nombre: texto for nombre, texto in valor.items() if str(texto).strip()}
@@ -577,9 +580,29 @@ class Editor:
                   style='Ayuda.TLabel').grid(row=6, column=1, columnspan=2, sticky='w')
         f.rowconfigure(5, weight=1)
 
-        ttk.Label(f, text='Paleta de colores').grid(row=7, column=0, sticky='nw', pady=(10, 3))
+        # Interacción web: enlaces a GitHub y a la web del proyecto (aún no se muestran en el sitio)
+        web = ttk.Frame(f)
+        web.grid(row=7, column=1, columnspan=2, sticky='ew', pady=(8, 3))
+        web.columnconfigure(1, weight=1)
+        self.var_web_activa = tk.BooleanVar()
+        self.var_web_github = tk.StringVar()
+        self.var_web_url = tk.StringVar()
+        ttk.Checkbutton(web, text='Interacción web', variable=self.var_web_activa,
+                        command=self.al_cambiar_interaccion_web).grid(row=0, column=0, columnspan=2, sticky='w')
+        ttk.Label(web, text='Link de GitHub').grid(row=1, column=0, sticky='w', padx=(20, 8), pady=2)
+        self.entrada_web_github = ttk.Entry(web, textvariable=self.var_web_github)
+        self.entrada_web_github.grid(row=1, column=1, sticky='ew', pady=2)
+        ttk.Label(web, text='Link de la web').grid(row=2, column=0, sticky='w', padx=(20, 8), pady=2)
+        self.entrada_web_url = ttk.Entry(web, textvariable=self.var_web_url)
+        self.entrada_web_url.grid(row=2, column=1, sticky='ew', pady=2)
+        ttk.Label(web, text='Por ahora solo se guarda; la web todavía no lo muestra.',
+                  style='Ayuda.TLabel').grid(row=3, column=1, sticky='w')
+        for var in (self.var_web_github, self.var_web_url):
+            var.trace_add('write', lambda *_: self.al_cambiar_interaccion_web())
+
+        ttk.Label(f, text='Paleta de colores').grid(row=8, column=0, sticky='nw', pady=(10, 3))
         colores = ttk.Frame(f)
-        colores.grid(row=7, column=1, columnspan=2, sticky='ew', pady=(10, 3))
+        colores.grid(row=8, column=1, columnspan=2, sticky='ew', pady=(10, 3))
         self.lista_colores = tk.Listbox(colores, height=5, width=34, activestyle='none',
                                         font=('Consolas', 10), exportselection=False)
         self.lista_colores.pack(side='left')
@@ -1287,6 +1310,11 @@ class Editor:
             self.etiqueta_porcentaje.config(text=f'{self.var_dif_porcentaje.get()}%')
             self.var_fila_nombre.set('')
             self.var_fila_valor.set('')
+            interaccion = (p or {}).get('interaccion_web') or {}
+            self.var_web_activa.set(bool(interaccion.get('activa')))
+            self.var_web_github.set(interaccion.get('github', ''))
+            self.var_web_url.set(interaccion.get('web', ''))
+            self.habilitar_campos_web()
         finally:
             self.cargando = False
 
@@ -1337,6 +1365,21 @@ class Editor:
             return
         self.p()['dificultad'] = {'porcentaje': int(self.var_dif_porcentaje.get()),
                                   'texto': self.var_dif_texto.get()}
+        self.marcar_cambio()
+
+    def habilitar_campos_web(self):
+        estado = 'normal' if self.var_web_activa.get() else 'disabled'
+        self.entrada_web_github.config(state=estado)
+        self.entrada_web_url.config(state=estado)
+
+    def al_cambiar_interaccion_web(self):
+        self.habilitar_campos_web()
+        if self.cargando or not self.p():
+            return
+        # Los links se conservan aunque se desmarque la casilla, para no perderlos por error
+        self.p()['interaccion_web'] = {'activa': self.var_web_activa.get(),
+                                       'github': self.var_web_github.get().strip(),
+                                       'web': self.var_web_url.get().strip()}
         self.marcar_cambio()
 
     def calcular_tamano(self):

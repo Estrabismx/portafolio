@@ -786,10 +786,20 @@ const PROYECTOS = [
   },
   {
     "id": "10",
-    "titulo": "Traductor de Bits"
+    "titulo": "Traductor de Bits",
+    "interaccion_web": {
+      "activa": true,
+      "github": "https://github.com/Estrabismx/dis90987-tarea06",
+      "web": "https://estrabismx.github.io/dis90987-tarea06/"
+    }
   },
   {
     "id": "11",
-    "titulo": "Dommy plays DOOM"
+    "titulo": "Dommy plays DOOM",
+    "interaccion_web": {
+      "activa": true,
+      "github": "https://github.com/Estrabismx/play-ex",
+      "web": "https://estrabismx.github.io/play-ex/"
+    }
   }
 ];
