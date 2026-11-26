@@ -31,6 +31,7 @@ DISENO_INICIAL = {
     'margen_interior': 20,
     'grosor_bordes': 4,
     'ancho_maximo': 1600,
+    'velocidad_carrusel': 60,   # px por segundo (carrusel de proyectos de la portada)
 }
 
 NOMBRES_COLORES = {
@@ -74,6 +75,7 @@ RANGOS = {
     'margen_interior': ('Margen interior', 8, 60, 'px'),
     'grosor_bordes': ('Grosor de los bordes', 1, 8, 'px'),
     'ancho_maximo': ('Ancho máximo de la página', 900, 2400, 'px'),
+    'velocidad_carrusel': ('Velocidad del carrusel', 10, 250, 'px/s'),
 }
 
 MARCA = re.compile(r'/\* DISENO (\{.*?\}) \*/', re.S)
@@ -142,6 +144,7 @@ def generar_css(d):
         f'  --section-gap: {d["espacio_secciones"]}px;',
         f'  --border-width: {d["grosor_bordes"]}px;',
         f'  --detail-height: {d["alto_visor"]}px;',
+        f'  --ticker-speed: {d["velocidad_carrusel"]};',
         '}',
         '',
     ]

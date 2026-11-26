@@ -29,7 +29,7 @@ Conjunto de conceptos que se trabajaron en el semestre
 
 - GitHub Pages: Es un servidor de pagínas web alojado en GitHub
 
-- MQTT: 
+- MQTT: Es un protocolo de mensajería que permite conectar distintos dispositivos sin necesidad de estar físicamente cerca
 
 ### 1er Intento
 

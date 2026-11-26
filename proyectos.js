@@ -10,16 +10,56 @@ const PROYECTOS = [
     "titulo": "Sin_Te",
     "icono": "proyecto_07.svg",
     "subtitulo": "Electrónica Colaborativa - Sin_Te",
+    "resumen": "Sintetizador que consta de 4 osciladores y un percusor controlados por un secuenciador binario. Todos modulos desarrollados en el curso dis8644-2026-1 Taller de Máquinas Electrónicas. Representó a la mención de Interacción Digital en la \"<b><i>Mexico Design Week</i></b>\" en octubre del 2026",
+    "etiquetas": [
+      "Synth",
+      "Osciladores",
+      "Sonido"
+    ],
     "curso": "Taller de Máquinas Electrónicas",
     "anio": "2026-1",
     "tamano": "270 KB",
     "encabezado": "Electrónica Colaborativa - Sin_Te",
     "tipo": [
       "Electrónica",
-      "Interacción Digital"
+      "Interacción Digital",
+      "Desarrollo Conceptual"
     ],
     "objetivo": "Desarrollar sintetizadores modulares en base al contexto chileno",
     "desafio": "Leer, identificar e integrar esquemas electrónicas realizados por terceros",
+    "descripcion": [
+      "Desde Chile se exportan materias primas elementales en el ámbito de la electrónica. Pero solemos acercarnos poco a poco a estos elementos que produce nuestro territorio, tales como el litio y el cobre, y que vuelven convertidos en tecnología compuesta. Sin_Te nace a base de eso, de la construcción electrónica local para dialogar con el entorno. Es un sintetizador modular, el cuál integra 7 placas electrónicas construidas colectivamente en el Taller de Máquinas Electrónicas, que actúan de forma paralela en un único sistema sonoro, que interactúa con el entorno y a través de la luz los sonidos que este produce varían.",
+      "Chile exporta materias primas elementales para la electrónica, como el litio y el cobre, que luego regresan al país convertidas en tecnología compuesta y ajena a su origen. Frente a esa distancia, ¿es posible construir tecnología electrónica local que dialogue directamente con el entorno que la origina? Sin_Te explora esta pregunta mediante la construcción de un sintetizador modular que integra siete placas electrónicas construidas colectivamente, las cuales operan en paralelo dentro de un único sistema sonoro, que interactúa con el entorno por medio de la luz que percibe, haciendo que los sonidos que produce varíen. De esta manera, transforma la construcción electrónica en un gesto de apropiación local y de diálogo sensible con el territorio que provee sus materias primas.",
+      "Trabajo realizado en conjunto de: Isidora Alvarez - Dayana Pañitrur"
+    ],
+    "interaccion_web": {
+      "github_activo": true,
+      "github": "https://github.com/Estrabismx/sin-te",
+      "web_activo": true,
+      "web": "https://web.archive.org/web/20261124020313/http://web.archive.org/screenshot/https://faad.udp.cl/escuela-de-diseno-udp-participa-en-inedito-universitario-de-design-week-mexico-2026/"
+    },
+    "colores": [
+      {
+        "hex": "#0000A0",
+        "nombre": ""
+      },
+      {
+        "hex": "#800000",
+        "nombre": ""
+      },
+      {
+        "hex": "#008040",
+        "nombre": ""
+      },
+      {
+        "hex": "#C0C0C0",
+        "nombre": ""
+      },
+      {
+        "hex": "#000000",
+        "nombre": ""
+      }
+    ],
     "ficha": {
       "Herramientas": "KiCad ",
       "Tiempo de Desarrollo": "15 Semanas",
@@ -33,7 +73,7 @@ const PROYECTOS = [
     "modelo3d": {
       "detalle": "muy_alto",
       "material": {
-        "color": "#3a2ceb",
+        "color": "#515151",
         "metalness": 0.56,
         "roughness": 0.35
       },
@@ -49,7 +89,69 @@ const PROYECTOS = [
       ],
       "archivo": "proyecto_07.glb",
       "triangulos": 11684
-    }
+    },
+    "galeria": [
+      {
+        "archivo": "proyecto_07a.mp4",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07b.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07c.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07d.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07e.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07f.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07g.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07h.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07i.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07j.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07k.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07l.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07m.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07n.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_07o.mp4",
+        "nombre": ""
+      }
+    ]
   },
   {
     "id": "01",
@@ -171,7 +273,8 @@ const PROYECTOS = [
     "encabezado": "Ejercicio Conceptual - Lampel",
     "tipo": [
       "Fabricación Manual",
-      "Fabricación Digital"
+      "Fabricación Digital",
+      "Desarrollo Conceptual"
     ],
     "objetivo": "Crear una luminaria que influya en el ambiente de un espacio",
     "desafio": "Generar un sistema movil coherente con el ambiente que se busque generar",
@@ -695,9 +798,18 @@ const PROYECTOS = [
   },
   {
     "id": "08",
+    "oculto": true,
     "titulo": "Scooter Modular",
     "icono": "proyecto_08.svg",
     "subtitulo": "Fabricación Avanzada - Scooter modular ",
+    "resumen": "Scooter desarrollado y pensado con una lógica modular, para eventual replica en distintos lugares y la eventual reparación. Este fue diseñado dentro del software Inventor y fabricado en láminas de acero plegadas",
+    "etiquetas": [
+      "Autodesk Inventor",
+      "Plegado de Metal",
+      "CAD",
+      "CAM",
+      "Scooter"
+    ],
     "curso": "Fabriación Digital Avanzada",
     "anio": "2026-1",
     "tamano": "53 MB",
@@ -711,6 +823,7 @@ const PROYECTOS = [
     "ficha": {
       "Herramientas": "Inventor, AutoCad",
       "Tiempo de Desarrollo": "5 semanas",
+      "Materiales": "Acero Plegado de 2 y 5mm",
       "Origen": "Fabricación Digital Avanzada"
     },
     "dificultad": {
@@ -742,12 +855,42 @@ const PROYECTOS = [
     "id": "09",
     "titulo": "50N1D0",
     "icono": "proyecto_09.svg",
+    "subtitulo": "Programación de Objetos - 50N1D0",
+    "resumen": "Es un sampler que reproduce la evolución sonora de la síntesis de sonido en las máquinas computacionales. Desarrollado en una Raspberry Pi Pico",
+    "etiquetas": [
+      "Microcontrolador",
+      "C++",
+      "Raspberry Pi Pico",
+      "Sampler"
+    ],
+    "curso": "Taller de Máquinas Computacionales",
+    "anio": "2026",
+    "tamano": "505 KB",
     "encabezado": "Programación de Objetos - 50N1D0",
     "tipo": [
       "Electrónica",
       "Microcontrolador",
       "Interacción Digital"
     ],
+    "objetivo": "Desarrollar un proyecto con el microcontrolador Raspberry",
+    "desafio": "Poder cargar sonidos dentro de un microcontrolador",
+    "descripcion": [
+      "La evolución de la computación es un tópico común de estudiar y donde existe diversas fuentes, pero en el apartado del sonido no se ha realizado una amplia labor. Es por ello que este proyecto rescata la evolución del sonido en distintas consolas de videojuegos, un mundo donde el acompañamiento musical es bastante relevante. Todo esto impulsado por la computadora Sharp X68K, una de las primeras computadora con un chip dedicado al procesamiento de audio",
+      "50N1D0 es un proyecto realizado en un microcontrolador RP2040, o mejor conocido como Raspberry Pi Pico. En este se cargaron en su memoria RAM 5 sonidos que responden a la lógica explica anteriormente, para ello se desarrollaron herramientas en Python que permiten adecuar diferentes sonidos a un formato soportable para este IC",
+      "Trabajo realizado en conjunto de: Dayana Pañitrur - Bianka Vilches"
+    ],
+    "interaccion_web": {
+      "github_activo": true,
+      "github": "https://github.com/Estrabismx/dis8645-2026-2-procesos-2/tree/main/00-proyecto-2/grupo-01",
+      "web_activo": false,
+      "web": ""
+    },
+    "ficha": {
+      "Herramientas": "VS Code, Impresión 3Ds",
+      "Tiempo de Desarrollo": "3 semanas",
+      "Materiales": "Raspberry Pi Pico 2W",
+      "Origen": "Taller de Máquinas Computaciones 2026 - 2"
+    },
     "modelo3d": {
       "archivo": "proyecto_09.glb",
       "triangulos": 11797,
@@ -781,25 +924,305 @@ const PROYECTOS = [
       {
         "archivo": "proyecto_09c.jpg",
         "nombre": ""
+      },
+      {
+        "archivo": "proyecto_09d.mp4",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_09e.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_09f.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_09g.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_09h.jpg",
+        "nombre": ""
       }
     ]
   },
   {
     "id": "10",
     "titulo": "Traductor de Bits",
+    "icono": "proyecto_10.svg",
+    "subtitulo": "Interacción Digital - Traductor de Bits",
+    "resumen": "Se comenzó de la base que en el <i> mundo digital </i> la mínima unidad es el bit, es decir, 0 y 1. Por ende, se desarrollo una herramienta que tradujera esa información de un contexto a otro y en este caso fue del sonido a la imagen",
+    "etiquetas": [
+      "Synth",
+      "Sonido",
+      "Música",
+      "Experiencia"
+    ],
+    "curso": "DPPID",
+    "anio": "2026 - 2",
+    "tamano": "210 MB",
+    "encabezado": "Interacción Digital - Traductor de Bits",
+    "tipo": [
+      "Web",
+      "Interacción Digital"
+    ],
+    "objetivo": "Establecer una relación entre imagen y sonido",
+    "desafio": "Poder modificar elementos en tiempo real en una web",
+    "descripcion": [
+      "Una vez que se comprende que en el <i>mundo digital</i> todo se reducen a los bits, la particula fundamental de todo. Se puede concluir que transitar de un formato a otro es posible",
+      "Dentro de esta reflexión nace <b>Traductor de bits/b>, una herramienta web que en base a la información de un archivo de audio o una imagen puede realizar una traslación de contexto, logrando que una imagen suene y que un sonido se vea. Las opciones que permite esta herramienta es la conexión con controladores MIDI, ajustes ADSL, efectos y entre otros, siendo un sintetizador que funciona en base a imagenes o un genereador de imagenes que funciona en base al audio"
+    ],
     "interaccion_web": {
       "activa": true,
       "github": "https://github.com/Estrabismx/dis90987-tarea06",
       "web": "https://estrabismx.github.io/dis90987-tarea06/"
-    }
+    },
+    "ficha": {
+      "Herramientas": "Polytone.js, Tone.js, MediaPipe, GitHub Pages",
+      "Tiempo de Desarrollo": "2 semanas",
+      "Materiales": "N/A",
+      "Origen": "Dispositivos Perifericos y Plataformas para la Interacción Digital 2026 - 2"
+    },
+    "dificultad": {
+      "porcentaje": 75,
+      "texto": "Complejidad Media Alta"
+    },
+    "modelo3d": {
+      "archivo": "proyecto_10.glb",
+      "triangulos": 11885,
+      "detalle": "muy_alto",
+      "material": {
+        "color": "#dcdf9d",
+        "metalness": 0.9,
+        "roughness": 0.35
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "galeria": [
+      {
+        "archivo": "proyecto_10a.mp4",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_10b.png",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_10c.png",
+        "nombre": "",
+        "plano": true
+      },
+      {
+        "archivo": "proyecto_10d.png",
+        "nombre": "",
+        "plano": true
+      },
+      {
+        "archivo": "proyecto_10e.png",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_10f.png",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_10g.png",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_10h.png",
+        "nombre": ""
+      }
+    ]
   },
   {
     "id": "11",
     "titulo": "Dommy plays DOOM",
+    "icono": "proyecto_11.svg",
+    "subtitulo": "MQTT - Doomy plays DOOM",
+    "resumen": "Basado en <i> Twitch Plays Pokemon </i>, se pensó en como trasladar la experiencia de múltiples personas controlando una misma partida de un solo jugador. Para ello se utilizó el videojuego Doom, donde desde 1 hasta 7  personas pueden controlar diferentes elementos del juego, con distintos sensores cada uno",
+    "etiquetas": [
+      "Doom",
+      "Videojuego",
+      "Port",
+      "Experiencia",
+      "Multijugador"
+    ],
+    "curso": "DPPID",
+    "anio": "2026 - 2",
+    "tamano": "91.1KB",
+    "encabezado": "MQTT - Doomy plays DOOM",
+    "tipo": [
+      "Interaccion Digital",
+      "Web"
+    ],
+    "objetivo": "Mediante conexión MQTT enlazar sensores de smartphones a una web",
+    "desafio": "Lograr que 7 personas puedan controlar una misma partida ",
     "interaccion_web": {
       "activa": true,
       "github": "https://github.com/Estrabismx/play-ex",
       "web": "https://estrabismx.github.io/play-ex/"
-    }
+    },
+    "ficha": {
+      "Herramientas": "MQTT, GitHub Pages",
+      "Tiempo de Desarrollo": "2 semanas",
+      "Materiales": "Código Fuente Doom",
+      "Origen": "Dispositivos Perifericos y Plataformas para la Interacción Digital 2026 - 2"
+    },
+    "dificultad": {
+      "porcentaje": 85,
+      "texto": "Dificultad Alta"
+    },
+    "modelo3d": {
+      "detalle": "muy_alto",
+      "material": {
+        "color": "#ff8000",
+        "metalness": 1.0,
+        "roughness": 0.0
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        1.5708,
+        0.0,
+        0.7854
+      ],
+      "archivo": "proyecto_11.glb",
+      "triangulos": 1492
+    },
+    "galeria": [
+      {
+        "archivo": "proyecto_11a.png",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_11b.png",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_11c.png",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_11d.png",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_11e.png",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_11f.png",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_11g.mp4",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_11h.jpg",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_11i.jpg",
+        "nombre": ""
+      }
+    ]
+  },
+  {
+    "id": "12",
+    "titulo": "Focus Scroll",
+    "icono": "proyecto_12.svg",
+    "subtitulo": "Introducción a la Interacción - Focus Scroll",
+    "resumen": "Al conocer las MediaPipe y OpenCV se vio un potencial en desarrollar una web que ejemplifique como el uso constante de dispositivos móviles nos aisla de la realidad",
+    "etiquetas": [
+      "Desarrollo Conceptual",
+      "OpenCV",
+      "MediaPipe"
+    ],
+    "curso": "DPPID",
+    "anio": "2026 - 2",
+    "tamano": "2GB",
+    "encabezado": "Introducción a la Interacción - Focus Scroll",
+    "tipo": [
+      "Desarrollo Conceptual",
+      "Interacción Digital",
+      "Web"
+    ],
+    "objetivo": "Experimentar con el los límites de OpenCV y MediaPipe en un navegador Web",
+    "desafio": "Evadir las limitaciones de procesamiento",
+    "descripcion": [
+      "Al analizar como el uso del celular en las personas les nubla la realidad, se establecio que este fenómeno puede ser representado mediante una interacción digital Web, con la ayuda de OpenCV y MediaPipe",
+      "Estas bibliotecas permiten reconocer formas, colores y partes del cuerpo humano y en base a este reconocimiento se desarrollo un detector de ojos y de movimiento. El primero detecta hacía donde miras de manera general y el segundo detecta el movimiento en el entorno. Estos se enlazan al establecer como ignoramos nuestro entorno al tener la mirada fija en nuestros smartphones",
+      "Trabajo realizado en conjunto de: Facundo Cabrera"
+    ],
+    "interaccion_web": {
+      "github_activo": true,
+      "github": "https://github.com/Estrabismx/dis9087-encargo03",
+      "web_activo": true,
+      "web": "https://estrabismx.github.io/dis9087-encargo03/"
+    },
+    "ficha": {
+      "Herramientas": "OpenCV, MediaPipe, Github Pages",
+      "Tiempo de Desarrollo": "1 semana",
+      "Materiales": "N/A",
+      "Origen": "Dispositivos Perifericos y Plataformas para la Interacción Digital 2026 - 2"
+    },
+    "dificultad": {
+      "porcentaje": 50,
+      "texto": "Complejidad Media"
+    },
+    "modelo3d": {
+      "archivo": "proyecto_12.glb",
+      "triangulos": 11618,
+      "detalle": "muy_alto",
+      "material": {
+        "color": "#b8bcc4",
+        "metalness": 0.9,
+        "roughness": 0.35
+      },
+      "escala": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotacion": [
+        4.7124,
+        3.1416,
+        3.1416
+      ]
+    },
+    "galeria": [
+      {
+        "archivo": "proyecto_12a.mp4",
+        "nombre": "",
+        "animacion": true
+      },
+      {
+        "archivo": "proyecto_12b.png",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_12c.png",
+        "nombre": ""
+      },
+      {
+        "archivo": "proyecto_12d.png",
+        "nombre": ""
+      }
+    ]
   }
 ];

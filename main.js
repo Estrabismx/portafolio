@@ -31,27 +31,32 @@ const ENCRYPT_FLIP = 50;      // ms entre cada cambio de 0/1
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const encryptTimers = new WeakMap();
 
+// El texto puede traer <i> o <b> (del editor): se anima el texto plano y,
+// al terminar, queda con su formato.
 function encryptText(el, text) {
   if (!el) return;
-  const final = text != null ? String(text) : el.dataset.encFinal || el.textContent;
+  const final = text != null ? String(text)
+    : el.dataset.encFinal || richSource(el);
   clearInterval(encryptTimers.get(el));
   el.dataset.encFinal = final;
+  const html = richText(final);
+  const plain = stripHtml(html);
 
-  if (reduceMotion || !final.trim()) {
-    el.textContent = final;
+  if (reduceMotion || !plain) {
+    el.innerHTML = html;
     return;
   }
 
-  const chars = [...final];
+  const chars = [...plain];
   const perChar = Math.min(ENCRYPT_PER_CHAR, ENCRYPT_DURATION / chars.length);
   const start = performance.now();
-  el.setAttribute('aria-label', final); // los lectores de pantalla leen el texto real
+  el.setAttribute('aria-label', plain); // los lectores de pantalla leen el texto real
 
   const tick = () => {
     const revealed = Math.floor((performance.now() - start) / perChar);
     if (revealed >= chars.length) {
       clearInterval(encryptTimers.get(el));
-      el.textContent = final;
+      el.innerHTML = html;
       el.removeAttribute('aria-label');
       return;
     }
@@ -77,7 +82,8 @@ function encryptAll(selector = ENCRYPT_TITLES, root = document) {
   });
 }
 
-const PROJECTS = typeof PROYECTOS !== 'undefined' ? PROYECTOS : [];
+// Los proyectos marcados como ocultos en el editor ("Mostrar este proyecto en la web") no aparecen
+const PROJECTS = (typeof PROYECTOS !== 'undefined' ? PROYECTOS : []).filter((p) => !p.oculto);
 
 const VIDEO_EXTENSIONS = ['mp4', 'webm', 'mov', 'm4v', 'ogv'];
 
@@ -122,7 +128,7 @@ function setSrcWithFallback(el, src, fallback) {
 // Imagen, animación o video de la galería en un panel grande.
 // Las fotos se pueden ampliar (clic → visor); las animaciones y videos se reproducen ahí mismo.
 function renderMainMedia(box, p, item) {
-  const nombre = item.nombre || item.archivo;
+  const nombre = stripHtml(item.nombre || item.archivo);
   box.innerHTML = '';
 
   if (isVideo(item.archivo) || isAnimation(item)) {
@@ -168,7 +174,7 @@ function thumbButton(p, item, lazy = true) {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'detail-thumb';
-  btn.title = item.nombre || item.archivo;
+  btn.title = stripHtml(item.nombre || item.archivo);
   const img = document.createElement('img');
   img.alt = '';
   if (lazy) img.loading = 'lazy';
@@ -187,11 +193,34 @@ function thumbButton(p, item, lazy = true) {
   return btn;
 }
 
+/* Texto del editor con formato: se muestra tal cual, salvo <i> y <b> (también <em>
+   y <strong>), que se aplican. Cualquier otra etiqueta se ve como texto. */
+const RICH_TAGS = ['i', 'b', 'em', 'strong'];
+const RICH_TAG_RE = new RegExp(`&lt;(/?)(${RICH_TAGS.join('|')})&gt;`, 'gi');
+
+function escapeHtml(text) {
+  return String(text ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function richText(text) {
+  return escapeHtml(text).replace(RICH_TAG_RE, (_, slash, tag) => `<${slash}${tag.toLowerCase()}>`);
+}
+
+// Lo contrario: el texto de un elemento ya armado, conservando sus <i> y <b>
+function richSource(node) {
+  return [...node.childNodes].map((n) => {
+    if (n.nodeType === Node.TEXT_NODE) return n.textContent;
+    if (n.nodeType !== Node.ELEMENT_NODE) return '';
+    const tag = n.tagName.toLowerCase();
+    return RICH_TAGS.includes(tag) ? `<${tag}>${richSource(n)}</${tag}>` : richSource(n);
+  }).join('');
+}
+
 // Quita etiquetas HTML (ej: "<i>Mimus</i>" → "Mimus")
 function stripHtml(html) {
-  const tmp = document.createElement('div');
+  const tmp = document.createElement('template');
   tmp.innerHTML = html;
-  return tmp.textContent.trim();
+  return tmp.content.textContent.trim();
 }
 
 
@@ -335,7 +364,11 @@ function initSideMenu() {
    Si un proyecto aún no tiene SVG aparece un recuadro con su nombre;
    al agregar el archivo a su carpeta aparece solo. */
 
-const TICKER_SPEED = 60; // píxeles por segundo
+// Píxeles por segundo: lo define el editor (pestaña Diseño → --ticker-speed en diseno.css)
+function tickerSpeed() {
+  const valor = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ticker-speed'));
+  return valor > 0 ? valor : 60;
+}
 
 function projectIcon(p) {
   return `${projectFolder(p)}proyecto_${p.id}.svg`;
@@ -365,7 +398,7 @@ function tickerItem({ p, icon }, hidden) {
   } else {
     const box = document.createElement('span');
     box.className = 'ticker-placeholder';
-    box.textContent = `[ ${name} ]`;
+    box.innerHTML = `[ ${richText(p.titulo)} ]`;
     a.appendChild(box);
   }
   return a;
@@ -392,7 +425,7 @@ function buildTicker(ticker, items) {
   clone.querySelectorAll('a').forEach((a) => { a.tabIndex = -1; });
   track.appendChild(clone);
 
-  track.style.setProperty('--ticker-duration', `${group.offsetWidth / TICKER_SPEED}s`);
+  track.style.setProperty('--ticker-duration', `${group.offsetWidth / tickerSpeed()}s`);
 }
 
 /* Aumento tipo "dock" (inspirado en ui.aceternity.com/components/floating-dock):
@@ -567,7 +600,7 @@ const isEmpty = (value) => value === '' || value == null;
 function fillDataList(dl, rows, hideEmpty = false) {
   dl.innerHTML = rows
     .filter(([, value]) => !(hideEmpty && isEmpty(value)))
-    .map(([label, value]) => `<dt>${label}</dt><dd>${isEmpty(value) ? '—' : value}</dd>`)
+    .map(([label, value]) => `<dt>${richText(label)}</dt><dd>${isEmpty(value) ? '—' : richText(value)}</dd>`)
     .join('');
 }
 
@@ -578,9 +611,9 @@ const TOOLTIP_OFFSET = 18; // px entre el cursor y la ficha
 function fillRingTooltip(p) {
   const tip = $('ringTooltip');
   if (!tip || !p) return;
-  tip.querySelector('.ring-tooltip-title').innerHTML = p.titulo; // puede traer <i>
+  tip.querySelector('.ring-tooltip-title').innerHTML = richText(p.titulo);
   tip.querySelector('.ring-tooltip-type').textContent = typesOf(p).map((t) => `# ${typeSlug(t)}`).join(' ');
-  tip.querySelector('.ring-tooltip-desc').textContent = p.resumen || '';
+  tip.querySelector('.ring-tooltip-desc').innerHTML = richText(p.resumen || '');
 }
 
 // x, y: posición del cursor en la pantalla. La ficha va abajo a la derecha del cursor
@@ -603,8 +636,7 @@ function hideRingTooltip() {
   if (tip) tip.classList.remove('visible');
 }
 
-// Fotos del proyecto del centro, a la derecha del anillo (sin videos:
-// esos se ven en la vista del proyecto). Las animaciones (GIF) sí se muestran.
+// Fotos, animaciones (GIF) y videos del proyecto del centro, a la derecha del anillo.
 let ringPhotosProject = null;
 let ringPhotosTimer = null;
 let ringPhotosToken = 0;        // descarta cargas de un proyecto que ya no está al centro
@@ -628,8 +660,9 @@ function mediaLoaded(el) {
   return new Promise((resolve) => {
     if (!el) return resolve();
     if (el.tagName === 'VIDEO') {
-      if (el.readyState >= 2) return resolve();
-      el.addEventListener('loadeddata', resolve, { once: true });
+      // Los videos con controles solo precargan metadatos: basta con eso
+      if (el.readyState >= 1) return resolve();
+      el.addEventListener('loadedmetadata', resolve, { once: true });
       el.addEventListener('error', resolve, { once: true });
       return;
     }
@@ -641,7 +674,7 @@ function mediaLoaded(el) {
 }
 
 function ringPhotoList(p) {
-  return (p.galeria || []).filter((item) => !isVideo(item.archivo));
+  return p.galeria || [];
 }
 
 let ringPhotoIndex = 0;
@@ -653,6 +686,7 @@ function showRingPhoto(p, index) {
     main.innerHTML = '<div class="thumbnail-placeholder">[ SIN IMÁGENES ]</div>';
     return;
   }
+  pauseMediaIn(main);   // el video anterior no sigue sonando al cambiar
   ringPhotoIndex = index = (index + fotos.length) % fotos.length;
   renderMainMedia(main, p, fotos[index]);
   $('ringPhotoThumbs').querySelectorAll('button').forEach((b, i) => b.classList.toggle('active', i === index));
@@ -692,6 +726,7 @@ function renderRingPhotos(p) {
 // la galería de cada proyecto por el que pasa. Mientras tanto, "cargando_".
 function scheduleRingPhotos(p) {
   clearTimeout(ringPhotosTimer);
+  if ($('ringPhotoMain')) pauseMediaIn($('ringPhotoMain'));   // al girar, el video se detiene
   ringPhotosToken++;   // una carga anterior que termine ahora ya no apaga la animación
   setRingLoading(true);
   const intentar = () => {
@@ -710,9 +745,9 @@ function updateRingSelection(index) {
     return;
   }
 
-  setEncrypted($('ringName'), stripHtml(p.titulo));
+  setEncrypted($('ringName'), p.titulo);
   $('ringCounter').textContent = `${index + 1}/${RING_PROJECTS.length}`;
-  $('ringDesc').textContent = p.resumen || '';
+  $('ringDesc').innerHTML = richText(p.resumen || '');
   scheduleRingPhotos(p);
   fillRingTooltip(p);
 
@@ -1078,12 +1113,44 @@ function initDetailTabs() {
   showDetailTab(0);
 }
 
+// Íconos pixel (13×13) de los botones de links: globo para webs y logo de GitHub para repos
+const LINK_ICONS = {
+  web: 'M4 0h5v1h-5zM2 1h2v1h-2zM5 1h3v1h-3zM9 1h2v1h-2zM1 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM11 2h1v1h-1zM1 3h1v1h-1zM3 3h1v1h-1zM6 3h1v1h-1zM9 3h1v1h-1zM11 3h1v1h-1zM0 4h1v2h-1zM3 4h1v2h-1zM6 4h1v2h-1zM9 4h1v2h-1zM12 4h1v2h-1zM0 6h13v1h-13zM0 7h1v2h-1zM3 7h1v2h-1zM6 7h1v2h-1zM9 7h1v2h-1zM12 7h1v2h-1zM1 9h1v1h-1zM3 9h1v1h-1zM6 9h1v1h-1zM9 9h1v1h-1zM11 9h1v1h-1zM1 10h1v1h-1zM4 10h1v1h-1zM6 10h1v1h-1zM8 10h1v1h-1zM11 10h1v1h-1zM2 11h2v1h-2zM5 11h3v1h-3zM9 11h2v1h-2zM4 12h5v1h-5z',
+  github: 'M4 0h5v1h-5zM2 1h9v1h-9zM1 2h2v1h-2zM4 2h5v1h-5zM10 2h2v1h-2zM1 3h2v1h-2zM10 3h2v1h-2zM0 4h2v3h-2zM11 4h2v3h-2zM0 7h3v1h-3zM10 7h3v1h-3zM0 8h4v1h-4zM9 8h4v1h-4zM1 9h1v1h-1zM3 9h2v1h-2zM8 9h4v1h-4zM1 10h2v1h-2zM8 10h4v1h-4zM2 11h3v1h-3zM8 11h3v1h-3zM4 12h1v1h-1zM8 12h1v1h-1z',
+};
+
+// Botones a los links del proyecto (interaccion_web del editor): repo y web, cada uno
+// con su casilla ("github_activo" / "web_activo"). Datos antiguos: "activa" vale para ambos.
+function renderProjectLinks(p) {
+  const iw = p.interaccion_web;
+  if (!iw) return '';
+  const attr = (t) => t.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+  const boton = (tipo, etiqueta) => {
+    const activo = iw[`${tipo}_activo`] ?? iw.activa;
+    const url = String(iw[tipo] || '').trim();
+    if (!activo || !/^https?:\/\//i.test(url)) return '';
+    return `
+      <a class="project-link project-link-${tipo}" href="${attr(url)}" target="_blank" rel="noopener"
+         title="${attr(url)}" aria-label="${etiqueta}: ${attr(url)}">
+        <svg viewBox="0 0 13 13" shape-rendering="crispEdges" aria-hidden="true">
+          <path class="px-shadow" transform="translate(1 1)" d="${LINK_ICONS[tipo]}"/>
+          <path class="px-fill" d="${LINK_ICONS[tipo]}"/>
+        </svg>
+        <span>${etiqueta}</span>
+      </a>`;
+  };
+
+  const html = boton('github', 'REPO') + boton('web', 'WEB');
+  return html ? `<div class="project-links" aria-label="Links del proyecto">${html}</div>` : '';
+}
+
 function renderDetailBody(p) {
-  const etiquetas = (p.etiquetas || []).map((t) => `<span class="tag">${t}</span>`).join('');
+  const etiquetas = (p.etiquetas || []).map((t) => `<span class="tag">${richText(t)}</span>`).join('');
 
   const parrafos = (p.descripcion && p.descripcion.length ? p.descripcion : [p.resumen])
     .filter(Boolean)
-    .map((t) => `<p>${t}</p>`)
+    .map((t) => `<p>${richText(t)}</p>`)
     .join('');
 
   const info = [
@@ -1096,7 +1163,7 @@ function renderDetailBody(p) {
   const dif = p.dificultad;
   const dificultad = dif && dif.porcentaje != null ? `
     <div class="skill-bar difficulty"><div class="skill-fill" style="width:${dif.porcentaje}%"></div></div>
-    <p class="detail-note">${dif.texto || ''} (${dif.porcentaje}%)</p>` : '';
+    <p class="detail-note">${richText(dif.texto || '')} (${dif.porcentaje}%)</p>` : '';
 
   // Colores del proyecto (sin nombre): cuadrados que muestran el hex al pasar el cursor
   // y lo copian al hacer clic (ver initSwatchCopy)
@@ -1125,11 +1192,14 @@ function renderDetailBody(p) {
     ['DIFICULTAD', dificultad],
   ].filter(([, html]) => html);
 
+  const links = renderProjectLinks(p);
+
   $('detailBody').innerHTML = `
     <div class="detail-header">
-      <h3 class="detail-heading">${p.encabezado || p.titulo}</h3>
-      ${p.subtitulo ? `<p class="detail-subtitle">${p.subtitulo}</p>` : ''}
+      <h3 class="detail-heading">${richText(p.encabezado || p.titulo)}</h3>
+      ${p.subtitulo ? `<p class="detail-subtitle">${richText(p.subtitulo)}</p>` : ''}
       ${etiquetas ? `<div class="tags">${etiquetas}</div>` : ''}
+      ${links}
     </div>
     <div class="detail-tabs" role="tablist" aria-label="Secciones del proyecto">
       ${secciones.map(([title], i) => `
@@ -1192,7 +1262,7 @@ function showDetailMedia(index) {
   if (detailViewer) detailViewer.running = false;
   const item = galeria[detailMediaIndex - 1];
   renderMainMedia(main, detailProject, item);
-  $('detailCaption').textContent = `${detailMediaIndex}/${galeria.length} — ${item.nombre || item.archivo}`;
+  $('detailCaption').innerHTML = `${detailMediaIndex}/${galeria.length} — ${richText(item.nombre || item.archivo)}`;
 }
 
 function renderDetailThumbs(p) {
@@ -1241,8 +1311,8 @@ function showLightboxImage(index) {
 
   $('lightboxMedia').innerHTML = `
     <div class="card3d" id="lightboxCard">
-      <img class="card3d-img" alt="${nombre}">
-      <p class="card3d-caption">${nombre}${total > 1 ? ` <span>${lightboxIndex + 1}/${total}</span>` : ''}</p>
+      <img class="card3d-img" alt="${escapeHtml(stripHtml(nombre))}">
+      <p class="card3d-caption">${richText(nombre)}${total > 1 ? ` <span>${lightboxIndex + 1}/${total}</span>` : ''}</p>
     </div>`;
   encryptText($('lightboxTitle'), nombre);
   $('lightboxPrev').hidden = $('lightboxNext').hidden = total < 2;
@@ -1758,7 +1828,12 @@ function initPaint() {
   document.querySelectorAll('.tool-button').forEach((btn) => {
     btn.addEventListener('click', () => setTool(btn.dataset.tool));
   });
-  $('strokeSize').addEventListener('change', (e) => { strokeSize = parseInt(e.target.value, 10); });
+  const sizeSelect = $('strokeSize');
+  strokeSize = parseInt(sizeSelect.value, 10) || strokeSize;
+  ['input', 'change'].forEach((type) => sizeSelect.addEventListener(type, () => {
+    strokeSize = parseInt(sizeSelect.value, 10) || 1;
+    updatePaintCursor();
+  }));
   $('btnNew').addEventListener('click', clearCanvas);
   $('btnSave').addEventListener('click', downloadImage);
   $('btnUndo').addEventListener('click', undo);
@@ -1768,7 +1843,15 @@ function initPaint() {
     canvas.setPointerCapture(e.pointerId);
     startDrawing(e);
   });
-  canvas.addEventListener('pointermove', draw);
+  canvas.addEventListener('pointermove', (e) => {
+    lastPointer = e;
+    updatePaintCursor();
+    draw(e);
+  });
+  canvas.addEventListener('pointerleave', () => {
+    lastPointer = null;
+    updatePaintCursor();
+  });
   canvas.addEventListener('pointerup', stopDrawing);
   canvas.addEventListener('pointercancel', stopDrawing);
 
@@ -1778,6 +1861,37 @@ function initPaint() {
     if (key === 'z') { e.preventDefault(); undo(); }
     if (key === 'y') { e.preventDefault(); redo(); }
   });
+}
+
+/* Cursor sobre el lienzo: muestra dónde y de qué tamaño pinta la herramienta.
+   Lápiz y pincel: círculo; borrador: cuadrado. Se escala con el lienzo (que se
+   achica para caber en la pantalla), así coincide con el trazo real.
+   Relleno, selector y figuras usan la cruz del sistema. */
+let lastPointer = null;
+
+function toolWidth(tool = currentTool) {
+  if (tool === 'eraser') return strokeSize * 1.5;
+  return strokeSize;
+}
+
+function updatePaintCursor() {
+  const cursor = $('paintCursor');
+  if (!cursor || !canvas) return;
+  const freehand = ['pencil', 'brush', 'eraser'].includes(currentTool);
+  canvas.classList.toggle('paint-freehand', freehand);
+  if (!freehand || !lastPointer) {
+    cursor.hidden = true;
+    return;
+  }
+  const rect = canvas.getBoundingClientRect();
+  const box = cursor.parentElement;
+  const boxRect = box.getBoundingClientRect();
+  const size = Math.max(6, toolWidth() * (rect.width / canvas.width));
+  cursor.hidden = false;
+  cursor.classList.toggle('square', currentTool === 'eraser');
+  cursor.style.width = cursor.style.height = `${size}px`;
+  cursor.style.left = `${lastPointer.clientX - boxRect.left + box.scrollLeft}px`;
+  cursor.style.top = `${lastPointer.clientY - boxRect.top + box.scrollTop}px`;
 }
 
 function saveState() {
@@ -1799,6 +1913,7 @@ function setTool(tool) {
     btn.setAttribute('aria-pressed', active);
   });
   $('paintStatus').textContent = `Herramienta activa: ${(TOOL_NAMES[tool] || tool).toUpperCase()}`;
+  updatePaintCursor();
 }
 
 function undo() {
@@ -1871,18 +1986,11 @@ function draw(e) {
   if (!isDrawing) return;
 
   if (currentTool === 'pencil' || currentTool === 'brush' || currentTool === 'eraser') {
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    if (currentTool === 'pencil') {
-      ctx.strokeStyle = currentColor;
-      ctx.lineWidth = 1;
-    } else if (currentTool === 'brush') {
-      ctx.strokeStyle = currentColor;
-      ctx.lineWidth = strokeSize;
-    } else {
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = strokeSize * 1.5;
-    }
+    // Todas usan el TAMAÑO elegido; el borrador es un poco más ancho y de punta cuadrada
+    ctx.lineJoin = currentTool === 'eraser' ? 'miter' : 'round';
+    ctx.lineCap = currentTool === 'eraser' ? 'square' : 'round';
+    ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : currentColor;
+    ctx.lineWidth = toolWidth();
     ctx.lineTo(x, y);
     ctx.stroke();
     ctx.beginPath();
