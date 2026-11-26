@@ -30,6 +30,7 @@ const PROYECTOS = [
     "descripcion": [
       "Desde Chile se exportan materias primas elementales en el ámbito de la electrónica. Pero solemos acercarnos poco a poco a estos elementos que produce nuestro territorio, tales como el litio y el cobre, y que vuelven convertidos en tecnología compuesta. Sin_Te nace a base de eso, de la construcción electrónica local para dialogar con el entorno. Es un sintetizador modular, el cuál integra 7 placas electrónicas construidas colectivamente en el Taller de Máquinas Electrónicas, que actúan de forma paralela en un único sistema sonoro, que interactúa con el entorno y a través de la luz los sonidos que este produce varían.",
       "Chile exporta materias primas elementales para la electrónica, como el litio y el cobre, que luego regresan al país convertidas en tecnología compuesta y ajena a su origen. Frente a esa distancia, ¿es posible construir tecnología electrónica local que dialogue directamente con el entorno que la origina? Sin_Te explora esta pregunta mediante la construcción de un sintetizador modular que integra siete placas electrónicas construidas colectivamente, las cuales operan en paralelo dentro de un único sistema sonoro, que interactúa con el entorno por medio de la luz que percibe, haciendo que los sonidos que produce varíen. De esta manera, transforma la construcción electrónica en un gesto de apropiación local y de diálogo sensible con el territorio que provee sus materias primas.",
+      "Exhibido en <b><i> Mexico Design Week </i>/</b>",
       "Trabajo realizado en conjunto de: Isidora Alvarez - Dayana Pañitrur"
     ],
     "interaccion_web": {
@@ -526,7 +527,7 @@ const PROYECTOS = [
     },
     "dificultad": {
       "porcentaje": 90,
-      "texto": "Complejidad Alta"
+      "texto": "Complejidad alta"
     },
     "modelo3d": {
       "material": {
@@ -828,7 +829,7 @@ const PROYECTOS = [
     },
     "dificultad": {
       "porcentaje": 80,
-      "texto": "Complejidad Media Alta"
+      "texto": "Complejidad media alta"
     },
     "modelo3d": {
       "detalle": "medio",
@@ -971,7 +972,8 @@ const PROYECTOS = [
     "desafio": "Poder modificar elementos en tiempo real en una web",
     "descripcion": [
       "Una vez que se comprende que en el <i>mundo digital</i> todo se reducen a los bits, la particula fundamental de todo. Se puede concluir que transitar de un formato a otro es posible",
-      "Dentro de esta reflexión nace <b>Traductor de bits/b>, una herramienta web que en base a la información de un archivo de audio o una imagen puede realizar una traslación de contexto, logrando que una imagen suene y que un sonido se vea. Las opciones que permite esta herramienta es la conexión con controladores MIDI, ajustes ADSL, efectos y entre otros, siendo un sintetizador que funciona en base a imagenes o un genereador de imagenes que funciona en base al audio"
+      "Dentro de esta reflexión nace <b>Traductor de bits/b>, una herramienta web que en base a la información de un archivo de audio o una imagen puede realizar una traslación de contexto, logrando que una imagen suene y que un sonido se vea. Las opciones que permite esta herramienta es la conexión con controladores MIDI, ajustes ADSL, efectos y entre otros, siendo un sintetizador que funciona en base a imagenes o un genereador de imagenes que funciona en base al audio",
+      "Trabajo realizado en conjunto de: Isidora Alvarez"
     ],
     "interaccion_web": {
       "activa": true,
@@ -986,7 +988,7 @@ const PROYECTOS = [
     },
     "dificultad": {
       "porcentaje": 75,
-      "texto": "Complejidad Media Alta"
+      "texto": "Complejidad media alta"
     },
     "modelo3d": {
       "archivo": "proyecto_10.glb",
@@ -1068,6 +1070,12 @@ const PROYECTOS = [
     ],
     "objetivo": "Mediante conexión MQTT enlazar sensores de smartphones a una web",
     "desafio": "Lograr que 7 personas puedan controlar una misma partida ",
+    "descripcion": [
+      "Al participar de <b> Twitch Plays Pokemon</b> quedé dando vueltas al concepto de muchas personas controlando una partida de un videojuego, algo que se ha explorado en muchas entregas de la industria. El principal problema con estas es lo monótono, al todos tener el mismo tipo de controles se vuelve repetitivo",
+      "Por lo mismo y entendiendo que siempre llevamos a todos lados un dispositivo que permite detectar diversos estimulos se realizo <i> Doomy plays DOOM </i>. Ya que el videojuego DOOM de ID SOFTWARE cuenta con licencia GPL 2.0 la que permite usar, estudiar, modificar y distribuir el software, exigiendo que las obras derivadas distribuidas mantengan la misma licencia y pongan a disposición su código fuente.",
+      "Sabiendo esto adapte el juego original a esta experiencia inmersiva, donde cada jugador dispone de hasta 7 controles, con diversos sensores.",
+      "Este corre mediante el protocolo MQTT"
+    ],
     "interaccion_web": {
       "activa": true,
       "github": "https://github.com/Estrabismx/play-ex",
@@ -1081,7 +1089,7 @@ const PROYECTOS = [
     },
     "dificultad": {
       "porcentaje": 85,
-      "texto": "Dificultad Alta"
+      "texto": "Complejidad alta"
     },
     "modelo3d": {
       "detalle": "muy_alto",
@@ -1183,7 +1191,7 @@ const PROYECTOS = [
     },
     "dificultad": {
       "porcentaje": 50,
-      "texto": "Complejidad Media"
+      "texto": "Complejidad media"
     },
     "modelo3d": {
       "archivo": "proyecto_12.glb",

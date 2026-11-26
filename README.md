@@ -63,7 +63,7 @@ Además, para entender diagramaciones y jerarquia de la información se boceteo 
 
 ## Lógica interna
 
-<>
+Se desarrollo una herramienta con Python que permite organizar los proyectos, editar información, añadir imagenes, cargar modelos 3D. Todo con el fin de mantener actualizado el portafolio 
 
 ## Conclusión
 

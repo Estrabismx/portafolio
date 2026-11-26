@@ -1160,10 +1160,20 @@ function renderDetailBody(p) {
   // Igual que en el editor: las filas sin valor no se muestran
   const ficha = Object.entries(p.ficha || {}).filter(([, v]) => !isEmpty(v));
 
+  // Dificultad: barra 0–100 % con su texto (si no hay texto, solo el porcentaje)
   const dif = p.dificultad;
-  const dificultad = dif && dif.porcentaje != null ? `
-    <div class="skill-bar difficulty"><div class="skill-fill" style="width:${dif.porcentaje}%"></div></div>
-    <p class="detail-note">${richText(dif.texto || '')} (${dif.porcentaje}%)</p>` : '';
+  const difPct = dif ? Math.min(100, Math.max(0, Math.round(Number(dif.porcentaje)) || 0)) : 0;
+  const difTexto = dif && dif.texto ? String(dif.texto).trim() : '';
+  const dificultad = dif && (dif.porcentaje != null || difTexto) ? `
+    <div class="ficha-difficulty">
+      <p class="ficha-difficulty-label" id="difLabel">DIFICULTAD</p>
+      <div class="skill-bar difficulty" role="progressbar" aria-labelledby="difLabel"
+        aria-valuemin="0" aria-valuemax="100" aria-valuenow="${difPct}"
+        aria-valuetext="${difTexto ? `${escapeHtml(difTexto).replace(RICH_TAG_RE, '')}, ` : ''}${difPct}%">
+        <div class="skill-fill" style="width:${difPct}%"></div>
+      </div>
+      <p class="detail-note">${difTexto ? `${richText(difTexto)} ` : ''}<span class="difficulty-pct">${difPct}%</span></p>
+    </div>` : '';
 
   // Colores del proyecto (sin nombre): cuadrados que muestran el hex al pasar el cursor
   // y lo copian al hacer clic (ver initSwatchCopy)
@@ -1177,10 +1187,11 @@ function renderDetailBody(p) {
     return tmp.outerHTML;
   };
 
-  // La ficha técnica: datos arriba y, abajo a la derecha, los colores (sin título)
-  const fichaHtml = (ficha.length || colores) && `
+  // La ficha técnica: datos y dificultad arriba y, abajo a la derecha, los colores (sin título)
+  const fichaHtml = (ficha.length || dificultad || colores) && `
     <div class="ficha-layout">
       ${ficha.length ? dl(ficha) : ''}
+      ${dificultad}
       ${colores ? `<div class="swatch-row" aria-label="Colores del proyecto">${colores}</div>` : ''}
     </div>`;
 
@@ -1189,7 +1200,6 @@ function renderDetailBody(p) {
     ['DESCRIPCIÓN', parrafos && `<div class="detail-text">${parrafos}</div>`],
     ['INFO', dl(info)],
     ['FICHA_TECNICA', fichaHtml],
-    ['DIFICULTAD', dificultad],
   ].filter(([, html]) => html);
 
   const links = renderProjectLinks(p);
@@ -1203,7 +1213,7 @@ function renderDetailBody(p) {
     </div>
     <div class="detail-tabs" role="tablist" aria-label="Secciones del proyecto">
       ${secciones.map(([title], i) => `
-        <button type="button" class="detail-tab" role="tab" id="detailTab${i}" aria-controls="detailSection${i}">/// ${title}</button>`).join('')}
+        <button type="button" class="detail-tab" role="tab" id="detailTab${i}" aria-controls="detailSection${i}">// ${title.toLowerCase()}</button>`).join('')}
     </div>
     ${secciones.map(([, html], i) => `
       <div class="detail-block" role="tabpanel" id="detailSection${i}" aria-labelledby="detailTab${i}" tabindex="0">${html}</div>`).join('')}`;

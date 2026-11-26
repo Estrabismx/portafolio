@@ -2089,6 +2089,31 @@ body[data-page="proyectos"] .detail-viewer {
   min-height: 100%;
 }
 
+/* Dificultad dentro de la ficha técnica: título como los de la ficha, barra y nota */
+.ficha-difficulty-label {
+  margin: 0 0 6px;
+  color: var(--scarlet);
+  font-weight: bold;
+  font-size: calc(13px * var(--text-scale));
+}
+
+/* La barra crece desde la izquierda al abrir la pestaña (igual que en sobre_mi) */
+.ficha-difficulty .skill-fill {
+  transform-origin: left center;
+  animation: bar-grow 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.ficha-difficulty .difficulty-pct {
+  color: var(--amber);
+  font-weight: bold;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ficha-difficulty .skill-fill {
+    animation: none;
+  }
+}
+
 /* Colores en la ficha técnica: cuadrados grandes; el hex aparece encima
    al pasar el cursor y el clic lo copia ("copiado" por un momento) */
 .swatch-row {
@@ -2404,30 +2429,6 @@ body[data-page="proyectos"] .detail-viewer {
   margin-bottom: 25px;
   font-size: calc(16px * var(--text-scale));
   line-height: 1.5;
-}
-
-.contact-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 25px;
-  text-align: left;
-}
-
-.contact-list li {
-  margin-bottom: 12px;
-  font-size: calc(14px * var(--text-scale));
-  overflow-wrap: anywhere;
-}
-
-.contact-list span {
-  display: block;
-  color: var(--scarlet);
-  font-weight: bold;
-  font-size: calc(12px * var(--text-scale));
-}
-
-.contact-list a:hover {
-  color: var(--scarlet);
 }
 
 .modal-note {
