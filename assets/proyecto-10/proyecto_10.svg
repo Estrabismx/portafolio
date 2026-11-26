@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 524.81 558.49">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #f29f05;
+        font-family: RobotoMono-Bold, 'Roboto Mono';
+        font-size: 110px;
+        font-variation-settings: 'wght' 700;
+        font-weight: 700;
+      }
+
+      .cls-2 {
+        fill: #0c1226;
+      }
+
+      .cls-3 {
+        fill: #8c0b3b;
+      }
+
+      .cls-4 {
+        fill: #eedbbf;
+        font-family: RobotoMono-Regular, 'Roboto Mono';
+        font-size: 40px;
+        font-variation-settings: 'wght' 400;
+      }
+    </style>
+  </defs>
+  <g id="Ilustración_de_conjunto_de_iconos" data-name="Ilustración de conjunto de iconos">
+    <g>
+      <g>
+        <rect class="cls-3" y="0" width="524.81" height="558.49" rx="90.45" ry="90.45"/>
+        <text class="cls-1" transform="translate(367.71 512.84)"><tspan x="0" y="0">&lt;&gt;</tspan></text>
+      </g>
+      <rect class="cls-2" x="62.61" y="63.49" width="375.32" height="349.28" rx="21.44" ry="21.44"/>
+      <text class="cls-4" transform="translate(94.24 129.81)"><tspan x="0" y="0">000110 110001</tspan><tspan x="0" y="48">011010 111001</tspan><tspan x="0" y="96">101110 110000</tspan><tspan x="0" y="144">101110 001100</tspan><tspan x="0" y="192">001000 100101</tspan><tspan x="0" y="240">000010 101011</tspan></text>
+    </g>
+  </g>
+</svg>

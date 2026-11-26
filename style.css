@@ -41,6 +41,7 @@
   --section-gap: 50px;
   --border-width: 4px;
   --detail-height: 420px; /* alto del visor del proyecto en celular */
+  --ticker-speed: 60;      /* px por segundo del carrusel de la portada (lo cambia el editor) */
 }
 
 html {
@@ -209,6 +210,47 @@ header.topbar {
   top: 0;
   left: 100%;
   margin-left: var(--border-width);
+}
+
+/* ---------- Barras de desplazamiento (iguales en todo el sitio) ----------
+   Retro: riel negro con borde punteado, bloque rojo con borde de color que se
+   enciende en ámbar al usarla. Vale para la página y para cada panel con scroll. */
+:root {
+  --scrollbar-size: 16px;
+}
+::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+::-webkit-scrollbar-track {
+  background: var(--black);
+  border: 2px dashed var(--deep-red);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--deep-red);
+  border: 3px solid var(--scarlet);
+  border-radius: 0;
+  min-height: 40px;
+  min-width: 40px;
+}
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+  background: var(--amber);
+  border-color: var(--amber-deep);
+}
+::-webkit-scrollbar-button {
+  display: none;
+}
+::-webkit-scrollbar-corner {
+  background: var(--black);
+}
+/* Firefox no tiene los selectores de arriba: barra de ancho normal con los mismos colores.
+   (Va dentro de @supports para que Chrome/Edge no la usen e ignoren el estilo de arriba) */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: var(--scarlet) var(--black);
+  }
 }
 
 .side-menu-scroll {
@@ -1024,44 +1066,6 @@ body[data-page="sobre-mi"] .stats-tab {
     min-height: 0;
     overflow-y: auto;
     padding-right: 14px; /* aire entre el texto y la barra */
-  }
-  /* Barra de desplazamiento ancha y retro: riel negro con borde punteado,
-     bloque rojo con borde de color que se enciende en ámbar al usarla */
-  body[data-page="sobre-mi"] .about-text::-webkit-scrollbar,
-  body[data-page="sobre-mi"] .about-stats::-webkit-scrollbar {
-    width: 16px;
-  }
-  body[data-page="sobre-mi"] .about-text::-webkit-scrollbar-track,
-  body[data-page="sobre-mi"] .about-stats::-webkit-scrollbar-track {
-    background: var(--black);
-    border: 2px dashed var(--deep-red);
-  }
-  body[data-page="sobre-mi"] .about-text::-webkit-scrollbar-thumb,
-  body[data-page="sobre-mi"] .about-stats::-webkit-scrollbar-thumb {
-    background: var(--deep-red);
-    border: 3px solid var(--scarlet);
-    border-radius: 0;
-    min-height: 40px;
-  }
-  body[data-page="sobre-mi"] .about-text::-webkit-scrollbar-thumb:hover,
-  body[data-page="sobre-mi"] .about-stats::-webkit-scrollbar-thumb:hover,
-  body[data-page="sobre-mi"] .about-text::-webkit-scrollbar-thumb:active,
-  body[data-page="sobre-mi"] .about-stats::-webkit-scrollbar-thumb:active {
-    background: var(--amber);
-    border-color: var(--amber-deep);
-  }
-  body[data-page="sobre-mi"] .about-text::-webkit-scrollbar-button,
-  body[data-page="sobre-mi"] .about-stats::-webkit-scrollbar-button {
-    display: none;
-  }
-  /* Firefox no tiene los selectores de arriba: barra de ancho normal con los mismos colores.
-     (Va dentro de @supports para que Chrome/Edge no la usen e ignoren el estilo de arriba) */
-  @supports not selector(::-webkit-scrollbar) {
-    body[data-page="sobre-mi"] .about-text,
-    body[data-page="sobre-mi"] .about-stats {
-      scrollbar-width: auto;
-      scrollbar-color: var(--scarlet) var(--black);
-    }
   }
   body[data-page="sobre-mi"] .about-text {
     display: flex;
@@ -1906,6 +1910,56 @@ body[data-page="proyectos"] .detail-viewer {
   opacity: 0.85;
 }
 
+/* Links del proyecto (repos y webs): un botón por link, bajo el nombre y sobre las pestañas.
+   Ícono pixel 13×13 dibujado a 2× (sin suavizado) con su sombra desplazada, como las flechas del anillo */
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 6px;
+  background: var(--deep-red);
+  color: var(--cream);
+  border: 2px solid var(--amber);
+  font-family: var(--font-display);
+  font-size: calc(20px * var(--text-scale));
+  line-height: 1;
+  letter-spacing: 1px;
+  text-decoration: none;
+  box-shadow: 3px 3px 0 var(--black);
+}
+
+.project-link svg {
+  display: block;
+  flex-shrink: 0;
+  width: 26px;   /* 13 px × 2: cada pixel del dibujo = 2 px de pantalla */
+  height: 26px;
+  overflow: visible;
+}
+
+.project-link .px-fill { fill: currentColor; }
+.project-link .px-shadow { fill: var(--black); }
+
+.project-link:hover,
+.project-link:focus-visible {
+  background: var(--amber);
+  color: var(--black);
+}
+
+.project-link:hover .px-shadow,
+.project-link:focus-visible .px-shadow { fill: var(--deep-red); }
+
+.project-link:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -2180,6 +2234,7 @@ body[data-page="proyectos"] .detail-viewer {
 }
 
 .canvas-container {
+  position: relative; /* referencia del cursor del lienzo */
   flex: 1;
   min-width: 0;
   background: var(--black);
@@ -2196,6 +2251,42 @@ body[data-page="proyectos"] .detail-viewer {
   border: 2px solid var(--deep-red);
   touch-action: none;
   cursor: crosshair;
+}
+
+/* Lápiz, pincel y borrador: el cursor es el contorno del trazo (ver updatePaintCursor) */
+#paintCanvas.paint-freehand {
+  cursor: none;
+}
+
+.paint-cursor {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  border: 1px solid #000;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #fff, inset 0 0 0 1px #fff; /* se ve sobre blanco y sobre negro */
+  z-index: 1;
+}
+
+.paint-cursor.square {
+  border-radius: 0;
+}
+
+/* Punto central: marca el pixel exacto aunque el trazo sea grande */
+.paint-cursor::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 2px;
+  margin: -1px 0 0 -1px;
+  background: #000;
+  box-shadow: 0 0 0 1px #fff;
+}
+
+.paint-cursor[hidden] {
+  display: none;
 }
 
 .paint-palette {

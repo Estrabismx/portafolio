@@ -117,8 +117,8 @@ CABECERA = """/* ===============================================================
 """
 
 # Orden de los campos al escribir proyectos.js
-ORDEN_CAMPOS = ['id', 'titulo', 'icono', 'subtitulo', 'resumen', 'etiquetas', 'curso', 'anio', 'tamano',
-                'encabezado', 'tipo', 'objetivo', 'desafio', 'descripcion', 'colores', 'ficha',
+ORDEN_CAMPOS = ['id', 'oculto', 'titulo', 'icono', 'subtitulo', 'resumen', 'etiquetas', 'curso', 'anio', 'tamano',
+                'encabezado', 'tipo', 'objetivo', 'desafio', 'descripcion', 'interaccion_web', 'colores', 'ficha',
                 'dificultad', 'modelo3d', 'galeria']
 
 # Tamaño de las miniaturas de la galería
@@ -182,8 +182,13 @@ def limpiar_para_guardar(p):
                      for g in (valor or [])]
         if clave == 'dificultad' and valor and not valor.get('texto') and not valor.get('porcentaje'):
             valor = None
+        if clave == 'interaccion_web' and valor and not (
+                valor.get('github_activo') or valor.get('web_activo') or valor.get('github') or valor.get('web')):
+            valor = None
         if clave == 'ficha' and valor:
             valor = {nombre: texto for nombre, texto in valor.items() if str(texto).strip()}
+        if clave == 'oculto':
+            valor = True if valor else None   # solo se escribe cuando el proyecto está oculto
         if valor in (None, '', [], {}):
             continue
         salida[clave] = valor
@@ -505,6 +510,13 @@ class Editor:
         for i in range(3):
             botones.columnconfigure(i, weight=1)
 
+        # Visibilidad: un proyecto oculto se conserva aquí pero no aparece en ninguna parte de la web
+        self.var_visible = tk.BooleanVar(value=True)
+        ttk.Checkbutton(izquierda, text='Mostrar este proyecto en la web', variable=self.var_visible,
+                        command=self.al_cambiar_visible).pack(anchor='w', pady=(6, 0))
+        ttk.Label(izquierda, text='Los ocultos se ven en gris en la lista.',
+                  style='Ayuda.TLabel').pack(anchor='w')
+
         # --- Pestañas (derecha) ---
         derecha = ttk.Frame(principal)
         derecha.pack(side='left', fill='both', expand=True)
@@ -573,13 +585,34 @@ class Editor:
         ttk.Label(f, text='Descripción').grid(row=5, column=0, sticky='nw', pady=3)
         marco, self.texto_descripcion = self.caja_texto(f, 10)
         marco.grid(row=5, column=1, columnspan=2, sticky='nsew', pady=3)
-        ttk.Label(f, text='Deja una línea en blanco para separar párrafos. Puedes usar <i>cursiva</i> o <b>negrita</b>.',
+        ttk.Label(f, text='Deja una línea en blanco para separar párrafos. En cualquier campo de texto puedes usar <i>cursiva</i> o <b>negrita</b>.',
                   style='Ayuda.TLabel').grid(row=6, column=1, columnspan=2, sticky='w')
         f.rowconfigure(5, weight=1)
 
-        ttk.Label(f, text='Paleta de colores').grid(row=7, column=0, sticky='nw', pady=(10, 3))
+        # Interacción web: un link al repositorio (GitHub) y uno a la web del proyecto.
+        # Cada uno se habilita con su propia casilla; habilitado y con link, aparece
+        # como botón bajo el nombre en la vista del proyecto.
+        web = ttk.Frame(f)
+        web.grid(row=7, column=1, columnspan=2, sticky='ew', pady=(8, 3))
+        web.columnconfigure(1, weight=1)
+        ttk.Label(web, text='Interacción web').grid(row=0, column=0, columnspan=2, sticky='w')
+        self.links_web = {}   # clave en interaccion_web -> (casilla, texto, entrada)
+        for fila, (clave, etiqueta) in enumerate((('github', 'Link del repo'), ('web', 'Link de la web')), 1):
+            activo, texto = tk.BooleanVar(), tk.StringVar()
+            ttk.Checkbutton(web, text=etiqueta, variable=activo,
+                            command=self.al_cambiar_interaccion_web).grid(row=fila, column=0, sticky='w',
+                                                                          padx=(20, 8), pady=2)
+            entrada = ttk.Entry(web, textvariable=texto)
+            entrada.grid(row=fila, column=1, sticky='ew', pady=2)
+            texto.trace_add('write', lambda *_: self.al_cambiar_interaccion_web())
+            self.links_web[clave] = (activo, texto, entrada)
+        ttk.Label(web, text='Repo: botón con el logo de GitHub · Web: botón con el globo. '
+                            'Al desmarcar, el link se conserva pero no se muestra.',
+                  style='Ayuda.TLabel').grid(row=3, column=1, sticky='w')
+
+        ttk.Label(f, text='Paleta de colores').grid(row=8, column=0, sticky='nw', pady=(10, 3))
         colores = ttk.Frame(f)
-        colores.grid(row=7, column=1, columnspan=2, sticky='ew', pady=(10, 3))
+        colores.grid(row=8, column=1, columnspan=2, sticky='ew', pady=(10, 3))
         self.lista_colores = tk.Listbox(colores, height=5, width=34, activestyle='none',
                                         font=('Consolas', 10), exportselection=False)
         self.lista_colores.pack(side='left')
@@ -935,6 +968,10 @@ class Editor:
         for clave in ('espacio_secciones', 'margen_interior', 'grosor_bordes', 'ancho_maximo'):
             deslizador(clave)
 
+        # Movimiento
+        titulo('Movimiento', 'Carrusel de proyectos de la página principal (con el mouse encima va más lento).')
+        deslizador('velocidad_carrusel')
+
         ttk.Button(f, text='Restablecer el diseño original', command=self.restablecer_diseno).grid(
             row=fila, column=1, sticky='w', pady=(16, 6))
         self.refrescar_diseno()
@@ -1164,8 +1201,11 @@ class Editor:
 
     def refrescar_lista(self):
         self.lista.delete(0, 'end')
-        for p in self.proyectos:
-            self.lista.insert('end', f'  {p["id"]}  ·  {sin_html(p.get("titulo")) or "(sin título)"}')
+        for i, p in enumerate(self.proyectos):
+            oculto = bool(p.get('oculto'))
+            self.lista.insert('end', f'  {p["id"]}  ·  {sin_html(p.get("titulo")) or "(sin título)"}'
+                                     + ('   (oculto)' if oculto else ''))
+            self.lista.itemconfig(i, foreground='#999999' if oculto else '#000000')
         if self.actual is not None:
             self.lista.selection_set(self.actual)
             self.lista.see(self.actual)
@@ -1287,6 +1327,14 @@ class Editor:
             self.etiqueta_porcentaje.config(text=f'{self.var_dif_porcentaje.get()}%')
             self.var_fila_nombre.set('')
             self.var_fila_valor.set('')
+            interaccion = (p or {}).get('interaccion_web') or {}
+            for clave, (activo, texto, _) in self.links_web.items():
+                # Datos antiguos: una sola casilla "activa" para los dos links
+                activo.set(bool(interaccion.get(f'{clave}_activo', interaccion.get('activa'))))
+                link = interaccion.get(clave) or ''
+                texto.set(link[0] if isinstance(link, list) and link else link if isinstance(link, str) else '')
+            self.habilitar_campos_web()
+            self.var_visible.set(not (p or {}).get('oculto'))
         finally:
             self.cargando = False
 
@@ -1315,6 +1363,17 @@ class Editor:
         if clave == 'titulo':
             self.refrescar_lista()
 
+    def al_cambiar_visible(self):
+        p = self.p()
+        if self.cargando or not p:
+            return
+        if self.var_visible.get():
+            p.pop('oculto', None)
+        else:
+            p['oculto'] = True
+        self.marcar_cambio()
+        self.refrescar_lista()
+
     def al_modificar_texto(self, caja):
         if caja.edit_modified():
             caja.edit_modified(False)
@@ -1337,6 +1396,22 @@ class Editor:
             return
         self.p()['dificultad'] = {'porcentaje': int(self.var_dif_porcentaje.get()),
                                   'texto': self.var_dif_texto.get()}
+        self.marcar_cambio()
+
+    def habilitar_campos_web(self):
+        for activo, _, entrada in self.links_web.values():
+            entrada.config(state='normal' if activo.get() else 'disabled')
+
+    def al_cambiar_interaccion_web(self):
+        self.habilitar_campos_web()
+        if self.cargando or not self.p():
+            return
+        # Los links se conservan aunque se desmarque su casilla, para no perderlos por error
+        interaccion = {}
+        for clave, (activo, texto, _) in self.links_web.items():
+            interaccion[f'{clave}_activo'] = activo.get()
+            interaccion[clave] = texto.get().strip()
+        self.p()['interaccion_web'] = interaccion
         self.marcar_cambio()
 
     def calcular_tamano(self):
