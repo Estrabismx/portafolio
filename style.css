@@ -2089,6 +2089,14 @@ body[data-page="proyectos"] .detail-viewer {
   min-height: 100%;
 }
 
+/* Dificultad dentro de la ficha técnica: título como los de la ficha, barra y nota */
+.ficha-difficulty-label {
+  margin: 0 0 6px;
+  color: var(--scarlet);
+  font-weight: bold;
+  font-size: calc(13px * var(--text-scale));
+}
+
 /* Colores en la ficha técnica: cuadrados grandes; el hex aparece encima
    al pasar el cursor y el clic lo copia ("copiado" por un momento) */
 .swatch-row {
