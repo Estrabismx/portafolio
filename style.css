@@ -326,19 +326,19 @@ header.topbar {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
+  gap: 16px;
 }
 
 .badge {
-  width: 88px;
-  height: 31px;
+  width: 150px;
+  height: 52px;
   background: var(--deep-red);
   color: var(--cream);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px * var(--text-scale));
-  border: 2px solid var(--amber);
+  font-size: calc(16px * var(--text-scale));
+  border: 3px solid var(--amber);
   text-decoration: none;
   font-weight: bold;
 }
@@ -349,7 +349,7 @@ header.topbar {
 }
 
 .badge:active {
-  border: 2px inset var(--amber);
+  border: 3px inset var(--amber);
 }
 
 .content-area {
@@ -2422,6 +2422,15 @@ body[data-page="proyectos"] .detail-viewer {
   padding: 30px;
   text-align: center;
   background: var(--black);
+}
+
+/* Ventana de contacto: más ancha y con más aire que las demás ventanas */
+#contactModal .modal-window {
+  width: 600px;
+}
+
+#contactModal .modal-body {
+  padding: 50px 40px;
 }
 
 .modal-body p {
