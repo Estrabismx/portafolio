@@ -326,19 +326,19 @@ header.topbar {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
+  gap: 24px;
 }
 
 .badge {
-  width: 88px;
-  height: 31px;
+  width: 210px;
+  height: 72px;
   background: var(--deep-red);
   color: var(--cream);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px * var(--text-scale));
-  border: 2px solid var(--amber);
+  font-size: calc(22px * var(--text-scale));
+  border: 3px solid var(--amber);
   text-decoration: none;
   font-weight: bold;
 }
@@ -349,7 +349,7 @@ header.topbar {
 }
 
 .badge:active {
-  border: 2px inset var(--amber);
+  border: 3px inset var(--amber);
 }
 
 .content-area {
@@ -2422,6 +2422,38 @@ body[data-page="proyectos"] .detail-viewer {
   padding: 30px;
   text-align: center;
   background: var(--black);
+}
+
+/* Ventana de contacto: más ancha y con más aire que las demás ventanas */
+#contactModal .modal-window {
+  width: 820px;
+}
+
+#contactModal .modal-header {
+  padding: 14px 24px;
+}
+
+#contactModal .modal-title {
+  font-size: calc(34px * var(--text-scale));
+}
+
+#contactModal .modal-close {
+  font-size: calc(22px * var(--text-scale));
+  padding: 4px 16px;
+}
+
+#contactModal .modal-body {
+  padding: 70px 50px;
+}
+
+/* En pantallas angostas: menos margen para que los botones quepan */
+@media (max-width: 600px) {
+  #contactModal .modal-body {
+    padding: 40px 20px;
+  }
+  #contactModal .modal-title {
+    font-size: calc(26px * var(--text-scale));
+  }
 }
 
 .modal-body p {

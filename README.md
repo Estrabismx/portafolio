@@ -35,7 +35,7 @@ Conjunto de conceptos que se trabajaron en el semestre
 
 Anteriormente intente hacer un portafolio en GitHub Pages pero al no tener conocimientos base fue bastante complejo, ya que no entendía los distintos lenguajes de programación y el flujo de trabajo al no tener conocimientos previos fue caotico.
 
-## Proceso
+## Proceso 
 
 Para desarrollar esta versión fue significativamente más sencillo, gracias al conocimiento adquirido. Por lo tanto, para evitar la complejidad de cargar proyectos a futuro y poder establecer un flujo de trabajo optimo decidí armar una herramienta en python que se encargara de renombrar archivos, organizarlos y adaptarlos a `index.html`, `style.css` y `main.js`
 
