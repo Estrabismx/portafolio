@@ -1160,12 +1160,19 @@ function renderDetailBody(p) {
   // Igual que en el editor: las filas sin valor no se muestran
   const ficha = Object.entries(p.ficha || {}).filter(([, v]) => !isEmpty(v));
 
+  // Dificultad: barra 0–100 % con su texto (si no hay texto, solo el porcentaje)
   const dif = p.dificultad;
-  const dificultad = dif && dif.porcentaje != null ? `
+  const difPct = dif ? Math.min(100, Math.max(0, Math.round(Number(dif.porcentaje)) || 0)) : 0;
+  const difTexto = dif && dif.texto ? String(dif.texto).trim() : '';
+  const dificultad = dif && (dif.porcentaje != null || difTexto) ? `
     <div class="ficha-difficulty">
-    <p class="ficha-difficulty-label">DIFICULTAD</p>
-    <div class="skill-bar difficulty"><div class="skill-fill" style="width:${dif.porcentaje}%"></div></div>
-    <p class="detail-note">${richText(dif.texto || '')} (${dif.porcentaje}%)</p>
+      <p class="ficha-difficulty-label" id="difLabel">DIFICULTAD</p>
+      <div class="skill-bar difficulty" role="progressbar" aria-labelledby="difLabel"
+        aria-valuemin="0" aria-valuemax="100" aria-valuenow="${difPct}"
+        aria-valuetext="${difTexto ? `${escapeHtml(difTexto).replace(RICH_TAG_RE, '')}, ` : ''}${difPct}%">
+        <div class="skill-fill" style="width:${difPct}%"></div>
+      </div>
+      <p class="detail-note">${difTexto ? `${richText(difTexto)} ` : ''}<span class="difficulty-pct">${difPct}%</span></p>
     </div>` : '';
 
   // Colores del proyecto (sin nombre): cuadrados que muestran el hex al pasar el cursor

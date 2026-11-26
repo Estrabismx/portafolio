@@ -527,7 +527,7 @@ const PROYECTOS = [
     },
     "dificultad": {
       "porcentaje": 90,
-      "texto": "Complejidad Alta"
+      "texto": "Complejidad alta"
     },
     "modelo3d": {
       "material": {
@@ -829,7 +829,7 @@ const PROYECTOS = [
     },
     "dificultad": {
       "porcentaje": 80,
-      "texto": "Complejidad Media Alta"
+      "texto": "Complejidad media alta"
     },
     "modelo3d": {
       "detalle": "medio",
@@ -988,7 +988,7 @@ const PROYECTOS = [
     },
     "dificultad": {
       "porcentaje": 75,
-      "texto": "Complejidad Media Alta"
+      "texto": "Complejidad media alta"
     },
     "modelo3d": {
       "archivo": "proyecto_10.glb",
@@ -1089,7 +1089,7 @@ const PROYECTOS = [
     },
     "dificultad": {
       "porcentaje": 85,
-      "texto": "Dificultad Alta"
+      "texto": "Complejidad alta"
     },
     "modelo3d": {
       "detalle": "muy_alto",
@@ -1191,7 +1191,7 @@ const PROYECTOS = [
     },
     "dificultad": {
       "porcentaje": 50,
-      "texto": "Complejidad Media"
+      "texto": "Complejidad media"
     },
     "modelo3d": {
       "archivo": "proyecto_12.glb",
